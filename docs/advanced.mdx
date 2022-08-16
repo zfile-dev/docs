@@ -1,0 +1,223 @@
+# 高级功能
+
+## OneDrive 相关 CF 加速 {#onedrive-cf}
+
+:::info 提示
+使用 CF 后下载速度不一定比原来快，这个自行测试。
+:::
+
+OneDrive SharePoint 国际版, 世纪互联版等，使用 CF 加速功能。
+
+### 登陆/注册账号
+
+https://dash.cloudflare.com/login
+
+### 配置 Cloudflare Workers
+
+#### 初次使用入口
+
+初次注册会显示如下页面:
+
+![image.png](https://cdn.jun6.net/2021/04/10/c53465c6da270.png)
+
+![image.png](https://cdn.jun6.net/2021/04/10/71bacabf1450a.png)
+
+![image.png](https://cdn.jun6.net/2021/04/10/d20cebcea8f67.png)
+
+![image.png](https://cdn.jun6.net/2021/04/10/6cef8b026b14c.png)
+
+激活后，按照下方 `非初次使用入口` 继续操作。
+
+#### 非初次使用入口
+
+![image.png](https://cdn.jun6.net/2021/04/10/5915cf2b4af8e.png)
+
+![image.png](https://cdn.jun6.net/2021/04/10/cb7c1157f7334.png)
+
+
+#### Workers 代码修改
+
+##### 方式一
+![image.png](https://cdn.jun6.net/2021/04/10/79d49c9b2ddf6.png)
+
+```javascript showLineNumbers {3,9}
+addEventListener("fetch",event => {
+    let url = new URL(event.request.url);
+    url.hostname ="youdomain.com";
+
+    let request = new Request(url,event.request);
+    event.respondWith(
+        fetch(request,{
+            headers:{
+                'Referer':'https://youdomain.com/',
+                'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
+            }
+        })
+    )
+});
+```
+
+##### 方式二
+
+:::tip
+此方法为 2021.09.18 新增，**支持多线程下载**，原作者链接为：https://www.bbimax.com/92.html
+:::
+
+```javascript showLineNumbers {2,5}
+// 替换成你OneDrive的网址
+const upstream = '*-my.sharepoint.com'
+
+// 替换成你OneDrive的网址
+const upstream_mobile = '*-my.sharepoint.com'
+
+// 下面的配置都不用动
+const upstream_path = '/'
+
+const blocked_region = ['KP', 'SY', 'PK', 'CU']
+
+const blocked_ip_address = ['0.0.0.0', '127.0.0.1']
+
+const https = true
+
+const disable_cache = false
+
+const replace_dict = {
+    '$upstream': '$custom_domain',
+    '//sunpma.com': ''
+}
+
+addEventListener('fetch', event => {
+    event.respondWith(fetchAndApply(event.request));
+})
+
+async function fetchAndApply(request) {
+    const region = request.headers.get('cf-ipcountry').toUpperCase();
+    const ip_address = request.headers.get('cf-connecting-ip');
+    const user_agent = request.headers.get('user-agent');
+
+    let response = null;
+    let url = new URL(request.url);
+    let url_hostname = url.hostname;
+
+    if (https == true) {
+        url.protocol = 'https:';
+    } else {
+        url.protocol = 'http:';
+    }
+
+    if (await device_status(user_agent)) {
+        var upstream_domain = upstream;
+    } else {
+        var upstream_domain = upstream_mobile;
+    }
+
+    url.host = upstream_domain;
+    if (url.pathname == '/') {
+        url.pathname = upstream_path;
+    } else {
+        url.pathname = upstream_path + url.pathname;
+    }
+
+    if (blocked_region.includes(region)) {
+        response = new Response('Access denied: WorkersProxy is not available in your region yet.', {
+            status: 403
+        });
+    } else if (blocked_ip_address.includes(ip_address)) {
+        response = new Response('Access denied: Your IP address is blocked by WorkersProxy.', {
+            status: 403
+        });
+    } else {
+        let method = request.method;
+        let request_headers = request.headers;
+        let new_request_headers = new Headers(request_headers);
+
+        new_request_headers.set('Host', upstream_domain);
+        new_request_headers.set('Referer', url.protocol + '//' + url_hostname);
+
+        let original_response = await fetch(url.href, {
+            method: method,
+            headers: new_request_headers
+        })
+
+        connection_upgrade = new_request_headers.get("Upgrade");
+        if (connection_upgrade && connection_upgrade.toLowerCase() == "websocket") {
+            return original_response;
+        }
+
+        let original_response_clone = original_response.clone();
+        let original_text = null;
+        let response_headers = original_response.headers;
+        let new_response_headers = new Headers(response_headers);
+        let status = original_response.status;
+
+        if (disable_cache) {
+            new_response_headers.set('Cache-Control', 'no-store');
+        }
+
+        new_response_headers.set('access-control-allow-origin', '*');
+        new_response_headers.set('access-control-allow-credentials', true);
+        new_response_headers.delete('content-security-policy');
+        new_response_headers.delete('content-security-policy-report-only');
+        new_response_headers.delete('clear-site-data');
+
+        if (new_response_headers.get("x-pjax-url")) {
+            new_response_headers.set("x-pjax-url", response_headers.get("x-pjax-url").replace("//" + upstream_domain, "//" + url_hostname));
+        }
+
+        const content_type = new_response_headers.get('content-type');
+        if (content_type != null && content_type.includes('text/html') && content_type.includes('UTF-8')) {
+            original_text = await replace_response_text(original_response_clone, upstream_domain, url_hostname);
+        } else {
+            original_text = original_response_clone.body
+        }
+
+        response = new Response(original_text, {
+            status,
+            headers: new_response_headers
+        })
+    }
+    return response;
+}
+
+async function replace_response_text(response, upstream_domain, host_name) {
+    let text = await response.text()
+
+    var i, j;
+    for (i in replace_dict) {
+        j = replace_dict[i]
+        if (i == '$upstream') {
+            i = upstream_domain
+        } else if (i == '$custom_domain') {
+            i = host_name
+        }
+
+        if (j == '$upstream') {
+            j = upstream_domain
+        } else if (j == '$custom_domain') {
+            j = host_name
+        }
+
+        let re = new RegExp(i, 'g')
+        text = text.replace(re, j);
+    }
+    return text;
+}
+
+
+async function device_status(user_agent_info) {
+    var agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+    var flag = true;
+    for (var v = 0; v < agents.length; v++) {
+        if (user_agent_info.indexOf(agents[v]) > 0) {
+            flag = false;
+            break;
+        }
+    }
+    return flag;
+}
+```
+
+
+### 添加到 ZFILE
+
+![image.png](https://cdn.jun6.net/uPic/2022/08/16/AVl7Nr.png)

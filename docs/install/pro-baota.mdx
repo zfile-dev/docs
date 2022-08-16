@@ -1,0 +1,73 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 宝塔
+
+## 前言
+
+- 购买捐赠版可以上 https://www.zfile.vip/pricing 查看功能介绍并购买.
+- 新版本无需预装 Java 环境，软件包中内置一个经过优化且相对标准 JDK 内存占用极小的环境.
+- 新版本安装包区分操作系统和系统架构，命名为 `zfile-pro-[release/版本号]_[OS]_[ARCH].[zip/tar.gz]`, 可前往此地址进行查看： https://c.jun6.net/ZFILE-PRO/
+- ZFile Pro 支持从 4.x 兼容升级，不支持从 3.x 或更早的版本带数据升级.
+- 部署过程有问题，联系 qq: 873019219.
+
+## 下载
+
+根据自己的系统架构将文件下载到服务器上。
+
+<Tabs>
+<TabItem value="amd64" label="Linux AMD 64">
+
+[点击下载](https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_amd64.tar.gz)
+
+</TabItem>
+<TabItem value="arm64" label="Linux ARM 64">
+
+[点击下载](https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_arm.tar.gz)
+
+</TabItem>
+<TabItem value="windows64" label="Windows 64 位">
+
+[点击下载](https://c.jun6.net/ZFILE-PRO/zfile-pro-release_windows_amd64.zip)
+
+</TabItem>
+<TabItem value="windows32" label="Windows 32 位">
+
+[点击下载](https://c.jun6.net/ZFILE-PRO/zfile-pro-release_windows_x86.zip)
+
+</TabItem>
+</Tabs>
+
+## 解压
+
+解压文件，宝塔一般文件管理器能在线解压
+
+## 新建网站
+
+<img className={'sm:w-2/3 '} src="https://cdn.jun6.net/uPic/2022/07/25/G6K7ou.png"></img>
+
+<img className={'sm:w-7/12'} src="https://cdn.jun6.net/uPic/2022/07/25/duNygL.png"></img>
+
+假如你 `解压路径` 为 `/www/wwwroot/demo.zfile.vip`
+
+1. 项目执行文件：写 `解压路径/zfile-launch`，如 `/www/wwwroot/demo.zfile.vip/zfile-launch`
+2. 项目名称：随便写
+3. 项目端口：写你实际的端口，默认为 `8080`, **如您修改配置文件 `解压路径/application.properties` 中的端口，则写修改后的端口**
+4. 执行命令：如下，替换 `/www/wwwroot/demo.zfile.vip` 为您实际的 `解压路径` 即可.
+
+```bash showLineNumbers
+/www/wwwroot/demo.zfile.vip/zfile-launch /www/wwwroot/demo.zfile.vip/jre/bin/java -jar /www/wwwroot/demo.zfile.vip/zfile-pro-release.xjar --spring.config.location=file:/www/wwwroot/demo.zfile.vip/application.properties
+```
+
+5. 运行用户：选 root
+6. 开机自启：根据需要选择
+7. 备注：随意
+8. 绑定域名：根据需要配置，不配置，则用 `IP:PORT` 访问
+
+
+## 其他设置
+
+宝塔 `nginx` 默认只支持上传最大 `50MB` 的文件，可去以下页面进行设置:
+
+<img src="https://cdn.jun6.net/uPic/2022/08/16/uxPAXY.png"/>
+<img src="https://cdn.jun6.net/uPic/2022/08/16/Jx2P2s.png"/>

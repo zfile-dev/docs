@@ -1,0 +1,131 @@
+# Docker
+
+
+## docker
+
+镜像地址为：https://hub.docker.com/r/zhaojun1998/zfile
+
+:::tip
+
+以下命令倒数第二行 `-v /root/zfile/file:/data/file \` 为映射宿主机文件夹 `/root/zfile/file` 到容器内的 `/data/file` 文件夹，这样你就可以在容器内，本地存储里通过 `/data/file` 访问宿主机的 `/root/zfile/file` 目录了。 这一行按照自己的需求修改，如果不需要映射本地存储，则可以删除这一行
+
+:::
+
+
+```bash showLineNumbers {5}
+docker run -d --name=zfile --restart=always \
+    -p 8080:8080 \
+    -v /root/zfile/db:/root/.zfile-v4/db \
+    -v /root/zfile/logs:/root/.zfile-v4/logs \
+    -v /root/zfile/file:/data/file \
+    zhaojun1998/zfile
+```
+
+:::tip
+
+如需映射配置文件则需要先在宿主机下载配置文件，然后映射到容器内:
+下载 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) 文件到 `/root` 目录下, 此目录可自行更改, 命令如:
+
+:::
+
+```bash showLineNumbers
+curl -o /root/application.properties https://c.jun6.net/ZFILE/application.properties
+```
+
+**然后增加一个 `-v` 参数(见下面倒数第二行)，将此源文件映射到容器内（如修改宿主机的 `application.properties` 为其他路径, 则下面命令也要一起修改）, 如:**
+
+```bash showLineNumbers {6}
+docker run -d --name=zfile --restart=always \
+    -p 8080:8080 \
+    -v /root/zfile/db:/root/.zfile-v4/db \
+    -v /root/zfile/logs:/root/.zfile-v4/logs \
+    -v /root/zfile/file:/data/file \
+    -v /root/application.properties:/root/application.properties \
+    zhaojun1998/zfile
+```
+
+
+## docker compose
+
+
+:::tip
+
+以下命令倒数第二行 `-v /root/zfile/file:/data/file \` 为映射宿主机文件夹 `/root/zfile/file` 到容器内的 `/data/file` 文件夹，这样你就可以在容器内，本地存储里通过 `/data/file` 访问宿主机的 `/root/zfile/file` 目录了。 这一行按照自己的需求修改，如果不需要映射本地存储，则可以删除这一行
+
+:::
+
+```yml showLineNumbers {11}
+version: '3.3'
+services:
+    zfile:
+        container_name: zfile
+        restart: always
+        ports:
+            - '8080:8080'
+        volumes:
+            - '/root/zfile/db:/root/.zfile-v4/db'
+            - '/root/zfile/logs:/root/.zfile-v4/logs'
+            - '/root/zfile/file:/data/file'
+        image: zhaojun1998/zfile
+```
+
+:::tip
+
+如需映射配置文件则需要先在宿主机下载配置文件，然后映射到容器内:
+下载 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) 文件到 `/root` 目录下, 此目录可自行更改, 命令如:
+
+:::
+
+```bash showLineNumbers
+curl -o /root/application.properties https://c.jun6.net/ZFILE/application.properties
+```
+
+**然后增加一个 `-v` 参数(见下面倒数第二行)，将此源文件映射到容器内（如修改宿主机的 `application.properties` 为其他路径, 则下面命令也要一起修改）, 如:**
+
+```yml showLineNumbers {12}
+version: '3.3'
+services:
+    zfile:
+        container_name: zfile
+        restart: always
+        ports:
+            - '8080:8080'
+        volumes:
+            - '/root/zfile/db:/root/.zfile-v4/db'
+            - '/root/zfile/logs:/root/.zfile-v4/logs'
+            - '/root/zfile/file:/data/file'
+            - '/root/application.properties:/root/application.properties'
+        image: zhaojun1998/zfile
+```
+
+-----
+
+## 更新
+
+### 手动更新
+
+> 单次手动更新名称为 `zfile` 的容器
+
+```bash showLineNumbers
+docker run --rm \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    containrrr/watchtower \
+    --cleanup \
+    --run-once \
+    zfile
+```
+
+### 自动更新
+
+> 每 3600 秒 （1小时）自动检测更新名称为 `zfile` 的容器
+
+```bash showLineNumbers
+docker run -d \
+    --name watchtower \
+    --restart always \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    containrrr/watchtower \
+    --cleanup \
+    zfile \
+    -i 3600
+```

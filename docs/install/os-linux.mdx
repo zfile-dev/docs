@@ -1,0 +1,107 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Linux
+
+## 安装依赖 {#install-depend}
+
+<Tabs>
+<TabItem value="centos" label="Centos">
+
+```bash
+yum install -y java-1.8.0-openjdk unzip
+```
+
+</TabItem>
+<TabItem value="ubuntu" label="Ubuntu">
+
+```bash
+apt update
+apt install -y openjdk-8-jre-headless unzip
+```
+
+</TabItem>
+</Tabs>
+
+
+## 下载并解压
+
+:::info 安装说明
+
+下面命令中第一行表示默认安装到用户目录下: `~/zfile` 下。
+
+对于 `root` 用户, `~`  = `/root`,  `~/zfile` 表示在 `/root/zfile` 路径下。
+
+对于其他用户,  `~` = `/home/用户名` 表示在 `/home/用户名/` 路径下。如对于 `oracle` 用户,  `~/zfile` 则表示安装在 `/home/oracle/zfile` 下。
+
+如需更改安装路径, 请自行修改，如 `export ZFILE_INSTALL_PATH=/data/zfile`，表示安装在 `/data/zfile` 路径下。
+
+:::
+
+```bash showLineNumbers
+# highlight blue next
+export ZFILE_INSTALL_PATH=~/zfile                        # 声明安装到的路径
+mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH   # 创建文件夹并进入
+wget https://c.jun6.net/ZFILE/zfile-release.war          # 下载 zfile 最新版
+unzip zfile-release.war && rm -rf zfile-release.war      # 解压并删除压缩包
+chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                    # 授权启动停止脚本
+```
+
+## 启动项目
+
+```bash showLineNumbers
+~/zfile/bin/start.sh       # 启动
+```
+
+## 其他相关命令
+
+:::info
+以下为默认未修改安装路径下的情况，如修改了安装路径请自行更改命令所在路径。
+:::
+
+```bash showLineNumbers
+~/zfile/bin/start.sh       # 启动
+~/zfile/bin/stop.sh        # 停止
+~/zfile/bin/restart.sh     # 重启
+```
+
+## 配置文件路径 {#config}
+
+如需修改配置文件，配置文件路径为：
+
+```bash showLineNumbers
+~/zfile/WEB-INF/classes/application.properties
+```
+
+## 更新版本
+
+如果没修改过安装路径，则停止程序后，删除安装文件夹即可，默认命令为：
+
+（如修改过安装路径，则替换下方命令中的 `~/zfile` 部分为你的安装路径即可）
+
+
+:::caution
+
+更新程序前务必停止程序再进行操作！
+
+:::
+
+
+```bash showLineNumbers
+# highlight yellow next
+# 停止程序
+# highlight yellow next
+~/zfile/bin/stop.sh
+# 删除安装文件夹
+rm -rf ~/zfile
+```
+
+
+```bash showLineNumbers
+# 重新下载安装最新版
+export ZFILE_INSTALL_PATH=~/zfile
+mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH
+wget https://c.jun6.net/ZFILE/zfile-release.war
+unzip zfile-release.war && rm -rf zfile-release.war
+chmod +x $ZFILE_INSTALL_PATH/bin/*.sh
+```

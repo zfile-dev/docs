@@ -1,0 +1,71 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 宝塔
+
+## 安装基础环境
+
+:::tip 提示
+
+如已安装 Java 环境（Java 1.8）可跳过此步骤
+
+:::
+
+<Tabs>
+<TabItem value="centos" label="Centos">
+
+```bash
+yum install -y java-1.8.0-openjdk unzip
+```
+
+</TabItem>
+<TabItem value="ubuntu" label="Ubuntu">
+
+```bash
+apt update
+apt install -y openjdk-8-jre-headless unzip
+```
+
+</TabItem>
+</Tabs>
+
+
+## 下载项目
+
+下载文件到服务器：https://c.jun6.net/ZFILE/zfile-release.jar
+
+
+## 宝塔网站配置
+
+![](https://cdn.jun6.net/uPic/2022/08/15/72eqJt.jpg)
+
+
+:::info 提示
+
+如果填写了域名，访问域名即可（记得将域名指向服务），如果使用的是端口，则使用端口访问.
+
+:::
+
+
+## 配置文件 {#config}
+
+如需要修改配置文件, 可去 Github 复制一份配置文件, [点击前往](https://github.com/zfile-dev/zfile/blob/main/src/main/resources/application.properties)，
+然后在**项目执行命令**后增加 ` --spring.config.location=file:/www/wwwroot/xxx.com/application.properties`，以上为示例路径，需配置成自己配置文件的路径。
+
+如原来项目执行命令为：
+
+```bash showLineNumbers
+/usr/bin/java -jar -Xmx1024M -Xms256M /path/zfile-release.jar --server.port=7818
+```
+
+修改后
+```bash showLineNumbers
+/usr/bin/java -jar -Xmx1024M -Xms256M /path/zfile-release.jar --server.port=7818 --spring.config.location=file:/path/application.properties
+```
+
+## 其他设置
+
+宝塔 nginx 默认只支持上传最大 50MB 的文件，可去以下页面进行设置:
+
+<img src="https://cdn.jun6.net/uPic/2022/08/16/uxPAXY.png"/>
+<img src="https://cdn.jun6.net/uPic/2022/08/16/Jx2P2s.png"/>

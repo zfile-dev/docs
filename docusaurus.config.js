@@ -19,18 +19,9 @@ const config = {
     defaultLocale: "zh-Hans",
     locales: ["zh-Hans"],
   },
-  themes: [
-    [
-      require.resolve("@easyops-cn/docusaurus-search-local"),
-      {
-        // `hashed` is recommended as long-term-cache of index file is possible.
-        hashed: true,
-        docsRouteBasePath: '/',
-        // For Docs using Chinese, The `language` is recommended to set to:
-        language: ["zh"],
-      },
-    ],
-  ],
+  scripts: [{
+    src: '/script/script.js',  async: true
+  }],
   presets: [
     [
       'classic',
@@ -56,10 +47,53 @@ const config = {
       }),
     ],
   ],
-
+  plugins: ['docusaurus-tailwindcss-loader', 'docusaurus-plugin-image-zoom'],
+  themes: ['@docusaurus/theme-live-codeblock'],
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      zoom: {
+        selector: '.markdown img',
+        background: {
+          light: 'rgb(255, 255, 255)',
+          dark: 'rgb(50, 50, 50)'
+        },
+        // options you can specify via https://github.com/francoischalifour/medium-zoom#usage
+        config: {}
+      },
+      docs: {
+        sidebar: {
+          hideable: true,
+          autoCollapseCategories: true,
+        },
+      },
+      colorMode: {
+        disableSwitch: false,
+        respectPrefersColorScheme: true,
+      },
+      algolia: {
+        // The application ID provided by Algolia
+        appId: '182POJE6PB',
+
+        // Public API key: it is safe to commit it
+        apiKey: '6a7aed8a2b1f2e287166f500e8a95f4b',
+
+        indexName: 'zfile',
+
+        // Optional: see doc section below
+        contextualSearch: false,
+
+        // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
+        externalUrlRegex: 'external\\.com|domain\\.com',
+
+        // Optional: Algolia search parameters
+        searchParameters: {},
+
+        // Optional: path for search page that enabled by default (`false` to disable it)
+        searchPagePath: 'search',
+
+        //... other Algolia params
+      },
       navbar: {
         title: 'ZFile',
         logo: {
@@ -76,9 +110,9 @@ const config = {
             label: "论坛",
           },
           {
-            href: "https://github.com/zfile-dev/zfile",
-            label: "GitHub",
-            position: "right",
+            href: 'https://github.com/zfile-dev/zfile',
+            position: 'right',
+            className: 'header-github-link'
           }
         ]
       },
@@ -129,6 +163,23 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+        additionalLanguages: ['bash', 'properties'],
+        magicComments: [
+          // 要记得复制默认的高亮类！
+          {
+            className: 'theme-code-block-highlighted-line',
+            line: 'highlight-next-line',
+            block: {start: 'highlight-start', end: 'highlight-end'},
+          },
+          {
+            className: 'code-block-primary-line',
+            line: 'highlight blue next',
+          },
+          {
+            className: 'code-block-warning-line',
+            line: 'highlight yellow next',
+          },
+        ]
       },
     }),
 };

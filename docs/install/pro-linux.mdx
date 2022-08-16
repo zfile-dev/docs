@@ -1,0 +1,145 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+# Linux
+
+## 前言
+
+- 购买捐赠版可以上 https://www.zfile.vip/pricing 查看功能介绍并购买.
+- 新版本无需预装 Java 环境，软件包中内置一个经过优化且相对标准 JDK 内存占用极小的环境.
+- 新版本安装包区分操作系统和系统架构，命名为 `zfile-pro-[release/版本号]_[OS]_[ARCH].[zip/tar.gz]`, 可前往此地址进行查看： https://c.jun6.net/ZFILE-PRO/
+- ZFile Pro 支持从 4.x 兼容升级，不支持从 3.x 或更早的版本带数据升级.
+- 部署过程有问题，联系 qq: 873019219.
+
+<span class="text-red-500">提示：部署 ZFile 捐赠版之前，请先停止之前的版本，这个很重要，不然可能会造成数据文件损坏.</span>
+
+## 全新部署 {#install}
+
+更新部署见下方：[更新版本](#update)
+
+:::info 安装说明
+
+下面命令中第一行表示默认安装到用户目录下: `~/zfile-pro` 下。
+
+对于 `root` 用户, `~`  = `/root`,  `~/zfile-pro` 表示在 `/root/zfile-pro` 路径下。
+
+对于其他用户,  `~` = `/hone/用户名` 表示在 `/home/用户名/` 路径下。如对于 `oracle` 用户,  `~/zfile-pro` 则表示安装在 `/home/oracle/zfile-pro` 下。
+
+如需更改安装路径, 请自行修改，如 `export ZFILE_INSTALL_PATH=/data/zfile-pro`，表示安装在 `/data/zfile-pro` 路径下，见下放蓝色高亮部分。
+
+:::
+
+** tips: 如果你不知道你的环境到底是 `amd64` 还是 `arm`，一般来说就是 `amd64`，一般 `arm` 架构的机器，购买时会特殊标注的。**
+
+<Tabs>
+<TabItem value="amd64" label="amd64">
+
+```bash showLineNumbers
+# highlight blue next
+export ZFILE_INSTALL_PATH=~/zfile-pro                                   # 声明安装到的路径
+mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 创建文件夹并进入
+wget https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_amd64.tar.gz  # 下载 zfile 最新版
+tar -zxvf zfile-pro-release_linux_amd64.tar.gz && \                     # 解压
+        rm -rf zfile-pro-release_linux_amd64.tar.gz                     # 删除压缩包
+chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本
+
+~/zfile-pro/bin/start.sh                                                # 启动项目
+```
+
+</TabItem>
+<TabItem value="arm64" label="arm64">
+
+```bash showLineNumbers
+# highlight blue next
+export ZFILE_INSTALL_PATH=~/zfile-pro                                   # 声明安装到的路径
+mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 创建文件夹并进入
+wget https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_arm.tar.gz    # 下载 zfile 最新版
+tar -zxvf zfile-pro-release_linux_arm.tar.gz && \                       # 解压
+        rm -rf zfile-pro-release_linux_arm.tar.gz                       # 删除压缩包
+chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本
+
+~/zfile-pro/bin/start.sh                                                # 启动项目
+```
+
+</TabItem>
+</Tabs>
+
+
+## 其他命令 {#command}
+
+以下为默认未修改安装路径下的情况，**如修改了安装路径请自行更改命令所在路径**。
+
+```bash showLineNumbers
+~/zfile-pro/bin/start.sh       # 启动项目
+~/zfile-pro/bin/stop.sh        # 停止项目
+~/zfile-pro/bin/log.sh         # 查看日志
+```
+
+## 配置文件路径 {#config}
+
+如需修改配置文件，配置文件路径为：
+
+```bash showLineNumbers
+~/zfile-pro/WEB-INF/classes/application.properties
+```
+
+## 更新版本 {#update}
+
+如果没修改过安装路径，则停止程序后，删除安装文件夹即可，默认命令为：
+
+（如修改过安装路径，则替换下方命令中的 `~/zfile-pro` 部分为你的安装路径即可，见下方蓝色高亮部分）
+
+
+:::caution
+
+更新程序前务必停止程序再进行操作，见下方黄色高亮部分。
+
+:::
+
+
+<Tabs>
+<TabItem value="amd64" label="amd64">
+
+```bash showLineNumbers
+# highlight yellow next
+~/zfile-pro/bin/stop.sh                                                 # 停止程序
+# highlight yellow next
+rm -rf ~/zfile-pro                                                      # 删除安装文件夹
+
+# 重新安装并下载
+# highlight blue next
+export ZFILE_INSTALL_PATH=~/zfile-pro                                   # 声明安装到的路径
+mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 创建文件夹并进入
+wget https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_amd64.tar.gz  # 下载 zfile 最新版
+tar -zxvf zfile-pro-release_linux_amd64.tar.gz && \                     # 解压
+        rm -rf zfile-pro-release_linux_amd64.tar.gz                     # 删除压缩包
+chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本
+
+~/zfile-pro/bin/start.sh                                                # 启动项目
+
+```
+
+</TabItem>
+<TabItem value="arm64" label="arm64">
+
+```bash showLineNumbers
+# highlight yellow next
+~/zfile-pro/bin/stop.sh                                                 # 停止程序
+# highlight yellow next
+rm -rf ~/zfile-pro                                                      # 删除安装文件夹
+
+# 重新安装并下载
+# highlight blue next
+export ZFILE_INSTALL_PATH=~/zfile-pro                                   # 声明安装到的路径
+mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 创建文件夹并进入
+wget https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_arm.tar.gz    # 下载 zfile 最新版
+tar -zxvf zfile-pro-release_linux_arm.tar.gz && \                       # 解压
+        rm -rf zfile-pro-release_linux_arm.tar.gz                       # 删除压缩包
+chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本
+
+~/zfile-pro/bin/start.sh                                                # 启动项目
+```
+
+</TabItem>
+</Tabs>
