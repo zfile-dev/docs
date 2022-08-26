@@ -1,3 +1,6 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # 高级功能
 
 ## OneDrive 相关 CF 加速 {#onedrive-cf}
@@ -221,3 +224,99 @@ async function device_status(user_agent_info) {
 ### 添加到 ZFILE
 
 ![image.png](https://cdn.jun6.net/uPic/2022/08/16/AVl7Nr.png)
+
+## 自建 Google Drive API {#google-drive-api}
+
+### 1. 打开 Google Drive API Console
+
+https://console.cloud.google.com/apis/dashboard
+
+### 2. 点击 "启用 API 和服务"
+
+<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/iK94XQ.png'/>
+
+### 3. 搜索 `google drive api`
+
+<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/KIqhuq.jpg'/>
+
+### 4. 启用 API 功能
+
+点击启用, 我这里点过了，所以是管理, 启用后也点击管理
+
+<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/kW9iOB.png'/>
+
+### 5. 创建凭证
+
+<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/bIgrGq.png'/>
+
+### 6. 创建 OAuth2 API
+
+<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/TDuLdl.png'/>
+
+### 7. 保存好你的 Client ID 和 Client Secret
+
+<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/C7zlKO.png'/>
+
+### 8. 创建 OAuth2 屏幕
+
+<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/9w30St.png'/>
+
+### 9. 添加测试用户
+
+<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/W4foQr.png'/>
+
+### 10. 完成
+
+现在可以使用第七步保存的 Client ID 和 Client Secret 去 ZFile 填写了
+
+## 自建 OnlyOffice {#only-office}
+
+更多配置请参考官方文档：https://api.onlyoffice.com/editors/basic
+
+<Tabs>
+<TabItem value="docker" label="Docker">
+
+下方高亮部分，可自定义端口和数据目录.
+
+```bash showLineNumbers {2-6}
+docker run --restart=always --name onlyoffice \
+    -p 8080:80 \
+    -v /app/onlyoffice/DocumentServer/logs:/var/log/onlyoffice \
+    -v /app/onlyoffice/DocumentServer/data:/var/www/onlyoffice/Data \
+    -v /app/onlyoffice/DocumentServer/lib:/var/lib/onlyoffice \
+    -v /app/onlyoffice/DocumentServer/db:/var/lib/postgresql \
+    onlyoffice/documentserver
+```
+
+
+</TabItem>
+<TabItem value="docker-compose" label="Docker-Compose">
+
+下方高亮部分，可自定义端口和数据目录.
+
+```yaml showLineNumbers {8,10-13}
+version: '3'
+services:
+  onlyoffice:
+    container_name: onlyoffice
+    image: onlyoffice/documentserver
+    restart: always
+    ports:
+     - "8080:80"
+    volumes:
+     - '$PWD/logs:/var/log/onlyoffice'
+     - '$PWD/data:/var/www/onlyoffice/Data'
+     - '$PWD/lib:/var/lib/onlyoffice'
+     - '$PWD/db:/var/lib/postgresql'
+```
+
+</TabItem>
+</Tabs>
+
+如使用 nginx 反代，则需要额外增加 nginx 配置来支持 websocket:
+
+```nginx showLineNumbers
+proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection "upgrade";
+```

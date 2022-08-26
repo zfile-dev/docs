@@ -145,8 +145,8 @@ const sidebars = {
       },
       {
           type: 'doc',
-          label: '存储源配置示例',
-          id: 'example'
+          label: '参数配置',
+          id: 'config'
       },
       {
           type: 'doc',
@@ -160,10 +160,9 @@ const sidebars = {
       },
       {
           type: 'doc',
-          label: '参数配置',
-          id: 'config'
-      },
-
+          label: '存储源配置示例',
+          id: 'example'
+      }
   ],
 };
 
