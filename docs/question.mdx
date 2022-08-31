@@ -78,9 +78,104 @@ sudo netfilter-persistent reload
 
 ## 上传超过 50M 的文件失败
 
-## 其他设置
-
 宝塔 `nginx` 默认只支持上传最大 `50MB` 的文件，可去以下页面进行设置:
 
 <img src="https://cdn.jun6.net/uPic/2022/08/16/uxPAXY.png"/>
 <img src="https://cdn.jun6.net/uPic/2022/08/16/Jx2P2s.png"/>
+
+
+## 中文显示异常或者文件过滤对中文目录无效 {#system-locale}
+
+因为系统没有使用 utf8 编码，导致不支持中文.
+
+### 查看当前系统编码
+
+```bash showLineNumbers
+locale
+```
+
+会出现以下内容：
+
+```bash showLineNumbers
+[root@VM-0-8-centos]~# locale
+LANG=en_US.UTF-8
+LC_CTYPE="en_US.UTF-8"
+LC_NUMERIC="en_US.UTF-8"
+LC_TIME="en_US.UTF-8"
+LC_COLLATE="en_US.UTF-8"
+LC_MONETARY="en_US.UTF-8"
+LC_MESSAGES="en_US.UTF-8"
+LC_PAPER="en_US.UTF-8"
+LC_NAME="en_US.UTF-8"
+LC_ADDRESS="en_US.UTF-8"
+LC_TELEPHONE="en_US.UTF-8"
+LC_MEASUREMENT="en_US.UTF-8"
+LC_IDENTIFICATION="en_US.UTF-8"
+LC_ALL=
+```
+
+一般为 `xxx.UTF-8` 才正常，如果为 `POSIX` 或其他的话，可能就是不支持中文的编码.
+
+### 查看系统支持的编码
+
+```bash showLineNumbers
+locale -a
+```
+
+会出现以下内容：
+```bash showLineNumbers
+[root@JM-SRV-WEB ~]# locale -a
+C
+C.utf8
+POSIX
+en_AG
+en_AU
+en_AU.utf8
+en_BW
+en_BW.utf8
+en_CA
+en_CA.utf8
+en_DK
+en_DK.utf8
+en_GB
+en_GB.iso885915
+en_GB.utf8
+en_HK
+en_HK.utf8
+en_IE
+en_IE.utf8
+en_IE@euro
+en_IL
+en_IN
+en_NG
+en_NZ
+en_NZ.utf8
+en_PH
+en_PH.utf8
+en_SC.utf8
+en_SG
+en_SG.utf8
+en_US
+en_US.iso885915
+en_US.utf8
+en_US@ampm.UTF-8
+en_ZA
+en_ZA.utf8
+en_ZM
+en_ZW
+en_ZW.utf8
+```
+
+可能显示的内容有多有少，显示的内容为系统支持的编码，一般来说，设置成 `en_US.UTF-8` 或 `C.utf8` 或 `zh_CN.utf8`，都是正常的. （要保证设置的值出现在上述列表中）
+
+### 设置系统编码
+
+已设置为 `en_US.UTF-8` 为例：
+
+```bash showLineNumbers
+localectl set-locale LANG=en_US.UTF-8
+```
+
+### 重启系统
+
+**重启你的服务器，而不是重启 zfile**，重启后再去 zfile 查看中文编码是否正常。

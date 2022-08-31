@@ -273,6 +273,8 @@ https://console.cloud.google.com/apis/dashboard
 
 更多配置请参考官方文档：https://api.onlyoffice.com/editors/basic
 
+### docker 部署
+
 <Tabs>
 <TabItem value="docker" label="Docker">
 
@@ -313,10 +315,19 @@ services:
 </TabItem>
 </Tabs>
 
+
+### websocket 支持
 如使用 nginx 反代，则需要额外增加 nginx 配置来支持 websocket:
 
 ```nginx showLineNumbers
 proxy_http_version 1.1;
 proxy_set_header Upgrade $http_upgrade;
 proxy_set_header Connection "upgrade";
+```
+
+### https 额外配置
+如果使用了 https，则还需要增加配置：
+
+```nginx
+proxy_set_header X-Forwarded-Proto https;
 ```
