@@ -22,12 +22,16 @@ const sidebars = {
       {
         type: 'category',
         label: '快速安装',
-        // collapsible: true,
-        // collapsed: true,
         items: [
             {
                 type: 'category',
                 label: '开源版',
+                link: {
+                    type: 'generated-index',
+                    title: '开源版部署教程',
+                    description: '点击查看不同环境下的部署教程',
+                    slug: '/install-os'
+                },
                 items: [
                     {
                         id: 'install/os-linux',
@@ -54,6 +58,12 @@ const sidebars = {
             {
                 type: 'category',
                 label: '捐赠版',
+                link: {
+                    type: 'generated-index',
+                    title: '捐赠版部署教程',
+                    description: '点击查看不同环境下的部署教程',
+                    slug: '/install-pro'
+                },
                 items: [
                     {
                         id: 'install/pro-linux',
@@ -82,8 +92,12 @@ const sidebars = {
       {
           type: 'category',
           label: '更新日志',
-          // collapsible: true,
-          // collapsed: true,
+          link: {
+              type: 'generated-index',
+              title: '更新日志',
+              description: '点击下方查看不同版本的更新日志',
+              slug: '/changelog'
+          },
           items: [
               {
                   id: 'changelog/os',
@@ -135,6 +149,11 @@ const sidebars = {
                   id: 'feature/pdf',
                   type: 'doc',
                   label: 'PDF 预览'
+              },
+              {
+                  id: 'feature/office',
+                  type: 'doc',
+                  label: 'office 预览'
               },
               {
                   id: 'feature/log',
