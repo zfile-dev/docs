@@ -283,6 +283,7 @@ https://console.cloud.google.com/apis/dashboard
 ```bash showLineNumbers {2-6}
 docker run --restart=always --name onlyoffice \
     -p 8080:80 \
+    -e JWT_ENABLED=false \
     -v /app/onlyoffice/DocumentServer/logs:/var/log/onlyoffice \
     -v /app/onlyoffice/DocumentServer/data:/var/www/onlyoffice/Data \
     -v /app/onlyoffice/DocumentServer/lib:/var/lib/onlyoffice \
@@ -305,6 +306,8 @@ services:
     restart: always
     ports:
      - "8080:80"
+    environment:
+     - JWT_ENABLED=false
     volumes:
      - '$PWD/logs:/var/log/onlyoffice'
      - '$PWD/data:/var/www/onlyoffice/Data'
