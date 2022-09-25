@@ -280,7 +280,7 @@ https://console.cloud.google.com/apis/dashboard
 
 下方高亮部分，可自定义端口和数据目录.
 
-```bash showLineNumbers {2-6}
+```bash showLineNumbers {2,4-7}
 docker run --restart=always --name onlyoffice \
     -p 8080:80 \
     -e JWT_ENABLED=false \
@@ -297,7 +297,7 @@ docker run --restart=always --name onlyoffice \
 
 下方高亮部分，可自定义端口和数据目录.
 
-```yaml showLineNumbers {8,10-13}
+```yaml showLineNumbers {8,12-15}
 version: '3'
 services:
   onlyoffice:
