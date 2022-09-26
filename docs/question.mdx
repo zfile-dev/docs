@@ -179,3 +179,23 @@ localectl set-locale LANG=en_US.UTF-8
 ### 重启系统
 
 **重启你的服务器，而不是重启 zfile**，重启后再去 zfile 查看中文编码是否正常。
+
+
+
+### ZFile 修改静态资源
+
+#### 社区版
+
+待补充...
+
+#### 捐赠版
+
+以脚本部署为例，默认解压后文件路径为 `/root/zfile-pro`，文件内容如下图：
+
+![](https://cdn.jun6.net/uPic/2022/09/26/LQ0p9D.png)
+
+修改配置文件方式如下图:
+
+![](https://cdn.jun6.net/uPic/2022/09/26/EdO6Bv.png)
+
+注: 其他部署方式，也是类似的逻辑，如找不到 static 目录，可以去 https://c.jun6.net/ZFILE-PRO/ 随便下载一个 xjar 后缀的文件解压，里面就有 static 目录了. 配置文件这个地址也有：https://c.jun6.net/ZFILE-PRO/application.properties
