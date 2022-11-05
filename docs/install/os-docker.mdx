@@ -1,18 +1,21 @@
-# Docker
+# Docker & Docker Compose
 
+## Docker
 
-## docker
+### 安装介绍
 
-镜像地址为：https://hub.docker.com/r/zhaojun1998/zfile
+Docker 镜像托管在 DockerHub：https://hub.docker.com/r/zhaojun1998/zfile
 
-:::tip
+:::tip 配置说明
 
-以下命令倒数第二行 `-v /root/zfile/file:/data/file \` 为映射宿主机文件夹 `/root/zfile/file` 到容器内的 `/data/file` 文件夹，这样你就可以在容器内，本地存储里通过 `/data/file` 访问宿主机的 `/root/zfile/file` 目录了。 这一行按照自己的需求修改，如果不需要映射本地存储，则可以删除这一行
+下方高亮部分，可自定义端口和数据目录：
+
+- 端口号：第 2 行**冒号**左侧的 `8080` 表示对外暴露的端口号，如其他程序占用，则请修改为其他端口号。
+- 数据目录：第 5 行的 `-v /root/zfile/file:/data/file \` 为映射宿主机文件夹 `/root/zfile/file` 到容器内的 `/data/file` 文件夹，这样需要在 ZFile 添加本地存储时，填写容器内目录 `/data/file` 就等同于访问宿主机的 `/root/zfile/file` 目录了。 这一行按照自己的需求修改，如果不需要映射本地存储，则可以删除这一行。
 
 :::
 
-
-```bash showLineNumbers {5}
+```bash showLineNumbers {2,5}
 docker run -d --name=zfile --restart=always \
     -p 8080:8080 \
     -v /root/zfile/db:/root/.zfile-v4/db \
@@ -21,18 +24,18 @@ docker run -d --name=zfile --restart=always \
     zhaojun1998/zfile
 ```
 
-:::tip
+### 配置文件映射 {#config}
 
-如需映射配置文件则需要先在宿主机下载配置文件，然后映射到容器内:
+**如需映射配置文件**则需要先在宿主机下载配置文件，然后映射到容器内:
 下载 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) 文件到 `/root` 目录下, 此目录可自行更改, 命令如:
-
-:::
 
 ```bash showLineNumbers
 curl -o /root/application.properties https://c.jun6.net/ZFILE/application.properties
 ```
 
 **然后增加一个 `-v` 参数(见下面倒数第二行)，将此源文件映射到容器内（如修改宿主机的 `application.properties` 为其他路径, 则下面命令也要一起修改）, 如:**
+
+> 提示: 启动容器后无法修改文件映射，需先 `docker rm -f zfile` 删除容器，再重新运行命令.
 
 ```bash showLineNumbers {6}
 docker run -d --name=zfile --restart=always \
@@ -45,16 +48,20 @@ docker run -d --name=zfile --restart=always \
 ```
 
 
-## docker compose
+## Docker Compose
 
+### 安装介绍
 
-:::tip
+:::tip 配置说明
 
-以下命令倒数第二行 `-v /root/zfile/file:/data/file \` 为映射宿主机文件夹 `/root/zfile/file` 到容器内的 `/data/file` 文件夹，这样你就可以在容器内，本地存储里通过 `/data/file` 访问宿主机的 `/root/zfile/file` 目录了。 这一行按照自己的需求修改，如果不需要映射本地存储，则可以删除这一行
+下方高亮部分，可自定义端口和数据目录：
+
+- 端口号：第 7 行**冒号**左侧的 `8080` 表示对外暴露的端口号，如其他程序占用，则请修改为其他端口号。
+- 数据目录：第 11 行的 `- '/root/zfile/file:/data/file'` 为映射宿主机文件夹 `/root/zfile/file` 到容器内的 `/data/file` 文件夹，这样需要在 ZFile 添加本地存储时，填写容器内目录 `/data/file` 就等同于访问宿主机的 `/root/zfile/file` 目录了。 这一行按照自己的需求修改，如果不需要映射本地存储，则可以删除这一行。
 
 :::
 
-```yml showLineNumbers {11}
+```yml showLineNumbers {7,11}
 version: '3.3'
 services:
     zfile:
@@ -69,18 +76,20 @@ services:
         image: zhaojun1998/zfile
 ```
 
-:::tip
 
-如需映射配置文件则需要先在宿主机下载配置文件，然后映射到容器内:
+### 配置文件映射 {#config2}
+
+
+**如需映射配置文件**则需要先在宿主机下载配置文件，然后映射到容器内:
 下载 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) 文件到 `/root` 目录下, 此目录可自行更改, 命令如:
-
-:::
 
 ```bash showLineNumbers
 curl -o /root/application.properties https://c.jun6.net/ZFILE/application.properties
 ```
 
 **然后增加一个 `-v` 参数(见下面倒数第二行)，将此源文件映射到容器内（如修改宿主机的 `application.properties` 为其他路径, 则下面命令也要一起修改）, 如:**
+
+> 提示: 启动容器后无法修改文件映射，需先 `docker rm -f zfile` 删除容器，再重新运行命令.
 
 ```yml showLineNumbers {12}
 version: '3.3'
@@ -100,7 +109,7 @@ services:
 
 -----
 
-## 更新
+## 更新版本
 
 ### 手动更新
 

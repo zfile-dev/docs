@@ -1,7 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-
 # Linux
 
 ## 前言
@@ -43,8 +42,6 @@ wget https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_amd64.tar.gz  # 下载
 tar -zxvf zfile-pro-release_linux_amd64.tar.gz                          # 解压
 rm -rf zfile-pro-release_linux_amd64.tar.gz                             # 删除压缩包
 chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本
-
-~/zfile-pro/bin/start.sh                                                # 启动项目
 ```
 
 </TabItem>
@@ -58,12 +55,23 @@ wget https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_arm.tar.gz    # 下载
 tar -zxvf zfile-pro-release_linux_arm.tar.gz                            # 解压
 rm -rf zfile-pro-release_linux_arm.tar.gz                               # 删除压缩包
 chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本
-
-~/zfile-pro/bin/start.sh                                                # 启动项目
 ```
 
 </TabItem>
 </Tabs>
+
+## 启动项目
+
+```bash showLineNumbers
+~/zfile-pro/bin/start.sh                                                # 启动项目
+```
+
+启动后浏览器访问 **`http://ip:8080`** 即可，如启动后无法访问，请检查 **`端口是否冲突`** 或 **`防火墙/安全组是否开启`**。
+
+简单检查方式为在服务器执行 `curl http://127.0.0.1:8080`
+- 如返回 `curl: (7) Failed connect to 127.0.0.1:8080; Connection refused` 表示未启动成功。
+- 如返回 `<!DOCTYPE html> <html lang="zh-CN">……` 等字样表示启动成功，如启动成功但通过服务器 IP 无法访问，那一般就是防火墙/安全组未放行端口问题。
+
 
 
 ## 其他命令 {#command}
@@ -73,7 +81,6 @@ chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权
 ```bash showLineNumbers
 ~/zfile-pro/bin/start.sh       # 启动项目
 ~/zfile-pro/bin/stop.sh        # 停止项目
-~/zfile-pro/bin/log.sh         # 查看日志
 ```
 
 ## 配置文件路径 {#config}
@@ -86,16 +93,16 @@ chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权
 
 ## 更新版本 {#update}
 
-如果没修改过安装路径，则停止程序后，删除安装文件夹即可，默认命令为：
-
-（如修改过安装路径，则替换下方命令中的 `~/zfile-pro` 部分为你的安装路径即可，见下方蓝色高亮部分）
-
 
 :::caution
 
 更新程序前务必停止程序再进行操作，见下方黄色高亮部分。
 
 :::
+
+如果没修改过安装路径，则停止程序后，删除安装文件夹即可，默认命令为：
+
+如修改过安装路径，则替换下方命令中的 `~/zfile-pro` 部分为你的安装路径即可，见下方蓝色高亮部分：
 
 
 <Tabs>
@@ -128,7 +135,7 @@ chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权
 # highlight yellow next
 rm -rf ~/zfile-pro                                                      # 删除安装文件夹
 
-# 重新安装并下载
+# 重新下载安装最新版
 # highlight blue next
 export ZFILE_INSTALL_PATH=~/zfile-pro                                   # 声明安装到的路径
 mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 创建文件夹并进入

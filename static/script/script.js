@@ -2,8 +2,8 @@
 let hash = window.location.hash;
 
 let map = {
-    '#/question?id=reset-pwd': '/question#reset-pwd',
-    '#/advanced?id=onedrive-cf': '/advanced#onedrive-cf',
+    '#/question?id=reset-pwd': '/config/config-debug',
+    '#/advanced?id=onedrive-cf': 'advanced/cf-worker',
     '#/example': '/example',
     '#/pro': '/install/pro-linux',
 }

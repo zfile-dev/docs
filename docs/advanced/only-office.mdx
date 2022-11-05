@@ -1,0 +1,80 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 自建 OnlyOffice {#only-office}
+
+本文参考官方文档，更多信息请查阅：https://api.onlyoffice.com/editors/basic
+
+## Docker & Docker Compose 部署
+
+<Tabs>
+<TabItem value="docker" label="Docker">
+
+下方高亮部分，可自定义端口和数据目录：
+
+- 端口号：第 2 行**冒号**左侧的 `8081` 表示对外暴露的端口号，如其他程序占用，则请修改为其他端口号。
+- 数据目录：第 4-7 行表示数据文件映射到宿主机目录，如看不懂或不需要，可删除 4-7 行。
+
+```bash showLineNumbers {2,4-7}
+docker run --restart=always --name onlyoffice \
+    -p 8081:80 \
+    -e JWT_ENABLED=false \
+    -v /app/onlyoffice/DocumentServer/logs:/var/log/onlyoffice \
+    -v /app/onlyoffice/DocumentServer/data:/var/www/onlyoffice/Data \
+    -v /app/onlyoffice/DocumentServer/lib:/var/lib/onlyoffice \
+    -v /app/onlyoffice/DocumentServer/db:/var/lib/postgresql \
+    onlyoffice/documentserver
+```
+
+
+</TabItem>
+<TabItem value="docker-compose" label="Docker-Compose">
+
+下方高亮部分，可自定义端口和数据目录：
+
+- 端口号：第 8 行**冒号**左侧的 `8081` 表示对外暴露的端口号，如其他程序占用，则请修改为其他端口号。
+- 数据目录：第 12-15 行表示数据文件映射到宿主机目录，如看不懂或不需要，可删除 4-7 行。
+
+```yaml showLineNumbers {8,12-15}
+version: '3'
+services:
+  onlyoffice:
+    container_name: onlyoffice
+    image: onlyoffice/documentserver
+    restart: always
+    ports:
+     - "8081:80"
+    environment:
+     - JWT_ENABLED=false
+    volumes:
+     - '$PWD/logs:/var/log/onlyoffice'
+     - '$PWD/data:/var/www/onlyoffice/Data'
+     - '$PWD/lib:/var/lib/onlyoffice'
+     - '$PWD/db:/var/lib/postgresql'
+```
+
+</TabItem>
+</Tabs>
+
+
+## 反向代理 - WebSocket 支持
+如使用 **Nginx** 或其他诸如**宝塔使用了 Nginx 的工具**进行了**反向代理**，则需要额外增加 Nginx 配置来支持 WebSocket:
+
+```properties showLineNumbers
+proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection "upgrade";
+```
+
+以宝塔为例，可在**反向代理**中添加如下配置：
+
+<img className={'sm:w-2/3'} src='/img/2022/11/05/L7gj2h.png'/>
+
+## 反向代理 - HTTPS 额外配置
+如果使用了 HTTPS，则还需要增加配置：
+
+```properties showLineNumbers
+proxy_set_header X-Forwarded-Proto https;
+```
+
+图略，参考上图宝塔设置。

@@ -110,6 +110,10 @@ const config = {
             label: "论坛",
           },
           {
+            "label": "QQ 交流群",
+            "href": "https://jq.qq.com/?_wv=1027&k=7f4iEaje"
+          },
+          {
             href: 'https://github.com/zfile-dev/zfile',
             position: 'right',
             className: 'header-github-link'

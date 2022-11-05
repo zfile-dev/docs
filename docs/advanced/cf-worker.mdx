@@ -1,57 +1,54 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-# 高级功能
-
-## OneDrive 相关 CF 加速 {#onedrive-cf}
+# OneDrive CF Worker 加速
 
 :::info 提示
-使用 CF 后下载速度不一定比原来快，这个自行测试。
+使用 CF 后下载速度不一定比原来快，这个自行测试。一般来说世纪互联版无需使用此方式。
 :::
 
-OneDrive SharePoint 国际版, 世纪互联版等，使用 CF 加速功能。
-
-### 登陆/注册账号
+## 登录/注册账号
 
 https://dash.cloudflare.com/login
 
-### 配置 Cloudflare Workers
+## 配置 Cloudflare Workers
 
-#### 初次使用入口
+### 初次使用入口
 
 初次注册会显示如下页面:
 
-![image.png](https://cdn.jun6.net/2021/04/10/c53465c6da270.png)
+![image.png](/img/2021/04/10/c53465c6da270.png)
 
-![image.png](https://cdn.jun6.net/2021/04/10/71bacabf1450a.png)
+![image.png](/img/2021/04/10/71bacabf1450a.png)
 
-![image.png](https://cdn.jun6.net/2021/04/10/d20cebcea8f67.png)
+![image.png](/img/2021/04/10/d20cebcea8f67.png)
 
-![image.png](https://cdn.jun6.net/2021/04/10/6cef8b026b14c.png)
+![image.png](/img/2021/04/10/6cef8b026b14c.png)
 
 激活后，按照下方 `非初次使用入口` 继续操作。
 
-#### 非初次使用入口
+### 非初次使用入口
 
-![image.png](https://cdn.jun6.net/2021/04/10/5915cf2b4af8e.png)
+![image.png](/img/2021/04/10/5915cf2b4af8e.png)
 
-![image.png](https://cdn.jun6.net/2021/04/10/cb7c1157f7334.png)
+![image.png](/img/2021/04/10/cb7c1157f7334.png)
 
 
-#### Workers 代码修改
+### Workers 代码修改
 
-##### 方式一
-![image.png](https://cdn.jun6.net/2021/04/10/79d49c9b2ddf6.png)
+#### 方式一（仅支持单线程下载）
+![image.png](/img/2021/04/10/79d49c9b2ddf6.png)
 
-```javascript showLineNumbers {3,9}
+```javascript showLineNumbers {6,13}
 addEventListener("fetch",event => {
     let url = new URL(event.request.url);
+    // 随便去 OneDrive 里找个文件下载，去浏览器下载记录中找到下载链接，将域名部分写入到这里，不带协议头
+    // 如 https://xxx-my.sharepoint.com/personal/xxx_xxx_onmicrosoft_com/_layouts/15/download.aspx?UniqueId=xxx&SourceUrl=xxx
+    // 则填写 xxx-my.sharepoint.com
     url.hostname ="youdomain.com";
 
     let request = new Request(url,event.request);
     event.respondWith(
         fetch(request,{
             headers:{
+                 // 和上面的域名对应，只是在前面加上了 https://, 如 https://xxx-my.sharepoint.com
                 'Referer':'https://youdomain.com/',
                 'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
             }
@@ -60,24 +57,28 @@ addEventListener("fetch",event => {
 });
 ```
 
-##### 方式二
+#### 方式二（支持多线程下载）
 
 :::tip
 此方法为 2021.09.18 新增，**支持多线程下载**，原作者链接为：https://blog.bbimax.com/archives/92
 :::
 
-```javascript showLineNumbers {2,5}
-// 替换成你OneDrive的网址
+```javascript showLineNumbers {4,7}
+// 随便去 OneDrive 里找个文件下载，去浏览器下载记录中找到下载链接，将域名部分写入到这里，不带协议头
+// 如 https:/abc-my.sharepoint.com/personal/xxx_xxx_onmicrosoft_com/_layouts/15/download.aspx?UniqueId=xxx&SourceUrl=xxx
+// 则填写 abc-my.sharepoint.com
 const upstream = '*-my.sharepoint.com'
 
-// 替换成你OneDrive的网址
+// 一般情况和上面的一样，只是这个是移动端下载使用的域名.
 const upstream_mobile = '*-my.sharepoint.com'
 
 // 下面的配置都不用动
 const upstream_path = '/'
 
+// 禁止访问的国家代码，可参考：https://wenku.baidu.com/aggs/bad9979951e79b89680226aa.html
 const blocked_region = ['KP', 'SY', 'PK', 'CU']
 
+// 禁止访问的 IP 地址
 const blocked_ip_address = ['0.0.0.0', '127.0.0.1']
 
 const https = true
@@ -221,116 +222,14 @@ async function device_status(user_agent_info) {
 ```
 
 
-### 添加到 ZFILE
+## 添加到 ZFILE
 
-![image.png](https://cdn.jun6.net/uPic/2022/08/16/AVl7Nr.png)
+![image.png](/img/2022/08/16/AVl7Nr.png)
 
-## 自建 Google Drive API {#google-drive-api}
+## 测试下载
 
-### 1. 打开 Google Drive API Console
+然后去 ZFile 首页下载文件，查看下载域名就可以看到已经变成了 Cloudflare Workers 的域名了。
 
-https://console.cloud.google.com/apis/dashboard
-
-### 2. 点击 "启用 API 和服务"
-
-<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/iK94XQ.png'/>
-
-### 3. 搜索 `google drive api`
-
-<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/KIqhuq.jpg'/>
-
-### 4. 启用 API 功能
-
-点击启用, 我这里点过了，所以是管理, 启用后也点击管理
-
-<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/kW9iOB.png'/>
-
-### 5. 创建凭证
-
-<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/bIgrGq.png'/>
-
-### 6. 创建 OAuth2 API
-
-<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/TDuLdl.png'/>
-
-### 7. 保存好你的 Client ID 和 Client Secret
-
-<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/C7zlKO.png'/>
-
-### 8. 创建 OAuth2 屏幕
-
-<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/9w30St.png'/>
-
-### 9. 添加测试用户
-
-<img className={'sm:w-2/3'} src='https://cdn.jun6.net/uPic/2022/08/25/W4foQr.png'/>
-
-### 10. 完成
-
-现在可以使用第七步保存的 Client ID 和 Client Secret 去 ZFile 填写了
-
-## 自建 OnlyOffice {#only-office}
-
-更多配置请参考官方文档：https://api.onlyoffice.com/editors/basic
-
-### docker 部署
-
-<Tabs>
-<TabItem value="docker" label="Docker">
-
-下方高亮部分，可自定义端口和数据目录.
-
-```bash showLineNumbers {2,4-7}
-docker run --restart=always --name onlyoffice \
-    -p 8080:80 \
-    -e JWT_ENABLED=false \
-    -v /app/onlyoffice/DocumentServer/logs:/var/log/onlyoffice \
-    -v /app/onlyoffice/DocumentServer/data:/var/www/onlyoffice/Data \
-    -v /app/onlyoffice/DocumentServer/lib:/var/lib/onlyoffice \
-    -v /app/onlyoffice/DocumentServer/db:/var/lib/postgresql \
-    onlyoffice/documentserver
-```
-
-
-</TabItem>
-<TabItem value="docker-compose" label="Docker-Compose">
-
-下方高亮部分，可自定义端口和数据目录.
-
-```yaml showLineNumbers {8,12-15}
-version: '3'
-services:
-  onlyoffice:
-    container_name: onlyoffice
-    image: onlyoffice/documentserver
-    restart: always
-    ports:
-     - "8080:80"
-    environment:
-     - JWT_ENABLED=false
-    volumes:
-     - '$PWD/logs:/var/log/onlyoffice'
-     - '$PWD/data:/var/www/onlyoffice/Data'
-     - '$PWD/lib:/var/lib/onlyoffice'
-     - '$PWD/db:/var/lib/postgresql'
-```
-
-</TabItem>
-</Tabs>
-
-
-### websocket 支持
-如使用 nginx 反代，则需要额外增加 nginx 配置来支持 websocket:
-
-```nginx showLineNumbers
-proxy_http_version 1.1;
-proxy_set_header Upgrade $http_upgrade;
-proxy_set_header Connection "upgrade";
-```
-
-### https 额外配置
-如果使用了 https，则还需要增加配置：
-
-```nginx
-proxy_set_header X-Forwarded-Proto https;
-```
+:::info 提示
+CF 分配的域名可能是被墙的，导致无法下载，可在 Cloudflare Workers 中绑定自定义域名解决。
+:::

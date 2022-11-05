@@ -1,0 +1,49 @@
+# 启动失败/无法访问怎么办？
+
+如启动后浏览器访问 **`http://ip:8080`** 无法访问，一般有以下几种原因：请检查 **`端口是否冲突`** 或 **`防火墙/安全组是否开启`**。
+
+简单检查方式为在服务器执行 `curl http://127.0.0.1:8080`
+- 如返回 `curl: (7) Failed connect to 127.0.0.1:8080; Connection refused` 表示未启动成功。
+- 如返回 `<!DOCTYPE html> <html lang="zh-CN">……` 等字样表示启动成功，如启动成功但通过服务器 IP 无法访问，那一般就是防火墙/安全组未放行端口问题。
+
+
+## 端口被占用
+
+请自行检查 `zfile` 启动端口是否被占用，如您没修改过端口，则 ZFile 默认占用 8080 端口，所以检查 8080 端口是否被占用即可。
+
+## jdk 版本错误
+
+如您安装的是捐赠版，可跳过此步骤排查，因为捐赠版内置了 Java 环境，社区版/开源版的话需要检查 JDK 是否安装正确，`zfile` 仅支持运行在 `jdk 1.8` 版本下，请执行命令 `java -version` 命令，查看 `jdk` 版本，包含类似以下字样才是 `jdk` 安装正确.
+
+```bash showLineNumbers
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+```
+
+## 防火墙未开启
+
+可能是防火墙没开启，下面介绍如何防火墙开启端口，**对于阿里云、腾讯云、谷歌云等厂商, 可能还需要额外去后台开启防火墙/安全组**。
+
+### CentOS 7.x
+
+```bash showLineNumbers
+firewall-cmd --zone=public --add-port=8080/tcp --permanent # 开放 8080 端口
+firewall-cmd --reload                                      # 重启firewall
+```
+
+### Ubuntu 16.x / Debian 9.x
+
+```bash showLineNumbers
+iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
+iptables-save
+sudo apt-get install iptables-persistent
+sudo netfilter-persistent save
+sudo netfilter-persistent reload
+```
+
+### 宝塔面板
+
+宝塔面板可以去后台开放端口:
+
+![Snipaste_2020-01-30_18-54-42.png](/img/2020/01/30/18fa335b407ae.png)
