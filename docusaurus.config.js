@@ -110,6 +110,10 @@ const config = {
             label: "论坛",
           },
           {
+            "label": "演示站",
+            "href": "https://demo.zfile.vip"
+          },
+          {
             "label": "QQ 交流群",
             "href": "https://jq.qq.com/?_wv=1027&k=7f4iEaje"
           },
