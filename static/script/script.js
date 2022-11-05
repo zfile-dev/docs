@@ -1,16 +1,28 @@
 // 兼容旧版文档相关链接进行跳转
 let hash = window.location.hash;
 
-let map = {
+
+let hashMap = {
     '#/question?id=reset-pwd': '/config/config-debug',
     '#/advanced?id=onedrive-cf': 'advanced/cf-worker',
     '#/example': '/example',
     '#/pro': '/install/pro-linux',
 }
 
-if (map[hash]) {
-    window.location.href = map[hash];
+if (hashMap[hash]) {
+    window.location.href = hashMap[hash];
 }
+
+let path = window.location.href.replace(window.location.origin, "");
+
+let pathMap = {
+    '/advanced#only-office': '/advanced/only-office',
+}
+
+if (pathMap[path]) {
+    window.location.href = pathMap[path];
+}
+
 
 // 百度统计
 var _hmt = _hmt || [];
