@@ -1,0 +1,49 @@
+name: Build and Deploy Docusaurus
+on:
+  push:
+    branches:
+      - master        # 当 master 分支提交
+      
+env:
+    TZ: Asia/Shanghai # 设置当前环境时区
+    
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout 🛎️
+      uses: actions/checkout@master
+      
+    - name: Use Node.js 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+        
+    - name: Install and Build 🔧 
+      run: |
+        npm install
+        npm build
+
+    - name: Deploy To UpYun🚀
+      uses: bwcxyk/upyun-upx-action@1.1
+      env:
+        bucket: ${{ secrets.UPYUN_BUCKET_NAME }}
+        operator: ${{ secrets.OPERATOR }}
+        operator_password: ${{ secrets.OPERATOR_PASSWORD }}
+        local_path: ./build/
+        remote_path: /
+
+    - name: CDN Refresh Cache
+      uses: yiyungent/upyun-action@main
+      with:
+        # 在 Settings->Secrets 配置 UPYUN_USERNAME, UPYUN_PASSWORD
+        upyun_username: ${{ secrets.UPYUN_USERNAME }}
+        upyun_password: ${{ secrets.UPYUN_PASSWORD }}
+        # 要刷新的url, 支持匹配符 *, 多个url中间用 \n 隔开
+        refresh_cache_urls: "https://docs.zfile.vip/*"
+        
+    - name: Notify
+      uses: enflo/curl-action@v1.2
+      with:
+        # curl arguments
+        curl: ${{ secrets.NOTIFY_URL }}
