@@ -1,0 +1,16 @@
+# 如何修改左上角 icon 图标
+
+## 方式1. 通过 nginx 配置
+
+增加反代配置，将默认的 /favicon.svg 图标指向自己的 icon 图标
+
+```nginx
+location = /favicon.svg {
+    proxy_pass http://ip:port/xxx.svg;
+    proxy_set_header Referer http://ip:port/xxx.svg;
+}
+```
+
+## 方式2. 自行修改 html 静态文件
+
+此方式较麻烦，如果你不知道如何修改，建议使用方式 1.
