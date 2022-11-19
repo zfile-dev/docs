@@ -44,7 +44,7 @@ apt install -y openjdk-8-jre-headless unzip
 # highlight blue next
 export ZFILE_INSTALL_PATH=~/zfile                        # 声明安装到的路径
 mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH   # 创建文件夹并进入
-wget https://c.jun6.net/ZFILE/zfile-release.war          # 下载 zfile 最新版
+wget --no-check-certificate https://c.jun6.net/ZFILE/zfile-release.war          # 下载 zfile 最新版
 unzip zfile-release.war && rm -rf zfile-release.war      # 解压并删除压缩包
 chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                    # 授权启动停止脚本
 ```
@@ -105,7 +105,7 @@ rm -rf ~/zfile                                                      # 删除安�
 # highlight blue next
 export ZFILE_INSTALL_PATH=~/zfile                                   # 声明安装到的路径
 mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH              # 创建文件夹并进入
-wget https://c.jun6.net/ZFILE/zfile-release.war                     # 下载 zfile 最新版
+wget --no-check-certificate https://c.jun6.net/ZFILE/zfile-release.war                     # 下载 zfile 最新版
 unzip zfile-release.war && rm -rf zfile-release.war                 # 解压并删除压缩包
 chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                               # 授权启动停止脚本
 
