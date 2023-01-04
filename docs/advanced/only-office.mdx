@@ -23,7 +23,7 @@ docker run --restart=always --name onlyoffice \
     -v /app/onlyoffice/DocumentServer/data:/var/www/onlyoffice/Data \
     -v /app/onlyoffice/DocumentServer/lib:/var/lib/onlyoffice \
     -v /app/onlyoffice/DocumentServer/db:/var/lib/postgresql \
-    onlyoffice/documentserver
+    onlyoffice/documentserver:7.1.1
 ```
 
 
@@ -40,7 +40,7 @@ version: '3'
 services:
   onlyoffice:
     container_name: onlyoffice
-    image: onlyoffice/documentserver
+    image: onlyoffice/documentserver:7.1.1
     restart: always
     ports:
      - "8081:80"
