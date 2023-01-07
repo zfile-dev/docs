@@ -184,6 +184,11 @@ const sidebars = {
                   label: '自建 Google Drive API'
               },
               {
+                  id: 'advanced/onedrive-api',
+                  type: 'doc',
+                  label: '自建 OneDrive API'
+              },
+              {
                   id: 'advanced/only-office',
                   type: 'doc',
                   label: '自建 OnlyOffice'

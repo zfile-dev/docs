@@ -1,0 +1,52 @@
+# 自建 OneDrive API
+
+## 1. 打开 Azure Portal 登录
+
+- 国际版、个人版、E3、E5 等版本：https://portal.azure.com/
+- 世纪互联版：https://portal.azure.cn/
+
+> 注：两者后续的操作基本一致，**下面使用国际版的 Azure Portal 为例**。
+
+## 2. 点击 "主页" -> "应用注册" -> "新注册"
+
+<img className={'sm:w-2/3'} src='/img/2023/01/07/p1.png'/>
+
+## 3. 填写 API 基本信息
+
+<img className={'sm:w-2/3'} src='/img/2023/01/07/p2.png'/>
+
+1. 名称：随意写
+2. 受支持的账户类型：按照上图中的选择
+3. 重定向 URI：左侧的类型选 `WEB`，右侧的地址填写 `https://demo.zfile.vip/onedrive/callback`，我这里的域名是 `demo.zfile.vip`, 所以可以写这个，实际应该按照写你自己的域名，如下图：
+4. 将自己的回调地址写到 ZFile 中截图的位置，如你的 ZFile 域名是 `https://xxx.com`，那么就写 `https://xxx.com/onedrive/callback`
+
+<img className={'sm:w-2/3'} src='/img/2023/01/07/p3.png'/>
+
+## 4. clientId
+
+复制 clientId 备用，填写到 ZFile 中，如图：
+
+<img className={'sm:w-2/3'} src='/img/2023/01/07/p4.png'/>
+
+<img className={'sm:w-2/3'} src='/img/2023/01/07/p5.png'/>
+
+## 5. SecretKey
+
+点击 "证书和密码" -> "新客户端密码"，然后说明（随便写），截止日期选择 24 个月，将生成的结果复制到 ZFile 中，如图：
+
+<img className={'sm:w-2/3'} src='/img/2023/01/07/p6.png'/>
+
+<img className={'sm:w-2/3'} src='/img/2023/01/07/p7.png'/>
+
+<img className={'sm:w-2/3'} src='/img/2023/01/07/p8.png'/>
+
+
+## 6. 设置 API 权限
+
+点击 "API 权限" -> "Microsoft Graph"，依次输入需要的权限，勾选，最后点击更新权限，如图：
+
+<img className={'sm:w-2/3'} src='/img/2023/01/07/p9.png'/>
+
+## 7. 完成
+
+在 ZFile 中可以使用了，注意再确认下 OneDrive 类型是否正确，别错误把国际版和世纪互联的弄混、然后再看看是否已将 ZFile 中的 clientId 和 SecretKey 还有回调地址填写为新创建的 API 的信息。然后就可以点击 ZFile 中的 "前往获取令牌" 去使用你自定义 API 获取 OneDrive 的令牌了。获取后看看回调后的地址是否是你自定义的回调地址，如果是，那么就说明你的 API 已经配置成功了。
