@@ -248,6 +248,11 @@ const sidebars = {
       },
       {
           type: 'doc',
+          label: '存储源类型对比',
+          id: 'storage-type'
+      },
+      {
+          type: 'doc',
           label: '存储源配置示例',
           id: 'example'
       },
