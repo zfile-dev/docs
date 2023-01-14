@@ -39,7 +39,7 @@ https://dash.cloudflare.com/login
 ```javascript showLineNumbers {6,13}
 addEventListener("fetch",event => {
     let url = new URL(event.request.url);
-    // 随便去 OneDrive 里找个文件下载，去浏览器下载记录中找到下载链接，将域名部分写入到这里，不带协议头
+    // 随便去 "OneDrive 里找个文件下载" 或 "先不写反代域名绑定 OneDrive 到 ZFile，再找个文件下载"，去浏览器下载记录中找到下载链接，将域名部分写入到这里，不带协议头
     // 如 https://xxx-my.sharepoint.com/personal/xxx_xxx_onmicrosoft_com/_layouts/15/download.aspx?UniqueId=xxx&SourceUrl=xxx
     // 则填写 xxx-my.sharepoint.com
     url.hostname ="youdomain.com";
@@ -64,7 +64,7 @@ addEventListener("fetch",event => {
 :::
 
 ```javascript showLineNumbers {4,7}
-// 随便去 OneDrive 里找个文件下载，去浏览器下载记录中找到下载链接，将域名部分写入到这里，不带协议头
+    // 随便去 "OneDrive 里找个文件下载" 或 "先不写反代域名绑定 OneDrive 到 ZFile，再找个文件下载"，去浏览器下载记录中找到下载链接，将域名部分写入到这里，不带协议头
 // 如 https:/abc-my.sharepoint.com/personal/xxx_xxx_onmicrosoft_com/_layouts/15/download.aspx?UniqueId=xxx&SourceUrl=xxx
 // 则填写 abc-my.sharepoint.com
 const upstream = '*-my.sharepoint.com'
