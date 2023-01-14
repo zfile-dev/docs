@@ -258,6 +258,28 @@ const sidebars = {
       },
       {
           type: 'category',
+          label: '自定义 JS 示例',
+          link: {
+              type: 'generated-index',
+              title: '自定义 JS 相关示例',
+              description: '点击下方查看不同版本的更新日志',
+              slug: '/custom-js'
+          },
+          items: [
+              {
+                  id: 'custom-js/51la',
+                  type: 'doc',
+                  label: '51la 统计'
+              },
+              {
+                  id: 'custom-js/baidu-tongji',
+                  type: 'doc',
+                  label: '百度统计'
+              }
+          ]
+      },
+      {
+          type: 'category',
           label: '更新日志',
           link: {
               type: 'generated-index',
