@@ -17,9 +17,12 @@ let path = window.location.href.replace(window.location.origin, "");
 
 let pathMap = {
     '/advanced#only-office': '/advanced/only-office',
+    '/advanced#google-drive-api': '/advanced/google-drive-api',
+
 }
 
 if (pathMap[path]) {
+    debugger
     window.location.href = pathMap[path];
 }
 
