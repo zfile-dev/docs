@@ -52,8 +52,8 @@ import TabItem from '@theme/TabItem';
 
 1. 项目执行文件：写 `解压路径/zfile-launch`，如 `/www/wwwroot/demo.zfile.vip/zfile-launch`
 2. 项目名称：随便写
-3. 项目端口：写你实际的端口，默认为 `8080`, **如您修改配置文件 `解压路径/application.properties` 中的端口，则写修改后的端口**
-4. 执行命令：如下，替换 `/www/wwwroot/demo.zfile.vip` 为您实际的 `解压路径` 即可.
+3. 项目端口：写你实际的端口，默认为 `8080`, **如您修改配置文件 `解压路径/application.properties` 中的端口，则写修改后的端口（但注意，千万不要写 80 或 443，因为宝塔已经占用了这些端口）**
+4. 执行命令：<span class={'font-bold text-red-500'}>如下，替换 `/www/wwwroot/demo.zfile.vip` 为您实际的 `解压路径`，重要！！！且要注意各个命令之间的空格，不能少</span>.
 
 ```bash showLineNumbers
 /www/wwwroot/demo.zfile.vip/zfile-launch /www/wwwroot/demo.zfile.vip/jre/bin/java -jar /www/wwwroot/demo.zfile.vip/zfile-pro-release.xjar --spring.config.location=file:/www/wwwroot/demo.zfile.vip/application.properties
