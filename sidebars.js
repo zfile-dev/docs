@@ -89,6 +89,10 @@ const sidebars = {
                         label: '宝塔'
                     },
                 ]
+            }, {
+                type: 'doc',
+                label: '帮我安装',
+                id: 'install/help-install'
             }
         ],
       },
