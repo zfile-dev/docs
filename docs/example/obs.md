@@ -1,3 +1,7 @@
+---
+sidebar_label: 华为云 OBS
+---
+
 # 华为云 OBS
 
 ![image.png](./img/huawei-01.png)

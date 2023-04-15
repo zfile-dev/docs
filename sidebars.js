@@ -21,8 +21,8 @@ const sidebars = {
       'intro',
       {
         type: 'category',
-        label: '快速安装',
-        collapsed: false,
+        label: '快速安装（必看）',
+        // collapsed: false,
         items: [
             {
                 type: 'category',
@@ -257,27 +257,21 @@ const sidebars = {
       },
       {
           type: 'category',
-          label: '存储源示例配置',
+          label: '存储源示例配置🔥',
+          link: {
+              description: "如果你不知道怎么配置存储源，可以点击下方你想添加的存储类型查看详细文档",
+              type: 'generated-index',
+          },
           items: [
-              {
-                  id: 'example/cos',
-                  type: 'doc',
-                  label: '腾讯云 COS'
-              },
               {
                   id: 'example/oss',
                   type: 'doc',
                   label: '阿里云 OSS'
               },
               {
-                  id: 'example/upyun',
+                  id: 'example/cos',
                   type: 'doc',
-                  label: '又拍云'
-              },
-              {
-                  id: 'example/ftp',
-                  type: 'doc',
-                  label: 'FTP'
+                  label: '腾讯云 COS'
               },
               {
                   id: 'example/obs',
@@ -285,14 +279,19 @@ const sidebars = {
                   label: '华为云 OBS'
               },
               {
-                  id: 'example/minio',
+                  id: 'example/upyun',
                   type: 'doc',
-                  label: 'MINIO'
+                  label: '又拍云'
+              },
+              {
+                  id: 'example/qiniu',
+                  type: 'doc',
+                  label: '七牛云'
               },
               {
                   id: 'example/s3',
                   type: 'doc',
-                  label: 'S3'
+                  label: 'S3 或其他兼容 S3 的服务'
               },
               {
                   id: 'example/onedrive',
@@ -315,9 +314,9 @@ const sidebars = {
                   label: 'SharePoint (世纪互联)'
               },
               {
-                  id: 'example/qiniu',
+                  id: 'example/minio',
                   type: 'doc',
-                  label: '七牛云'
+                  label: 'MINIO'
               },
               {
                   id: 'example/digitalocean',
@@ -333,10 +332,24 @@ const sidebars = {
                   id: 'example/oracle',
                   type: 'doc',
                   label: 'Oracle 对象存储'
-              }
+              },
+              {
+                  id: 'example/b2',
+                  type: 'doc',
+                  label: 'Backblaze（b2）'
+              },
+              {
+                  id: 'example/ftp',
+                  type: 'doc',
+                  label: 'FTP'
+              },
+              {
+                  id: 'example/sftp',
+                  type: 'doc',
+                  label: 'SFTP'
+              },
           ]
       },
-
       {
           type: 'category',
           label: '自定义 JS 示例',
@@ -383,7 +396,7 @@ const sidebars = {
       },
       {
           type: 'doc',
-          label: '服务器推荐',
+          label: '服务器推荐✨',
           id: 'ad/ad'
       },
   ],
