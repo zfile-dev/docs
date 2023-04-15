@@ -118,7 +118,7 @@ const config = {
             "href": "https://jq.qq.com/?_wv=1027&k=7f4iEaje"
           },
           {
-            "label": "服务器推荐",
+            "label": "服务器推荐✨",
             "href": "/ad/"
           },
           {
