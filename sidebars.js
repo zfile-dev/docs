@@ -256,10 +256,87 @@ const sidebars = {
           id: 'storage-type'
       },
       {
-          type: 'doc',
-          label: '存储源配置示例',
-          id: 'example'
+          type: 'category',
+          label: '存储源示例配置',
+          items: [
+              {
+                  id: 'example/cos',
+                  type: 'doc',
+                  label: '腾讯云 COS'
+              },
+              {
+                  id: 'example/oss',
+                  type: 'doc',
+                  label: '阿里云 OSS'
+              },
+              {
+                  id: 'example/upyun',
+                  type: 'doc',
+                  label: '又拍云'
+              },
+              {
+                  id: 'example/ftp',
+                  type: 'doc',
+                  label: 'FTP'
+              },
+              {
+                  id: 'example/obs',
+                  type: 'doc',
+                  label: '华为云 OBS'
+              },
+              {
+                  id: 'example/minio',
+                  type: 'doc',
+                  label: 'MINIO'
+              },
+              {
+                  id: 'example/s3',
+                  type: 'doc',
+                  label: 'S3'
+              },
+              {
+                  id: 'example/onedrive',
+                  type: 'doc',
+                  label: 'OneDrive'
+              },
+              {
+                  id: 'example/onedrive-china',
+                  type: 'doc',
+                  label: 'OneDrive (世纪互联)'
+              },
+              {
+                  id: 'example/sharepoint',
+                  type: 'doc',
+                  label: 'SharePoint'
+              },
+              {
+                  id: 'example/sharepoint-china',
+                  type: 'doc',
+                  label: 'SharePoint (世纪互联)'
+              },
+              {
+                  id: 'example/qiniu',
+                  type: 'doc',
+                  label: '七牛云'
+              },
+              {
+                  id: 'example/digitalocean',
+                  type: 'doc',
+                  label: 'DigitalOcean Spaces'
+              },
+              {
+                  id: 'example/r2',
+                  type: 'doc',
+                  label: 'Cloudflare R2'
+              },
+              {
+                  id: 'example/oracle',
+                  type: 'doc',
+                  label: 'Oracle 对象存储'
+              }
+          ]
       },
+
       {
           type: 'category',
           label: '自定义 JS 示例',
@@ -273,7 +350,7 @@ const sidebars = {
               {
                   id: 'custom-js/51la',
                   type: 'doc',
-                  label: '51la 统计'
+                  label: '51LA 统计'
               },
               {
                   id: 'custom-js/baidu-tongji',
@@ -303,6 +380,11 @@ const sidebars = {
                   label: '捐赠版'
               }
           ]
+      },
+      {
+          type: 'doc',
+          label: '服务器推荐',
+          id: 'ad/ad'
       },
   ],
 };
