@@ -22,7 +22,9 @@ const config = {
   scripts: [{
     src: '/script/script.js',  async: true,
   }, {
-    src: 'https://cdn.wwads.cn/js/makemoney.js', async: true
+    src: 'https://cdn.wwads.cn/js/makemoney.js'
+  }, {
+    src: '/script/ad.js'
   }],
   presets: [
     [
