@@ -1,5 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import CalculateComponent from '../../component/ComputeCommand';
 
 # 宝塔
 
@@ -53,18 +54,15 @@ import TabItem from '@theme/TabItem';
 1. **项目执行文件**：写 `解压路径/zfile-launch`，如 `/www/wwwroot/demo.zfile.vip/zfile-launch`
 2. **项目名称**：随便写
 3. **项目端口**：写你实际的端口，默认为 `8080`, **如您修改配置文件 `解压路径/application.properties` 中的端口，则写修改后的端口（但注意，千万不要写 80 或 443，因为宝塔已经占用了这些端口）**
-4. **执行命令**：<span class={'font-bold text-red-500'}>如下，替换 `/www/wwwroot/demo.zfile.vip` 为您实际的 `解压路径`，重要！！！且要注意各个命令之间的空格，不能少</span>.
-
-```bash showLineNumbers
-/www/wwwroot/demo.zfile.vip/zfile-launch /www/wwwroot/demo.zfile.vip/jre/bin/java -jar /www/wwwroot/demo.zfile.vip/zfile-pro-release.xjar --spring.config.location=file:/www/wwwroot/demo.zfile.vip/application.properties
-```
+4. **执行命令**：在下方输入你解压后的路径，点击 "**生成执行命令**"，**然后复制生成的结果粘贴到宝塔执行命令中即可**。下方示例为我解压后的路径 `/www/wwwroot/demo.zfile.vip`，你需要根据自己的实际情况修改。
+<CalculateComponent />
 
 5. **运行用户**：选 root
 6. **开机自启**：根据需要选择
 7. **备注**：随意
 8. **绑定域名**：
     - 如果使用域名，这里就写域名，**注意这里只写域名，不写协议和端口**。
-    - 如果不需要使用域名，就用服务器IP和端口访问，**这里什么都不需要写**。
+    - 如果不需要使用域名，而是直接使用服务器IP和端口访问，**这里什么都不需要写**。
 
 ## 其他设置
 
