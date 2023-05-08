@@ -64,6 +64,15 @@ apt install -y openjdk-8-jre-headless unzip
 /usr/bin/java -jar -Xmx1024M -Xms256M /path/zfile-release.jar --server.port=7818 --spring.config.location=file:/path/application.properties
 ```
 
+## 更新版本
+
+更新步骤如下：
+
+1. 宝塔中停止 ZFile 程序（务必先停止，且尝试访问网页无法访问再继续下面的操作）
+2. 重复步骤 [下载项目](#下载项目) 下载最新版本程序，覆盖原来的 `zfile-release.jar` 文件（其实就是先删除之前的，再将新版本程序放到同路径同名）
+3. 启动项目，访问验证。（一般启动需要 1-3 分钟，访问如果还是之前的版本，请清除浏览器缓存！）
+
+
 ## 其他设置
 
 宝塔 `nginx` 默认只支持上传最大 `50MB` 的文件，可去以下页面进行设置:
