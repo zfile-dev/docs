@@ -1,3 +1,5 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import HelpInfoSub from './help-install-sub.mdx';
 
 # Windows
@@ -6,7 +8,7 @@ import HelpInfoSub from './help-install-sub.mdx';
 
 :::tip 提示
 
-如已安装 Java 环境（Java 1.8）可跳过此步骤，且注意，只支持 Java 1.8，更高版本无法兼容，请保证你环境遍历中是 1.8 版本的。
+如已安装 Java 环境（Java 1.8）可跳过此步骤，且注意，只支持 Java 1.8，更高版本无法兼容，请保证你环境变量中是 1.8 版本的。
 
 :::
 
@@ -33,13 +35,36 @@ import HelpInfoSub from './help-install-sub.mdx';
 
 ## 启动项目
 
-在 cmd 执行命令, 下面的示例为下载 `zfile` 程序到了 `D:/Downloads/zfile-release.jar` 时的启动方式。
+在 cmd 或 powershell 执行命令, 下面的示例为下载 `zfile` 程序到了 `D:/Downloads/zfile-release.jar` 时的启动方式。
 如你下载到了其他路径就需自行更改最后你实际下载的目录：
+
+
+
+<Tabs>
+<TabItem value="cmd" label="CMD">
 
 ```bash showLineNumbers
 # 不可关闭命令行，关闭即停止程序，或使用 ctrl + c 命令停止程序
 java -Dfile.encoding=utf-8 -jar -Dserver.port=8080 D:/Downloads/zfile-release.jar
 ```
+
+</TabItem>
+<TabItem value="powershell" label="PowerShell">
+
+```bash showLineNumbers
+# 不可关闭命令行，关闭即停止程序，或使用 ctrl + c 命令停止程序
+java '-Dfile.encoding=utf-8' -jar '-Dserver.port=8080' D:/Downloads/zfile-release.jar
+```
+
+</TabItem>
+</Tabs>
+
+
+:::info 提示
+
+启动过程中看到的日志信息，中文部分可能是乱码，这是因为 Windows 的 cmd 和 powershell 默认命令行编码不是 utf-8，命令行乱码不影响正常使用，如向让命令行正常显示中文，先执行命令 `chcp 65001` 切换命令行为 utf-8 再执行启动命令即可。
+
+:::
 
 启动后访问 [http://localhost:8080](http://localhost:8080) 即可看到效果。
 
