@@ -209,6 +209,11 @@ const sidebars = {
             label: '常见问题',
             items: [
                 {
+                    id: 'question/ubuntu-awt',
+                    type: 'doc',
+                    label: 'Ubuntu 登录页报错'
+                },
+                {
                     id: 'question/reset-password',
                     type: 'doc',
                     label: '忘记管理员密码怎么办？'

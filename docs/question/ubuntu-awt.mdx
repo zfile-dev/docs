@@ -1,0 +1,7 @@
+# Ubuntu 启动后，访问登录页，提示 java.awt.AWTError: Assistive Technology not found: org.GNOME.Accessibility.AtkWrapper
+
+解决方法：在 /etc/java-8-openjdk/accessibility.properties 文件中，使用 vi/vim 注释掉最后一行即可。也可使用以下命令一键注释掉最后一行：
+
+```
+sudo sed -i 's/^assistive_technologies=org.GNOME.Accessibility.AtkWrapper/#&/g' /etc/java-8-openjdk/accessibility.properties
+```
