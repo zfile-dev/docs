@@ -1,0 +1,14 @@
+# 为什么 OnlyOffice 预览失败？
+
+ZFile 中默认的 OnlyOffice 预览服务在公网服务器上，在 ZFIle 后台设置 -> 显示设置 -> 放下翻看到 OnlyOffice 服务地址：https://office.zfile.vip
+
+然后 OnlyOffice 的预览原理是，ZFile 传递给 OnlyOffice 服务端一个文件下载地址，如：`http://xxx.com/xxx.xlsx`，然后**服务端下载这个文件**后渲染出来。
+
+那么如果你的 ZFile 在内网或者受限的网络，那么服务器就无法正常的下载你的 office 文件来预览。
+如果你的 ZFile 在公网，还是无法预览的话，就要检查你 ZFile 后台`基本设置` -> `后端站点域名` 中配置的地址是否是公网的，这个参数会直接影响本地存储、FTP、SFTP、WebDAV 等存储类型的下载地址。
+或者你的存储源本身的下载地址是内网或受限的网络，那也会导致无法下载。
+
+为了应对这种情况，你可以在 ZFile 存储源所在的网络环境自建 OnlyOffice 服务，不过**切记不要将 ZFile 中站点域名配置成 127.0.0.1 或 location 之类的本地回环地址**，不然 OnlyOffice 找的也是本地，而不是 ZFile 服务。
+
+
+> 最简单的验证办法就是在 ZFile 生成一个直链，然后发给手机，手机用流量能下载的话，一般都是可以使用默认的 OnlyOffice 服务正常预览的。

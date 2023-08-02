@@ -209,6 +209,11 @@ const sidebars = {
             label: '常见问题',
             items: [
                 {
+                    id: 'question/only-office-download-fail',
+                    type: 'doc',
+                    label: 'OnlyOffice 预览失败怎么办？'
+                },
+                {
                     id: 'question/ubuntu-awt',
                     type: 'doc',
                     label: 'Ubuntu 登录页报错'
