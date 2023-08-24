@@ -100,10 +100,6 @@ const config = {
             label: "官网",
           },
           {
-            href: "https://bbs.zfile.vip",
-            label: "论坛",
-          },
-          {
             "label": "演示站",
             "href": "https://demo.zfile.vip"
           },
@@ -149,10 +145,6 @@ const config = {
           {
             title: '社区',
             items: [
-              {
-                label: '论坛',
-                href: 'https://bbs.zfile.vip/',
-              },
               {
                 label: 'QQ 群',
                 href: 'https://jq.qq.com/?_wv=1027&k=7f4iEaje',
