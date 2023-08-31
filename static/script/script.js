@@ -17,12 +17,16 @@ let path = window.location.href.replace(window.location.origin, "");
 
 let pathMap = {
     '/advanced#only-office': '/advanced/only-office',
+    '/advanced/#only-office': '/advanced/only-office',
     '/advanced#google-drive-api': '/advanced/google-drive-api',
+    '/advanced/#google-drive-api': '/advanced/google-drive-api',
     '/question#reset-pwd': '/config/config-debug',
+    '/question/#reset-pwd': '/config/config-debug',
+    '/example': '/category/存储源示例配置',
+    '/example/': '/category/存储源示例配置'
 }
 
 if (pathMap[path]) {
-    debugger
     window.location.href = pathMap[path];
 }
 
