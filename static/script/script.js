@@ -5,7 +5,8 @@ let hash = window.location.hash;
 let hashMap = {
     '#/question?id=reset-pwd': '/config/config-debug',
     '#/advanced?id=onedrive-cf': 'advanced/cf-worker',
-    '#/example': '/example',
+    '#/example': '/category/存储源示例配置',
+    '#/example/': '/category/存储源示例配置',
     '#/pro': '/install/pro-linux',
 }
 
