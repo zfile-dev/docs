@@ -262,6 +262,16 @@ const sidebars = {
                     id: 'question/modify-favicon',
                     type: 'doc',
                     label: '如何修改左上角 favicon 图标？'
+                },
+                {
+                    id: 'question/cf-not-work',
+                    type: 'doc',
+                    label: '为什么我使用 Cloudflare 后页面白屏无法访问？'
+                },
+                {
+                    id: 'question/remove-copyright',
+                    type: 'doc',
+                    label: '如何去除版权信息？'
                 }
             ]
         },
