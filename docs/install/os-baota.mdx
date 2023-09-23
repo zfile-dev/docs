@@ -50,10 +50,16 @@ apt install -y openjdk-8-jre-headless unzip
 
 ## 配置文件 {#config}
 
-如需要修改配置文件, 下载配置文件 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) 传到服务器上.
-然后在**项目执行命令**后增加 ` --spring.config.location=file:/www/wwwroot/xxx.com/application.properties`，以上为示例路径，需配置成自己配置文件的路径。
+如需要修改配置文件, 请下载配置文件 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) 传到上一步 ZFile 文件所在目录下，命名为 `application.properties`.
+然后在**宝塔的 ZFile 配置**中（参考上一步）的表单项 `项目执行命令` 原内容后**增加内容**：
 
-如原来项目执行命令为：
+```bash
+ --spring.config.location=file:/www/wwwroot/xxx.com/application.properties
+# 这里的 /www/wwwroot/xxx.com/application.properties 为你上传到服务器配置文件的路径，注意这行注释不要复制，只复制上面的那一行，注意上移行最前面有一个空格，记得复制（用于和原内容保持一个空格距离）
+```
+
+
+如原来 `项目执行命令` 为：
 
 ```bash showLineNumbers
 /usr/bin/java -jar -Xmx1024M -Xms256M /path/zfile-release.jar --server.port=7818
@@ -63,6 +69,8 @@ apt install -y openjdk-8-jre-headless unzip
 ```bash showLineNumbers
 /usr/bin/java -jar -Xmx1024M -Xms256M /path/zfile-release.jar --server.port=7818 --spring.config.location=file:/path/application.properties
 ```
+
+> 这里的前半部分 `/usr/bin/java -jar -Xmx1024M -Xms256M /path/zfile-release.jar --server.port=7818` 也是示例，不表示你**宝塔的 ZFile 配置**中的表单项 `项目执行命令` 原内容。
 
 ## 更新版本
 
