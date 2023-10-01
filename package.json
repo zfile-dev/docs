@@ -22,7 +22,7 @@
     "clsx": "^2.0.0",
     "docusaurus-plugin-image-zoom": "^1.0.1",
     "docusaurus-tailwindcss-loader": "file:plugins/docusaurus-tailwindcss-loader",
-    "postcss": "^8.4.27",
+    "postcss": "^8.4.31",
     "postcss-import": "^15.1.0",
     "postcss-preset-env": "^9.1.1",
     "prism-react-renderer": "^2.0.6",
