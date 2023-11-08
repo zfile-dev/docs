@@ -11,7 +11,12 @@ function ComputeCommand() {
     }, []);
 
     const handleCalculate = () => {
-        const path = value.trim() || '/www/wwwroot/demo.zfile.vip'; // 如果输入框为空，则使用默认值
+        // 如果 value 尾缀包含 /zfile-launch 则去除
+        let path = value.trim();
+        if (value.endsWith('/zfile-launch')) {
+            path = value.substring(0, value.length - 13);
+        }
+        path = path || '/www/wwwroot/demo.zfile.vip'; // 如果输入框为空，则使用默认值
         const command = `${path}/zfile-launch ${path}/jre/bin/java -jar ${path}/zfile-pro-release.xjar --spring.config.location=file:${path}/application.properties`; // 根据路径计算命令
         setResult(command); // 将计算出的命令设置为计算结果
     };
