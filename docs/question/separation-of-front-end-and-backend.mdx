@@ -1,19 +1,73 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # 如何前后端分离部署？
 
-## ZFile 修改静态资源
+后端不用动，前端 html 文件可以通过以下方式获得：
 
-### 社区版
+## 1. 下载静态资源文件夹
 
-待补充...
+<Tabs>
+<TabItem value="os" label="开源版">
 
-### 捐赠版
+去 https://c.jun6.net/ZFILE/  找到**你当前版本**的 `war` 后缀的文件，下载并解压，解压后的文件夹 `/WEB-INF/classes/static` 就是前端静态资源文件夹。
 
-以脚本部署为例，默认解压后文件路径为 `/root/zfile-pro`，文件内容如下图：
+</TabItem>
+<TabItem value="pro" label="捐赠版">
 
-![](/img/2022/09/26/LQ0p9D.png)
+去 https://c.jun6.net/ZFILE-PRO/ 找你当前版本的 xjar 文件下载（不用管操作系统和架构，里面静态文件都一样的），下载后改后缀为 zip 并解压，解压后的文件夹 `/BOOT-INF/classes/static` 就是前端静态资源文件夹。
 
-修改配置文件方式如下图:
+</TabItem>
+</Tabs>
 
-![](/img/2022/09/26/EdO6Bv.png)
 
-注: 其他部署方式，也是类似的逻辑，如找不到 static 目录，可以去 https://c.jun6.net/ZFILE-PRO/ 随便下载一个 xjar 后缀的文件解压，里面就有 static 目录了. 配置文件这个地址也有：https://c.jun6.net/ZFILE-PRO/application.properties
+## 2. 修改前端配置文件
+
+修改前端文件下的 `zfile.config.json` 文件，将 `baseUrl` 修改为你的后端地址，比如 `http://localhost:8080`
+
+:::caution 注意
+
+如果你的前端要使用 https，那么后端也必须使用 https，否则会被浏览器拦截。但反过来你前端使用 http，后端使用 https 是可以的。
+
+:::
+
+## 3. 部署前端
+
+将静态资源放到你要部署的地方，如 nginx 上，或者 tomcat 上，或者其他 web 服务器上，甚至 cdn 上都可以。
+
+### 3.1 配置防止刷新后 404
+
+由于前端使用的 vue 的 history 模式，所以需要配置一下你的 web 服务器，比如 nginx，在当前站点的配置文件中的 `location /` 里需要增加一行代码，如：
+
+```nginx {5}
+location / {
+    # 你原来的其他配置保留
+
+    # 新增一行配置：
+    try_files $uri $uri/ /index.html;
+}
+```
+
+这个配置的大概含义就是如果找不到文件，就返回 index.html，不配置这个的话，你刷新页面会出现 404。
+
+其他的 web 服务器也是类似的配置，这里无法给出所有配置，且不要来问我如何配置 xxx 服务（除非你付费咨询），请善用搜索引擎或 chatgpt。
+
+
+### 3.2 捐赠版额外配置
+
+捐赠版还需要将 `index.html` 文件的这一行删除 (大约在第九行)：
+
+```html
+<meta name="referrer" content="same-origin" >
+```
+
+然后记得重新上传到服务器或 CDN 上，并注意浏览器或服务器缓存的问题。
+
+
+## 4. 注意事项
+
+1. 前后端分离部署过程，仅提供当前页面上的文档帮助，不提供任何其他帮助，如有问题请自行解决。（除非你付费咨询）
+2. 任何修改过原版前端/后端程序，或没按照文档部署的，都不提供任何帮助。（除非你付费咨询）
+3. 后端升级版本后，切记前端要重新下载静态文件升级，并清理所有可能出现的缓存。
+4. 前后端分离模式下，管理页面基本设置中配置的 `站点名称` 和 `站点 favicon` 将失效。
+5. 记得要在管理页面的基本设置中配置 `前端站点域名` 为你的前端域名，否则可能使用过程中可能会跳转回后端域名。
