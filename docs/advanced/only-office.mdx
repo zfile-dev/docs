@@ -12,18 +12,19 @@ import TabItem from '@theme/TabItem';
 
 下方高亮部分，可自定义端口和数据目录：
 
-- 端口号：第 2 行**冒号**左侧的 `8081` 表示对外暴露的端口号，如其他程序占用，则请修改为其他端口号。
-- 数据目录：第 4-7 行表示数据文件映射到宿主机目录，如看不懂或不需要，可删除 4-7 行。
+- 端口号：第 2 行**冒号左侧**的 `8081` 表示对外暴露的端口号，如其他程序占用，则请修改为其他端口号。
+- JWTToken：第 3-4 行分别是启用 JWT 校验功能和密钥值，如果启用了 JWT 校验但未未设置密钥值，将随机生成。如需要开启 `OnlyOffice JWT Token` 功能，则保留这两行配置，注意修改 `JWT_SECRET` 的值，这里默认的 `123456` 仅供参考。（这里写了密钥后，要配置到 `ZFile 后台` -> `显示设置` -> `OnlyOffice 令牌` 中，否则将无法正常预览文件）
 
-```bash showLineNumbers {2,4-7}
+```bash showLineNumbers {2,3-4}
 docker run --restart=always --name onlyoffice \
     -p 8081:80 \
-    -e JWT_ENABLED=false \
+    -e JWT_ENABLED=true \
+    -e JWT_SECRET=123456 \
     -v /app/onlyoffice/DocumentServer/logs:/var/log/onlyoffice \
     -v /app/onlyoffice/DocumentServer/data:/var/www/onlyoffice/Data \
     -v /app/onlyoffice/DocumentServer/lib:/var/lib/onlyoffice \
     -v /app/onlyoffice/DocumentServer/db:/var/lib/postgresql \
-    onlyoffice/documentserver:7.1.1
+    onlyoffice/documentserver:latest
 ```
 
 
@@ -32,20 +33,21 @@ docker run --restart=always --name onlyoffice \
 
 下方高亮部分，可自定义端口和数据目录：
 
-- 端口号：第 8 行**冒号**左侧的 `8081` 表示对外暴露的端口号，如其他程序占用，则请修改为其他端口号。
-- 数据目录：第 12-15 行表示数据文件映射到宿主机目录，如看不懂或不需要，可删除 4-7 行。
+- 端口号：第 8 行**冒号左侧**的 `8081` 表示对外暴露的端口号，如其他程序占用，则请修改为其他端口号。
+- JWTToken：第 10-11 行分别是启用 JWT 校验功能和密钥值，如果启用了 JWT 校验但未未设置密钥值，将随机生成。如需要开启 `OnlyOffice JWT Token` 功能，请保留这两行配置，**注意修改 `JWT_SECRET` 的值，这里默认的 `123456` 仅供参考**。（这里写了密钥后，要配置到 `ZFile 后台` -> `显示设置` -> `OnlyOffice 令牌` 中，否则将无法正常预览文件）
 
-```yaml showLineNumbers {8,12-15}
+```yaml showLineNumbers {8,10-11}
 version: '3'
 services:
   onlyoffice:
     container_name: onlyoffice
-    image: onlyoffice/documentserver:7.1.1
+    image: onlyoffice/documentserver:latest
     restart: always
     ports:
      - "8081:80"
     environment:
-     - JWT_ENABLED=false
+     - JWT_ENABLED=true
+     - JWT_SECRET=123456
     volumes:
      - '$PWD/logs:/var/log/onlyoffice'
      - '$PWD/data:/var/www/onlyoffice/Data'
@@ -70,6 +72,7 @@ proxy_set_header Connection "upgrade";
 
 <img className={'sm:w-2/3'} src='/img/2022/11/05/L7gj2h.png'/>
 
+
 ## 反向代理 - HTTPS 额外配置
 如果使用了 HTTPS，则还需要增加配置：
 
@@ -88,3 +91,34 @@ proxy_set_header X-Forwarded-Proto https;
 ## 配置到 ZFile 中
 
 <img className={'sm:w-3/4'} src='/img/2022/11/06/only-office-to-zfile.png'/>
+
+
+## 查看已部署的 OnlyOffice 是否启用 JWT Token 及其密钥 {#only-office-secret}
+
+
+### 按照 ZFile 文档 Docker 部署的
+
+如果你是按照 ZFile 文档通过 Docker 安装的，那么可以通过以下命令查看已部署的 OnlyOffice 是否启用 JWT Token 功能：
+
+```bash
+sudo docker exec onlyoffice /var/www/onlyoffice/documentserver/npm/json -f /etc/onlyoffice/documentserver/local.json 'services.CoAuthoring.token.enable.request.inbox'
+```
+
+如果返回结果为 `false`，则表示未启用 JWT Token 功能，如果返回结果为 `true`，则表示已启用 JWT Token 功能，接下来通过这个命令查看 JWT Token 密钥：
+
+```bash
+sudo docker exec onlyoffice /var/www/onlyoffice/documentserver/npm/json -f /etc/onlyoffice/documentserver/local.json 'services.CoAuthoring.secret.session.string'
+```
+
+
+### Windows 安装或其他方式安装的
+
+其他安装方式的，需要修改配置文件，以下内容摘抄自[官方文档](https://api.onlyoffice.com/zh/editors/signature/)：
+
+```
+对于验证设置，需要编辑位于配置文件中的 secret key 和 token 参数，配置文件可在以下路径找到(或创建)：
+
+对于 Linux - /etc/onlyoffice/documentserver/local.json。
+对于 Windows - %ProgramFiles%\ONLYOFFICE\DocumentServer\config\local.json。
+默认值在 default.json 配置文件中可用，该文件位于上述文件夹中(适用于 Linux 和 Windows)。 请不要直接编辑 default.json 文件的内容。 每次重新启动 Docker 容器或将 文档服务器 升级到新版本时都会恢复默认值，并且所有更改都将丢失。
+```

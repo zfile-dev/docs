@@ -122,6 +122,10 @@ const config = {
                         "href": "/ad/"
                     },
                     {
+                        "label": "技术支持",
+                        "href": "/support/"
+                    },
+                    {
                         href: 'https://github.com/zfile-dev/zfile',
                         position: 'right',
                         className: 'header-github-link'

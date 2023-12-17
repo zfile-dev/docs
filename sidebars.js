@@ -97,7 +97,7 @@ const sidebars = {
                 }, {
                     type: 'doc',
                     label: '帮我安装',
-                    id: 'install/help-install'
+                    id: 'support/support'
                 }
             ],
         },
@@ -208,6 +208,16 @@ const sidebars = {
             type: 'category',
             label: '常见问题',
             items: [
+                {
+                    id: 'question/run-multiple-instance',
+                    type: 'doc',
+                    label: '如何运行多个 ZFile 实例？'
+                },
+                {
+                    id: 'question/update-config-file',
+                    type: 'doc',
+                    label: '如何修改配置文件？'
+                },
                 {
                     id: 'question/only-office-download-fail',
                     type: 'doc',
@@ -424,6 +434,11 @@ const sidebars = {
             label: '服务器推荐✨',
             id: 'ad/ad'
         },
+        {
+            type: 'doc',
+            label: '技术支持',
+            id: 'support/support'
+        }
     ],
 
 };
