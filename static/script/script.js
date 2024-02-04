@@ -17,6 +17,7 @@ if (hashMap[hash]) {
 let path = window.location.href.replace(window.location.origin, "");
 
 let pathMap = {
+    '/zfile': '/',
     '/advanced#only-office': '/advanced/only-office',
     '/advanced/#only-office': '/advanced/only-office',
     '/advanced#google-drive-api': '/advanced/google-drive-api',
