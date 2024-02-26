@@ -1,7 +1,15 @@
-# Ubuntu 启动后，访问登录页，提示 java.awt.AWTError: Assistive Technology not found: org.GNOME.Accessibility.AtkWrapper
+# ubuntu/debian 操作系统使用时，登录页面验证码无法显示怎么办？
 
-解决方法：在 /etc/java-8-openjdk/accessibility.properties 文件中，使用 vi/vim 注释掉最后一行即可。也可使用以下命令一键注释掉最后一行：
+原因是系统没有字体库，导致验证码无法显示。安装字体库即可解决问题。
 
+```bash
+sudo apt install -y fontconfig
 ```
+
+如果上面的方法没有解决，且你是自己本地的 jdk，那么在 /etc/java-8-openjdk/accessibility.properties 文件中，使用 vi/vim 注释掉最后一行即可。也可使用以下命令一键注释掉最后一行：
+
+```bash
 sudo sed -i 's/^assistive_technologies=org.GNOME.Accessibility.AtkWrapper/#&/g' /etc/java-8-openjdk/accessibility.properties
 ```
+
+如果还不行，请点击文档上方的技术支持。
