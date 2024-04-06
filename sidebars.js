@@ -324,6 +324,36 @@ const sidebars = {
                     label: '七牛云'
                 },
                 {
+                    id: 'example/minio',
+                    type: 'doc',
+                    label: 'MINIO'
+                },
+                {
+                    id: 'example/rains3',
+                    type: 'doc',
+                    label: 'Rain S3 雨云存储'
+                },
+                {
+                    id: 'example/digitalocean',
+                    type: 'doc',
+                    label: 'DigitalOcean Spaces'
+                },
+                {
+                    id: 'example/r2',
+                    type: 'doc',
+                    label: 'Cloudflare R2'
+                },
+                {
+                    id: 'example/oracle',
+                    type: 'doc',
+                    label: 'Oracle 对象存储'
+                },
+                {
+                    id: 'example/b2',
+                    type: 'doc',
+                    label: 'Backblaze（b2）'
+                },
+                {
                     id: 'example/s3',
                     type: 'doc',
                     label: 'S3 或其他兼容 S3 的服务'
@@ -347,31 +377,6 @@ const sidebars = {
                     id: 'example/sharepoint-china',
                     type: 'doc',
                     label: 'SharePoint (世纪互联)'
-                },
-                {
-                    id: 'example/minio',
-                    type: 'doc',
-                    label: 'MINIO'
-                },
-                {
-                    id: 'example/digitalocean',
-                    type: 'doc',
-                    label: 'DigitalOcean Spaces'
-                },
-                {
-                    id: 'example/r2',
-                    type: 'doc',
-                    label: 'Cloudflare R2'
-                },
-                {
-                    id: 'example/oracle',
-                    type: 'doc',
-                    label: 'Oracle 对象存储'
-                },
-                {
-                    id: 'example/b2',
-                    type: 'doc',
-                    label: 'Backblaze（b2）'
                 },
                 {
                     id: 'example/ftp',
