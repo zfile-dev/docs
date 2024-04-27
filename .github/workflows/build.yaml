@@ -40,7 +40,7 @@ jobs:
           key: ${{ runner.os }}-node_modules-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
 
       - name: Build front
-      - run: |
+        run: |
           npm install -g yarn
           yarn && yarn build
 
