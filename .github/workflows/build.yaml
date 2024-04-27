@@ -1,0 +1,117 @@
+name: Docker Build Image And Push Docker Registry
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+  workflow_dispatch:      # 手动触发
+    inputs:
+      updateServerVersion:
+        description: 'Update Server Docker Image Version'
+        type: boolean
+        default: false
+        required: false
+
+jobs:
+  build:
+    name: Docker Build Image And Push Docker Registry
+    runs-on: ubuntu-latest
+    env:
+      SECRET_REPO_PREFIX: REPO_
+      SECRET_USERNAME_PREFIX: USERNAME_
+      SECRET_PASSWORD_PREFIX: PASSWORD_
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Get node_modules cache
+        uses: actions/cache@v3.0.2
+        id: node_modules
+        with:
+          path: |
+            **/node_modules
+          # Add node version as a cache key to avoid yarn recompilation for particular node as it doesn't change often
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
+
+      - name: Build front
+      - run: |
+          npm install -g yarn
+          yarn && yarn build
+
+      - name: Set up QEMU               # 设置 QEMU 环境，用来模拟操作系统，用来编译 arm64 镜像和 amd64 镜像
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx      # 设置 Docker Buildx 环境
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          version: latest
+
+      - name: Inspect builder           # 查看 builder 状态
+        run: |
+          echo "Name:      ${{ steps.buildx.outputs.name }}"
+          echo "Endpoint:  ${{ steps.buildx.outputs.endpoint }}"
+          echo "Status:    ${{ steps.buildx.outputs.status }}"
+          echo "Flags:     ${{ steps.buildx.outputs.flags }}"
+          echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
+
+      - name: Login and Build Docker Image And Push
+        shell: bash
+        env:
+          ALL_SECRETS: ${{ toJSON(secrets) }}
+        run: |
+          repos=()
+          for key in $(echo $ALL_SECRETS | jq -r "keys[]"); do
+            if [[ $key == $SECRET_REPO_PREFIX* ]]; then
+              repo_key=$key
+              char=$(echo $repo_key | sed "s/$SECRET_REPO_PREFIX//")
+              username_key="${SECRET_USERNAME_PREFIX}${char}"
+              password_key="${SECRET_PASSWORD_PREFIX}${char}"
+          
+              repo=$(echo $ALL_SECRETS | jq -r ".${repo_key}")
+              username=$(echo $ALL_SECRETS | jq -r ".${username_key}")
+              password=$(echo $ALL_SECRETS | jq -r ".${password_key}")
+
+              repos+=($repo)
+          
+              # 如果 repo 只有一个 / ，则说明是 docker hub 的镜像，登录时后面不需要加 repo
+              if [[ $(echo $repo | grep -o '/' | wc -l) -eq 1 ]]; then
+                  echo $password | docker login -u $username --password-stdin
+              else
+                  echo $password | docker login -u $username --password-stdin $repo
+              fi
+            fi
+          done
+          
+          command="docker buildx build --platform linux/amd64,linux/arm64 --push . "
+          for repo in ${repos[@]}; do
+              command="$command -t $repo\:latest -t $repo\:$(git rev-parse --short HEAD)"
+          done
+          echo "$command"
+          eval $command
+          
+      - name: executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@v1.0.3
+        if: ${{ github,event.inputs.updateServerVersion == 'true' }}
+        with:
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          key: ${{ secrets.KEY }}
+          script: |
+            docker run --rm \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              -v ~/.docker/config.json:/config.json \
+              containrrr/watchtower \
+              --cleanup \
+              --run-once \
+              zfile-docs
