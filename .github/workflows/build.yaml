@@ -100,7 +100,7 @@ jobs:
           
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@v1.0.3
-        if: ${{ github,event.inputs.updateServerVersion == 'true' }}
+        if: ${{ github.event.inputs.updateServerVersion == 'true' }}
         with:
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
