@@ -22,9 +22,10 @@ const config = {
     scripts: [{
         src: '/script/script.js', async: true,
     }, {
-        src: 'https://cdn.wwads.cn/js/makemoney.js'
-    }, {
-        src: '/script/ad.js'
+        src: 'https://cdn.wwads.cn/js/makemoney.js',
+        async: true,
+        type: 'text/javascript',
+        charset: 'UTF-8',
     }],
     presets: [
         [
@@ -120,6 +121,10 @@ const config = {
                     {
                         "label": "服务器推荐✨",
                         "href": "/ad/"
+                    },
+                    {
+                        "label": "我要提 BUG",
+                        "href": "https://issue.zfile.vip"
                     },
                     {
                         "label": "技术支持",
