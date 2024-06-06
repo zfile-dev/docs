@@ -16,7 +16,7 @@ on:
 jobs:
   build:
     name: Docker Build Image And Push Docker Registry
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-4
     env:
       SECRET_REPO_PREFIX: REPO_
       SECRET_USERNAME_PREFIX: USERNAME_
