@@ -16,7 +16,7 @@ on:
 jobs:
   build:
     name: Docker Build Image And Push Docker Registry
-    runs-on: ubicloud-standard-4
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     env:
       SECRET_REPO_PREFIX: REPO_
       SECRET_USERNAME_PREFIX: USERNAME_
