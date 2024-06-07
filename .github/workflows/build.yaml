@@ -27,7 +27,7 @@ jobs:
 
       - name: Setup Node
         # uses: actions/setup-node@v4
-        users: useblacksmith/setup-node@v5
+        uses: useblacksmith/setup-node@v5
         with:
           node-version: '20'
           cache: 'yarn'
