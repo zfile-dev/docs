@@ -108,7 +108,7 @@ const sidebars = {
                 {
                     id: 'feature/pwd-folder',
                     type: 'doc',
-                    label: '文件夹加密'
+                    label: '文件夹密码/加密'
                 },
                 {
                     id: 'feature/md-folder',
