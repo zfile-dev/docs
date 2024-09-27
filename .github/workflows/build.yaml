@@ -41,7 +41,7 @@ jobs:
       - name: Set up QEMU               # 设置 QEMU 环境，用来模拟操作系统，用来编译 arm64 镜像和 amd64 镜像
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: all
+          platforms: linux/amd64,linux/arm64
 
       - name: Set up Docker Buildx      # 设置 Docker Buildx 环境
         id: buildx
