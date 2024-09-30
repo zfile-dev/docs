@@ -30,13 +30,19 @@ jobs:
         uses: useblacksmith/setup-node@v5
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Build front
         run: |
           npm install -g yarn
           yarn && yarn build
+
+      - name: Setup Node
+        # uses: actions/setup-node@v4
+        uses: useblacksmith/setup-node@v5
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
 
       - name: Set up QEMU               # 设置 QEMU 环境，用来模拟操作系统，用来编译 arm64 镜像和 amd64 镜像
         uses: docker/setup-qemu-action@v3
@@ -85,27 +91,8 @@ jobs:
             fi
           done
           
-          command="docker buildx build --platform linux/amd64,linux/arm64 --push . "
+          command="docker buildx build --provenance=false --platform linux/amd64,linux/arm64 --push . "
           for repo in ${repos[@]}; do
-              command="$command -t $repo\:latest -t $repo\:$(git rev-parse --short HEAD)"
+              command="$command -t $repo\:latest -t $repo\:$(date +%Y-%m-%d_%H-%M-%S)_$(git rev-parse --short HEAD)"
           done
-          echo "$command"
           eval $command
-          
-      - name: executing remote ssh commands using ssh key
-        uses: appleboy/ssh-action@v1.0.3
-        if: ${{ github.event.inputs.updateServerVersion == 'true' }}
-        with:
-          host: ${{ secrets.HOST }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.USERNAME }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          key: ${{ secrets.KEY }}
-          script: |
-            docker run --rm \
-              -v /var/run/docker.sock:/var/run/docker.sock \
-              -v ~/.docker/config.json:/config.json \
-              containrrr/watchtower \
-              --cleanup \
-              --run-once \
-              zfile-docs
