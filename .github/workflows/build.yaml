@@ -93,6 +93,6 @@ jobs:
           
           command="docker buildx build --provenance=false --platform linux/amd64,linux/arm64 --push . "
           for repo in ${repos[@]}; do
-              command="$command -t $repo\:latest -t $repo\:$(date +%Y-%m-%d_%H-%M-%S)_$(git rev-parse --short HEAD)"
+              command="$command -t $repo\:latest -t $repo\:$(TZ=Asia/Shanghai date +%Y-%m-%d_%H-%M-%S)_$(git rev-parse --short HEAD)"
           done
           eval $command
