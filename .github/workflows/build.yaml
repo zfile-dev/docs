@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Docker Build Image And Push Docker Registry
-    runs-on: blacksmith-8vcpu-ubuntu-2204
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     env:
       SECRET_REPO_PREFIX: REPO_
       SECRET_USERNAME_PREFIX: USERNAME_
@@ -25,18 +25,21 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Build front
+      - name: Install yarn
         run: |
           npm install -g yarn
-          yarn && yarn build
 
-      - name: Setup Node
+      - name: Setup Node Cache
         # uses: actions/setup-node@v4
         uses: useblacksmith/setup-node@v5
         with:
           node-version: '20'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
+
+      - name: Build front
+        run: |
+          yarn && yarn build
 
       - name: Set up QEMU               # 设置 QEMU 环境，用来模拟操作系统，用来编译 arm64 镜像和 amd64 镜像
         uses: docker/setup-qemu-action@v3
