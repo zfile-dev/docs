@@ -1,3 +1,6 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Docker
 
 Docker 镜像托管在 DockerHub：https://hub.docker.com/r/zhaojun1998/zfile-pro
@@ -23,14 +26,44 @@ Docker 镜像托管在 DockerHub：https://hub.docker.com/r/zhaojun1998/zfile-pr
 
 :::
 
+
+<Tabs>
+    <TabItem value="dockerhub" label="DockerHub">
 ```bash showLineNumbers {2,5}
 docker run -d --name=zfile-pro --restart=always \
     -p 8080:8080 \
     -v /root/zfile-pro/db:/root/.zfile-v4/db \
     -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
     -v /root/zfile-pro/file:/data/file \
-    zhaojun1998/zfile-pro
+    zhaojun1998/zfile-pro:latest
 ```
+    </TabItem>
+
+    <TabItem value="swr-bj" label="北京镜像">
+```bash showLineNumbers {2,5}
+docker run -d --name=zfile-pro --restart=always \
+    -p 8080:8080 \
+    -v /root/zfile-pro/db:/root/.zfile-v4/db \
+    -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
+    -v /root/zfile-pro/file:/data/file \
+    swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+```
+    </TabItem>
+
+    <TabItem value="swr-hk" label="香港镜像">
+```bash showLineNumbers {2,5}
+docker run -d --name=zfile-pro --restart=always \
+    -p 8080:8080 \
+    -v /root/zfile-pro/db:/root/.zfile-v4/db \
+    -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
+    -v /root/zfile-pro/file:/data/file \
+    swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
+```
+    </TabItem>
+</Tabs>
+
+
+
 
 ### 配置文件映射 {#config}
 
@@ -45,6 +78,8 @@ curl -k -o /root/application.properties https://c.jun6.net/ZFILE-PRO/application
 
 > 提示: 启动容器后无法修改文件映射，需先 `docker rm -f zfile-pro` 删除容器，再重新运行命令.
 
+<Tabs>
+    <TabItem value="dockerhub" label="DockerHub">
 ```bash showLineNumbers {6}
 docker run -d --name=zfile-pro --restart=always \
     -p 8080:8080 \
@@ -52,9 +87,34 @@ docker run -d --name=zfile-pro --restart=always \
     -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
     -v /root/zfile-pro/file:/data/file \
     -v /root/application.properties:/root/application.properties \
-    zhaojun1998/zfile-pro
+    zhaojun1998/zfile-pro:latest
 ```
+    </TabItem>
 
+    <TabItem value="swr-bj" label="北京镜像">
+```bash showLineNumbers {6}
+docker run -d --name=zfile-pro --restart=always \
+    -p 8080:8080 \
+    -v /root/zfile-pro/db:/root/.zfile-v4/db \
+    -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
+    -v /root/zfile-pro/file:/data/file \
+    -v /root/application.properties:/root/application.properties \
+    swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+```
+    </TabItem>
+
+    <TabItem value="swr-hk" label="香港镜像">
+```bash showLineNumbers {6}
+docker run -d --name=zfile-pro --restart=always \
+    -p 8080:8080 \
+    -v /root/zfile-pro/db:/root/.zfile-v4/db \
+    -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
+    -v /root/zfile-pro/file:/data/file \
+    -v /root/application.properties:/root/application.properties \
+    swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
+```
+    </TabItem>
+</Tabs>
 
 ## Docker Compose
 
@@ -70,6 +130,9 @@ docker run -d --name=zfile-pro --restart=always \
 
 :::
 
+
+<Tabs>
+    <TabItem value="dockerhub" label="DockerHub">
 ```yml showLineNumbers {7,11}
 version: '3.3'
 services:
@@ -82,8 +145,46 @@ services:
             - '/root/zfile-pro/db:/root/.zfile-v4/db'
             - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
             - '/root/zfile-pro/file:/data/file'
-        image: zhaojun1998/zfile-pro
+        image: zhaojun1998/zfile-pro:latest
 ```
+    </TabItem>
+
+    <TabItem value="swr-bj" label="北京镜像">
+```yml showLineNumbers {7,11}
+version: '3.3'
+services:
+    zfile:
+        container_name: zfile-pro
+        restart: always
+        ports:
+            - '8080:8080'
+        volumes:
+            - '/root/zfile-pro/db:/root/.zfile-v4/db'
+            - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
+            - '/root/zfile-pro/file:/data/file'
+        image: swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+```
+    </TabItem>
+
+    <TabItem value="swr-hk" label="香港镜像">
+```yml showLineNumbers {7,11}
+version: '3.3'
+services:
+    zfile:
+        container_name: zfile-pro
+        restart: always
+        ports:
+            - '8080:8080'
+        volumes:
+            - '/root/zfile-pro/db:/root/.zfile-v4/db'
+            - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
+            - '/root/zfile-pro/file:/data/file'
+        image: swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
+```
+    </TabItem>
+</Tabs>
+
+
 
 ### 配置文件映射 {#config2}
 
@@ -98,6 +199,8 @@ curl -k -o /root/application.properties https://c.jun6.net/ZFILE-PRO/application
 
 > 提示: 启动容器后无法修改文件映射，需先 `docker rm -f zfile-pro` 删除容器，再重新运行命令.
 
+<Tabs>
+    <TabItem value="dockerhub" label="DockerHub">
 ```yml showLineNumbers {12}
 version: '3.3'
 services:
@@ -111,8 +214,47 @@ services:
             - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
             - '/root/zfile-pro/file:/data/file'
             - '/root/application.properties:/root/application.properties'
-        image: zhaojun1998/zfile-pro
+        image: zhaojun1998/zfile-pro:latest
 ```
+    </TabItem>
+
+    <TabItem value="swr-bj" label="北京镜像">
+```yml showLineNumbers {12}
+version: '3.3'
+services:
+    zfile:
+        container_name: zfile-pro
+        restart: always
+        ports:
+            - '8080:8080'
+        volumes:
+            - '/root/zfile-pro/db:/root/.zfile-v4/db'
+            - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
+            - '/root/zfile-pro/file:/data/file'
+            - '/root/application.properties:/root/application.properties'
+        image: swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+```
+    </TabItem>
+
+    <TabItem value="swr-hk" label="香港镜像">
+```yml showLineNumbers {12}
+version: '3.3'
+services:
+    zfile:
+        container_name: zfile-pro
+        restart: always
+        ports:
+            - '8080:8080'
+        volumes:
+            - '/root/zfile-pro/db:/root/.zfile-v4/db'
+            - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
+            - '/root/zfile-pro/file:/data/file'
+            - '/root/application.properties:/root/application.properties'
+        image: swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
+```
+    </TabItem>
+</Tabs>
+
 
 -----
 
