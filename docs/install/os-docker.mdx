@@ -18,6 +18,7 @@ Docker 镜像托管在 DockerHub：https://hub.docker.com/r/zhaojun1998/zfile, �
 
 - 端口号：第 2 行**冒号**左侧的 `8080` 表示对外暴露的端口号，如其他程序占用，则请修改为其他端口号。
 - 数据目录：第 5 行的 `-v /root/zfile/file:/data/file \` 为映射宿主机文件夹 `/root/zfile/file` 到容器内的 `/data/file` 文件夹，这样需要在 ZFile 添加本地存储时，填写容器内目录 `/data/file` 就等同于访问宿主机的 `/root/zfile/file` 目录了。 这一行按照自己的需求修改，如果不需要映射本地存储，则可以删除这一行。
+    - 如果是 Windows，冒号左边可以带盘符，如 `D:/zfile/file:/data/file`。
 
 :::
 

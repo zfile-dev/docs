@@ -249,7 +249,7 @@ const sidebars = {
                     label: '查看 ZFile 版本'
                 },
                 {
-                    id: 'question/upload-fail-baota',
+                    id: 'question/upload-fail',
                     type: 'doc',
                     label: '上传失败怎么办？'
                 },
