@@ -116,6 +116,10 @@ const config = {
                                 "label": "QQ 交流群(2群)",
                                 "href": "https://qm.qq.com/cgi-bin/qm/qr?k=JJcfuIVYiPJ5GDa5_gm8UFLrgWwC9ptD&jump_from=webapi&authKey=dSdYtP2MZxQuTF+Z0+XhWuARuVFUhmoRWWUYRa8/JHLZ8H8bqPzLdabkOc7l5eO8"
                             },
+                            {
+                                "label": "捐赠版交流群(授权后台查看)",
+                                "href": "https://www.zfile.vip/login"
+                            },
                         ]
                     },
                     {

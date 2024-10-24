@@ -1,0 +1,61 @@
+# 宝塔应用商店
+
+:::tip 提示
+
+宝塔应用商店需宝塔版本为 9.2.0 及以上版本，如果低于此版本请先升级宝塔或用[传统的宝塔安装方式](os-baota)。
+
+:::
+
+## 运行
+
+1. 登录宝塔面板，点击左侧菜单的 `Docker`，在应用商店搜索 `ZFile`，点击**安装**。
+
+<img className={'sm:w-6/12 '} src="/img/2024/10/24/baota-new-1.png"></img>
+
+
+2. 填写**基本信息**，点击**确定**。
+
+<img className={'sm:w-6/12 '} src="/img/2024/10/24/baota-new-2.png"></img>
+
+3. 运行起来后访问即可。
+
+
+## 数据目录
+
+可通过以下方式进入数据目录，包含数据库、日志等：
+
+<img className={'sm:w-6/12 '} src="/img/2024/10/24/baota-new-3.png"></img>
+
+
+### 在 ZFile 中访问宿主机文件
+
+宝塔默认将上面的数据目录下的 `mnt` 目录映射到容器的 `/data/zfile` 目录，在 ZFile 本地存储填写路径时，填写 `/data/zfile` 即可。
+
+<img className={'sm:w-8/12 '} src="/img/2024/10/24/baota-new-4.png"></img>
+<img className={'sm:w-8/12 '} src="/img/2024/10/24/baota-new-5.png"></img>
+
+如想映射宿主机的其他目录，可编辑数据目录下的 `docker-compose.yml` 文件，如我想在容器内用 `/www/wwwroot/xxx.com`：
+
+<img className={'sm:w-8/12 '} src="/img/2024/10/24/baota-new-6.png"></img>
+<img className={'sm:w-8/12 '} src="/img/2024/10/24/baota-new-7.png"></img>
+
+
+### 配置文件 {#config}
+
+**如需修改配置文件**则需要先在宿主机下载配置文件，然后映射到容器内:
+下载`https://c.jun6.net/ZFILE-PRO/application.properties`文件到数据目录下，然后编辑 `docker-compose.yml` 文件，
+添加 `- ${APP_PATH}/application.properties:/root/application.properties`，如下图：
+
+<img className={'sm:w-8/12 '} src="/img/2024/10/24/baota-new-8.png"></img>
+<img className={'sm:w-8/12 '} src="/img/2024/10/24/baota-new-9.png"></img>
+<img className={'sm:w-8/12 '} src="/img/2024/10/24/baota-new-10.png"></img>
+
+第一次配置需重建容器后生效，之后修改配置文件 `application.properties` 的话，重启容器即可生效。
+
+
+## 其他设置
+
+宝塔 `nginx` 默认只支持上传最大 `50MB` 的文件，可去以下页面进行设置:
+
+<img className={'sm:w-10/12 '} src="/img/2022/08/16/uxPAXY.png"></img>
+<img className={'sm:w-6/12 '} src="/img/2022/08/16/Jx2P2s.png"></img>

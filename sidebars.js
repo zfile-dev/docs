@@ -41,6 +41,16 @@ const sidebars = {
                     },
                     items: [
                         {
+                            id: 'install/os-baota-new',
+                            type: 'doc',
+                            label: '宝塔应用商店'
+                        },
+                        {
+                            id: 'install/os-baota',
+                            type: 'doc',
+                            label: '宝塔传统方式'
+                        },
+                        {
                             id: 'install/os-linux',
                             type: 'doc',
                             label: 'Linux'
@@ -54,12 +64,7 @@ const sidebars = {
                             id: 'install/os-docker',
                             type: 'doc',
                             label: 'Docker'
-                        },
-                        {
-                            id: 'install/os-baota',
-                            type: 'doc',
-                            label: '宝塔'
-                        },
+                        }
                     ]
                 },
                 {
