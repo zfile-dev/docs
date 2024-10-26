@@ -43,7 +43,7 @@ const sidebars = {
                         {
                             id: 'install/os-baota-new',
                             type: 'doc',
-                            label: '宝塔应用商店'
+                            label: '宝塔Docker应用商店'
                         },
                         {
                             id: 'install/os-baota',
