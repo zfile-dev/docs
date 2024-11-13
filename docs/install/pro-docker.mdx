@@ -1,17 +1,19 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
 
 # Docker
 
-Docker 镜像托管在 DockerHub：https://hub.docker.com/r/zhaojun1998/zfile-pro
+Docker 镜像托管在 DockerHub：https://hub.docker.com/r/zhaojun1998/zfile-pro 下文也提供了华为云镜像地址。
+
+<TOCInline toc={toc} />
 
 ## 前言
 
 - 购买捐赠版可以上 https://www.zfile.vip/pricing 查看功能介绍并购买.
 - ZFile Pro 支持从 4.x 兼容升级，<span className={"text-red-500"}>不支持从 3.x 或更早的版本带数据升级</span>.
-- 镜像地址为：https://hub.docker.com/r/zhaojun1998/zfile-pro
 
-<span className={"font-bold"}>tips：如从开源版 4.x 版本升级到的捐赠版，想要保留之前的数据，需将下文中的 `/root/zfile-pro/db:/root/.zfile-v4/db` 中的左侧 `/root/zfile-pro/db` 修改为 `/root/zfile-pro/db`，否则会创建新的数据库.</span>
+<span className={"font-bold"}>tips：如从开源版 4.x 版本升级到的捐赠版，想要保留之前的数据，需注意数据库目录，开源版 Docker 文档默认在宿主机的 `/root/zfile/db` 目录，捐赠版在 `/root/zfile-pro/db` 目录，注意将前者数据迁移过来。</span>
 
 ## Docker
 
@@ -28,7 +30,7 @@ Docker 镜像托管在 DockerHub：https://hub.docker.com/r/zhaojun1998/zfile-pr
 :::
 
 
-<Tabs>
+<Tabs groupId="image-src">
     <TabItem value="dockerhub" label="DockerHub">
 ```bash showLineNumbers {2,5}
 docker run -d --name=zfile-pro --restart=always \
@@ -79,7 +81,7 @@ curl -k -o /root/application.properties https://c.jun6.net/ZFILE-PRO/application
 
 > 提示: 启动容器后无法修改文件映射，需先 `docker rm -f zfile-pro` 删除容器，再重新运行命令.
 
-<Tabs>
+<Tabs groupId="image-src">
     <TabItem value="dockerhub" label="DockerHub">
 ```bash showLineNumbers {6}
 docker run -d --name=zfile-pro --restart=always \
@@ -132,7 +134,7 @@ docker run -d --name=zfile-pro --restart=always \
 :::
 
 
-<Tabs>
+<Tabs groupId="image-src">
     <TabItem value="dockerhub" label="DockerHub">
 ```yml showLineNumbers {7,11}
 version: '3.3'
@@ -200,7 +202,7 @@ curl -k -o /root/application.properties https://c.jun6.net/ZFILE-PRO/application
 
 > 提示: 启动容器后无法修改文件映射，需先 `docker rm -f zfile-pro` 删除容器，再重新运行命令.
 
-<Tabs>
+<Tabs groupId="image-src">
     <TabItem value="dockerhub" label="DockerHub">
 ```yml showLineNumbers {12}
 version: '3.3'

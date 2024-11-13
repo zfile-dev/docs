@@ -1,14 +1,16 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CalculateComponent from '../../component/ComputeCommand';
+import ComputeCommandNew from '../../component/ComputeCommandNew';
+import TOCInline from '@theme/TOCInline';
 
 # 宝塔
+
+<TOCInline toc={toc} />
 
 ## 1.前言
 
 - 购买捐赠版可以上 https://www.zfile.vip/pricing 查看功能介绍并购买.
-- 新版本无需预装 Java 环境，软件包中内置一个经过优化且相对标准 JDK 内存占用极小的环境.
-- 新版本安装包区分操作系统和系统架构，命名为 `zfile-pro-[release/版本号]_[OS]_[ARCH].[zip/tar.gz]`, 可前往此地址进行查看： https://c.jun6.net/ZFILE-PRO/
 - ZFile Pro 支持从 4.x 兼容升级，不支持从 3.x 或更早的版本带数据升级.
 
 ## 2.下载
@@ -26,43 +28,69 @@ import CalculateComponent from '../../component/ComputeCommand';
 [点击下载](https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_arm.tar.gz)
 
 </TabItem>
-<TabItem value="windows64" label="Windows 64 位">
-
-[点击下载](https://c.jun6.net/ZFILE-PRO/zfile-pro-release_windows_amd64.zip)
-
-</TabItem>
-<TabItem value="windows32" label="Windows 32 位">
-
-[点击下载](https://c.jun6.net/ZFILE-PRO/zfile-pro-release_windows_x86.zip)
-
-</TabItem>
 </Tabs>
 
 ## 3.解压
 
-解压文件，宝塔一般文件管理器能在线解压
+可以用宝塔自带的文件管理器解压:
+
+<img className={'sm:w-2/3 '} src="/img/2024/11/09/pro-baota-1.png"></img>
 
 ## 4.新建网站
 
-<img className={'sm:w-2/3 '} src="/img/2022/07/25/G6K7ou.png"></img>
+<Tabs>
 
-<img className={'sm:w-7/12'} src="/img/2023/03/11/img.png"></img>
+    <TabItem value="4.1.6" label="4.1.6及以前版本">
 
-假如你 `解压路径` 为 `/www/wwwroot/demo.zfile.vip`
+    <img className={'sm:w-2/3 '} src="/img/2022/07/25/G6K7ou.png"></img>
 
-1. **项目执行文件**：写 `解压路径/zfile-launch`，如 `/www/wwwroot/demo.zfile.vip/zfile-launch`
-2. **项目名称**：随便写
-3. **项目端口**：写你实际的端口，默认为 `8080`, **如您修改配置文件 `解压路径/application.properties` 中的端口，则写修改后的端口（但注意，千万不要写 80 或 443，因为宝塔已经占用了这些端口）**
-4. **执行命令**：将步骤 1 `项目执行文件` 的内容复制到下面，点击 "**生成执行命令**"，**然后复制生成的结果粘贴到宝塔执行命令中即可**。
+    <img className={'sm:w-7/12'} src="/img/2023/03/11/img.png"></img>
 
-<CalculateComponent />
+    假如你 `解压路径` 为 `/www/wwwroot/demo.zfile.vip`
 
-5. **运行用户**：选 root
-6. **开机自启**：根据需要选择
-7. **备注**：随意
-8. **绑定域名**：
+    1. **项目执行文件**：写 `解压路径/zfile-launch`，如 `/www/wwwroot/demo.zfile.vip/zfile-launch`
+    2. **项目名称**：随便写
+    3. **项目端口**：写你实际的端口，默认为 `8080`, **如您修改配置文件 `解压路径/application.properties` 中的端口，则写修改后的端口（但注意，千万不要写 80 或 443，因为宝塔已经占用了这些端口）**
+    4. **执行命令**：将步骤 1 `项目执行文件` 的内容复制到下面，点击 "**生成执行命令**"，**然后复制生成的结果粘贴到宝塔执行命令中即可**。
+
+    <CalculateComponent />
+
+    5. **运行用户**：选 root
+    6. **开机自启**：根据需要选择
+    7. **备注**：随意
+    8. **绑定域名**：
     - 如果使用域名，这里就写域名，**注意这里只写域名，不写协议和端口**。
     - 如果不需要使用域名，而是直接使用服务器IP和端口访问，**这里什么都不需要写**。
+
+    </TabItem>
+
+    <TabItem value="4.1.6+" label="4.1.7及以后版本">
+
+        <img className={'sm:w-2/3 '} src="/img/2022/07/25/G6K7ou.png"></img>
+
+        <img className={'sm:w-7/12'} src="/img/2024/11/09/pro-baota-2.png"></img>
+
+        假如你 `解压路径` 为 `/www/wwwroot/demo.zfile.vip`
+
+        1. **项目执行文件**：写 `解压路径`，如 `/www/wwwroot/demo.zfile.vip`
+        2. **项目名称**：随便写，只要符合宝塔的规则即可（保存时会提示）
+        3. **项目端口**：写你实际的端口，默认为 `8080`, **如您修改配置文件 `解压路径/application.properties` 中的端口，则写修改后的端口（但注意，千万不要写 80 或 443，因为宝塔已经占用了这些端口）**
+        4. **执行命令**：将步骤 1 `项目执行文件` 的内容复制到下面，点击 "**生成执行命令**"，**然后复制生成的结果粘贴到宝塔执行命令中即可**。
+
+        <ComputeCommandNew />
+
+        5. **运行用户**：选 root
+        6. **开机自启**：根据需要选择
+        7. **备注**：随意
+        8. **绑定域名**：
+        - 如果使用域名，这里就写域名，**注意这里只写域名，不写协议和端口**。
+        - 如果不需要使用域名，而是直接使用服务器IP和端口访问，**这里什么都不需要写**。
+
+
+
+    </TabItem>
+
+</Tabs>
 
 ## 5.更新版本
 
