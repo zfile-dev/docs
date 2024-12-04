@@ -79,6 +79,10 @@ apt install -y openjdk-8-jre-headless unzip
 2. 重复步骤 [下载项目](#下载项目) 下载最新版本程序，覆盖原来的 `zfile-release.jar` 文件（其实就是先删除之前的，再将新版本程序放到同路径同名）
 3. 启动项目，访问验证。（一般启动需要 1-3 分钟，访问如果还是之前的版本，请清除浏览器缓存！）
 
+> 注意：如果你使用 9.x 的宝塔，可能会遇到宝塔的一个 bug，导致直链/短链跳转到 127.0.0.1，解决方法是在**宝塔上** 修改这个站点配置文件(不是ZFile配置文件)，将 `proxy_set_header Host 127.0.0.1:$server_port;` 修改为 `proxy_set_header Host $host;`，保存即可。
+<img className={'sm:w-6/12 '} src="/img/2024/12/5/baota-fix1.png"></img>
+<img className={'sm:w-6/12 '} src="/img/2024/12/5/baota-fix2.png"></img>
+
 
 ## 其他设置
 
