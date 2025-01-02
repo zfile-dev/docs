@@ -49,7 +49,7 @@ docker run -d --name=zfile-pro --restart=always \
     -v /root/zfile-pro/db:/root/.zfile-v4/db \
     -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
     -v /root/zfile-pro/file:/data/file \
-    swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+    swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>
 
@@ -60,7 +60,7 @@ docker run -d --name=zfile-pro --restart=always \
     -v /root/zfile-pro/db:/root/.zfile-v4/db \
     -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
     -v /root/zfile-pro/file:/data/file \
-    swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
+    swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>
 </Tabs>
@@ -102,7 +102,7 @@ docker run -d --name=zfile-pro --restart=always \
     -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
     -v /root/zfile-pro/file:/data/file \
     -v /root/application.properties:/root/application.properties \
-    swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+    swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>
 
@@ -114,7 +114,7 @@ docker run -d --name=zfile-pro --restart=always \
     -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
     -v /root/zfile-pro/file:/data/file \
     -v /root/application.properties:/root/application.properties \
-    swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
+    swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>
 </Tabs>
@@ -165,7 +165,7 @@ services:
             - '/root/zfile-pro/db:/root/.zfile-v4/db'
             - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
             - '/root/zfile-pro/file:/data/file'
-        image: swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+        image: swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>
 
@@ -182,7 +182,7 @@ services:
             - '/root/zfile-pro/db:/root/.zfile-v4/db'
             - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
             - '/root/zfile-pro/file:/data/file'
-        image: swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
+        image: swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>
 </Tabs>
@@ -235,7 +235,7 @@ services:
             - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
             - '/root/zfile-pro/file:/data/file'
             - '/root/application.properties:/root/application.properties'
-        image: swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+        image: swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>
 
@@ -253,7 +253,7 @@ services:
             - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
             - '/root/zfile-pro/file:/data/file'
             - '/root/application.properties:/root/application.properties'
-        image: swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
+        image: swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>
 </Tabs>
