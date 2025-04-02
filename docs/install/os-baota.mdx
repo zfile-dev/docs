@@ -1,96 +1,80 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import ComputeCommandNew from '../../component/ComputeCommandNew';
+import TOCInline from '@theme/TOCInline';
 
 # 宝塔
 
-## 安装基础环境
+<TOCInline toc={toc} />
 
-:::tip 提示
+## 1.前言
 
-如已安装 Java 环境（Java 1.8）可跳过此步骤
+**4.2.0** 开始开源版**部署方式有所变化**，如果你是从 4.1.5 及以前版本升级过来的，请**停止并删除**之前的程序后，参考下文的安装方法重新安装。(数据文件在用户目录下，不会丢失.)
 
-:::
+## 2.下载
+
+根据自己的系统架构将文件下载到服务器上。
 
 <Tabs>
-<TabItem value="centos" label="Centos">
+<TabItem value="amd64" label="Linux AMD 64">
 
-```bash
-yum install -y java-1.8.0-openjdk unzip
-```
+[点击下载](https://c.jun6.net/ZFILE/zfile-release_linux_amd64.tar.gz)
 
 </TabItem>
-<TabItem value="ubuntu" label="Ubuntu">
+<TabItem value="arm64" label="Linux ARM 64">
 
-```bash
-apt update
-apt install -y openjdk-8-jre-headless unzip
-```
+[点击下载](https://c.jun6.net/ZFILE/zfile-release_linux_arm.tar.gz)
 
 </TabItem>
 </Tabs>
 
+## 3.解压
 
-## 下载项目
+可以用宝塔自带的文件管理器解压:
 
-下载文件到服务器：https://c.jun6.net/ZFILE/zfile-release.jar
+<img className={'sm:w-2/3 '} src="/img/2024/11/09/os-baota-1.png"></img>
 
+## 4.新建网站
 
-## 宝塔网站配置
+<img className={'sm:w-2/3 '} src="/img/2022/07/25/G6K7ou.png"></img>
 
-![](/img/2022/08/15/72eqJt.jpg)
+<img className={'sm:w-7/12'} src="/img/2024/11/09/os-baota-2.png"></img>
 
+假如你 `解压路径` 为 `/www/wwwroot/demo.zfile.vip`
 
-:::info 提示
+1. **项目执行文件**：写 `解压路径`，如 `/www/wwwroot/demo.zfile.vip`
+2. **项目名称**：随便写，只要符合宝塔的规则即可（保存时会提示）
+3. **项目端口**：写你实际的端口，默认为 `8080`, **如您修改配置文件 `解压路径/application.properties` 中的端口，则写修改后的端口（但注意，千万不要写 80 或 443，因为宝塔已经占用了这些端口）**
+4. **执行命令**：将你自己步骤 1 `项目执行文件` 的内容复制到下面，点击 "**生成执行命令**"，**然后复制生成的结果粘贴到宝塔执行命令中即可**。
 
-如果填写了域名，访问域名即可（记得将域名指向服务），如果使用的是端口，则使用端口访问.
+<ComputeCommandNew />
 
-:::
-
-
-## 配置文件 {#config}
-
-如需要修改配置文件, 请下载配置文件 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) 传到上一步 ZFile 文件所在目录下，命名为 `application.properties`.
-然后在**宝塔的 ZFile 配置**中（参考上一步）的表单项 `项目执行命令` 原内容后**增加内容**：
-
-```bash
- --spring.config.location=file:/www/wwwroot/xxx.com/application.properties
-# 这里的 /www/wwwroot/xxx.com/application.properties 为你上传到服务器配置文件的路径，注意这行注释不要复制，只复制上面的那一行，注意上移行最前面有一个空格，记得复制（用于和原内容保持一个空格距离）
-```
-
-
-如原来 `项目执行命令` 为：
-
-```bash showLineNumbers
-/usr/bin/java -jar -Xmx1024M -Xms256M /path/zfile-release.jar --server.port=7818
-```
-
-修改后
-```bash showLineNumbers
-/usr/bin/java -jar -Xmx1024M -Xms256M /path/zfile-release.jar --server.port=7818 --spring.config.location=file:/path/application.properties
-```
-
-> 这里的前半部分 `/usr/bin/java -jar -Xmx1024M -Xms256M /path/zfile-release.jar --server.port=7818` 也是示例，不表示你**宝塔的 ZFile 配置**中的表单项 `项目执行命令` 原内容。
-
+5. **运行用户**：选 root
+6. **开机自启**：根据需要选择
+7. **备注**：随意
+8. **绑定域名**：
+- 如果使用域名，这里就写域名，**注意这里只写域名，不写协议和端口**。
+- 如果不需要使用域名，而是直接使用服务器IP和端口访问，**这里什么都不需要写**。
 
 > 注意：如果你使用 9.x 的宝塔，可能会遇到宝塔的一个 bug，导致直链/短链跳转到 127.0.0.1，解决方法是在**宝塔上** 修改这个站点配置文件(不是ZFile配置文件)，将 `proxy_set_header Host 127.0.0.1:$server_port;` 修改为 `proxy_set_header Host $host;`，保存即可。
 <img className={'sm:w-6/12 '} src="/img/2024/12/5/baota-fix1.png"></img>
 <img className={'sm:w-6/12 '} src="/img/2024/12/5/baota-fix2.png"></img>
 
-## 更新版本
+## 5.更新版本
 
 更新步骤如下：
 
 1. 宝塔中停止 ZFile 程序（务必先停止，且尝试访问网页无法访问再继续下面的操作）
-2. 重复步骤 [下载项目](#下载项目) 下载最新版本程序，覆盖原来的 `zfile-release.jar` 文件（其实就是先删除之前的，再将新版本程序放到同路径同名）
+2. 删除旧版本程序文件夹中内容
+3. 重复前面的 [2.下载](#2下载)、[3.解压](#3解压) 步骤，将新版本文件解压到原来的文件夹中
 3. 启动项目，访问验证。（一般启动需要 1-3 分钟，访问如果还是之前的版本，请清除浏览器缓存！）
 
-
-## 其他设置
+## 6.其他设置
 
 宝塔 `nginx` 默认只支持上传最大 `50MB` 的文件，可去以下页面进行设置:
 
 <img className={'sm:w-10/12 '} src="/img/2022/08/16/uxPAXY.png"></img>
-<img className={'sm:w-6/12 '} src="/img/2022/08/16/Jx2P2s.png"></img>
+<img className={'sm:w-10/12 '} src="/img/2022/08/16/Jx2P2s.png"></img>
 
-## 帮我安装🔍
+## 7.帮我安装🔍
 [技术支持](/support/)

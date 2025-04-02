@@ -30,6 +30,11 @@ const sidebars = {
             // collapsed: false,
             items: [
                 {
+                    id: 'install/script-install',
+                    type: 'doc',
+                    label: '一键安装脚本'
+                },
+                {
                     type: 'category',
                     label: '开源版',
                     collapsed: false,

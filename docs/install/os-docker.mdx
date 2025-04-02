@@ -1,16 +1,23 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
 
-# Docker & Docker Compose
-
-## Docker
-
-### 安装介绍
+# Docker
 
 Docker 镜像托管在 DockerHub：https://hub.docker.com/r/zhaojun1998/zfile, 如果你的网络环境访问 docker hub 不方便，还可以使用镜像：
 
 - 香港：swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
-- 北京: swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+- 北京：swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+
+<TOCInline toc={toc} />
+
+## 前言
+
+**4.2.0** 开始开源版**部署方式有所变化**，如果你是从 4.1.5 及以前版本升级过来的，请**停止并删除**之前的程序后，参考下文的安装方法重新安装。(数据文件在用户目录下，不会丢失.)
+
+## Docker
+
+### 安装介绍
 
 :::tip 配置说明
 
@@ -22,9 +29,9 @@ Docker 镜像托管在 DockerHub：https://hub.docker.com/r/zhaojun1998/zfile, �
 
 :::
 
-<Tabs>
-<TabItem value="dockerhub" label="DockerHub">
 
+<Tabs groupId="image-src">
+    <TabItem value="dockerhub" label="DockerHub">
 ```bash showLineNumbers {2,5}
 docker run -d --name=zfile --restart=always \
     -p 8080:8080 \
@@ -33,10 +40,9 @@ docker run -d --name=zfile --restart=always \
     -v /root/zfile/file:/data/file \
     zhaojun1998/zfile:latest
 ```
+    </TabItem>
 
-</TabItem>
-<TabItem value="swr-bj" label="北京镜像">
-
+    <TabItem value="swr-bj" label="北京镜像">
 ```bash showLineNumbers {2,5}
 docker run -d --name=zfile --restart=always \
     -p 8080:8080 \
@@ -45,10 +51,9 @@ docker run -d --name=zfile --restart=always \
     -v /root/zfile/file:/data/file \
     swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
 ```
+    </TabItem>
 
-</TabItem>
-<TabItem value="swr-hk" label="香港镜像">
-
+    <TabItem value="swr-hk" label="香港镜像">
 ```bash showLineNumbers {2,5}
 docker run -d --name=zfile --restart=always \
     -p 8080:8080 \
@@ -57,26 +62,26 @@ docker run -d --name=zfile --restart=always \
     -v /root/zfile/file:/data/file \
     swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
 ```
-
-</TabItem>
+    </TabItem>
 </Tabs>
+
+
 
 
 ### 配置文件映射 {#config}
 
 **如需映射配置文件**则需要先在宿主机下载配置文件，然后映射到容器内:
-下载 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) 文件到 `/root` 目录下, 此目录可自行更改, 命令如:
+下载 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) 文件到 `/root/zfile/` 目录下, 此目录可自行更改, 命令如:
 
 ```bash showLineNumbers
-curl -k -o /root/application.properties https://c.jun6.net/ZFILE/application.properties
+curl -k -o /root/zfile/application.properties https://c.jun6.net/ZFILE/application.properties
 ```
 
 **然后增加一个 `-v` 参数(见下面倒数第二行)，将此源文件映射到容器内（如修改宿主机的 `application.properties` 为其他路径, 则下面命令也要一起修改）, 如:**
 
 > 提示: 启动容器后无法修改文件映射，需先 `docker rm -f zfile` 删除容器，再重新运行命令.
 
-
-<Tabs>
+<Tabs groupId="image-src">
     <TabItem value="dockerhub" label="DockerHub">
 ```bash showLineNumbers {6}
 docker run -d --name=zfile --restart=always \
@@ -84,39 +89,38 @@ docker run -d --name=zfile --restart=always \
     -v /root/zfile/db:/root/.zfile-v4/db \
     -v /root/zfile/logs:/root/.zfile-v4/logs \
     -v /root/zfile/file:/data/file \
-    -v /root/application.properties:/root/application.properties \
+    -v /root/zfile/application.properties:/root/application.properties \
     zhaojun1998/zfile:latest
 ```
     </TabItem>
 
     <TabItem value="swr-bj" label="北京镜像">
-        ```bash showLineNumbers {6}
-        docker run -d --name=zfile --restart=always \
-            -p 8080:8080 \
-            -v /root/zfile/db:/root/.zfile-v4/db \
-            -v /root/zfile/logs:/root/.zfile-v4/logs \
-            -v /root/zfile/file:/data/file \
-            -v /root/application.properties:/root/application.properties \
-            swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
-        ```
+```bash showLineNumbers {6}
+docker run -d --name=zfile --restart=always \
+    -p 8080:8080 \
+    -v /root/zfile/db:/root/.zfile-v4/db \
+    -v /root/zfile/logs:/root/.zfile-v4/logs \
+    -v /root/zfile/file:/data/file \
+    -v /root/zfile/application.properties:/root/application.properties \
+    swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+```
     </TabItem>
 
     <TabItem value="swr-hk" label="香港镜像">
-        ```bash showLineNumbers {6}
-        docker run -d --name=zfile --restart=always \
-            -p 8080:8080 \
-            -v /root/zfile/db:/root/.zfile-v4/db \
-            -v /root/zfile/logs:/root/.zfile-v4/logs \
-            -v /root/zfile/file:/data/file \
-            -v /root/application.properties:/root/application.properties \
-            swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
-        ```
+```bash showLineNumbers {6}
+docker run -d --name=zfile --restart=always \
+    -p 8080:8080 \
+    -v /root/zfile/db:/root/.zfile-v4/db \
+    -v /root/zfile/logs:/root/.zfile-v4/logs \
+    -v /root/zfile/file:/data/file \
+    -v /root/zfile/application.properties:/root/application.properties \
+    swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
+```
     </TabItem>
 </Tabs>
 
----
-
 ## Docker Compose
+
 
 ### 安装介绍
 
@@ -129,7 +133,8 @@ docker run -d --name=zfile --restart=always \
 
 :::
 
-<Tabs>
+
+<Tabs groupId="image-src">
     <TabItem value="dockerhub" label="DockerHub">
 ```yml showLineNumbers {7,11}
 version: '3.3'
@@ -164,7 +169,6 @@ services:
 ```
     </TabItem>
 
-
     <TabItem value="swr-hk" label="香港镜像">
 ```yml showLineNumbers {7,11}
 version: '3.3'
@@ -181,24 +185,24 @@ services:
         image: swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
 ```
     </TabItem>
-
 </Tabs>
+
+
 
 ### 配置文件映射 {#config2}
 
-
 **如需映射配置文件**则需要先在宿主机下载配置文件，然后映射到容器内:
-下载 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) 文件到 `/root` 目录下, 此目录可自行更改, 命令如:
+下载 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) 文件到 `/root/zfile/` 目录下, 此目录可自行更改, 命令如:
 
 ```bash showLineNumbers
-curl -k -o /root/application.properties https://c.jun6.net/ZFILE/application.properties
+curl -k -o /root/zfile/application.properties https://c.jun6.net/ZFILE/application.properties
 ```
 
 **然后增加一个 `-v` 参数(见下面倒数第二行)，将此源文件映射到容器内（如修改宿主机的 `application.properties` 为其他路径, 则下面命令也要一起修改）, 如:**
 
 > 提示: 启动容器后无法修改文件映射，需先 `docker rm -f zfile` 删除容器，再重新运行命令.
 
-<Tabs>
+<Tabs groupId="image-src">
     <TabItem value="dockerhub" label="DockerHub">
 ```yml showLineNumbers {12}
 version: '3.3'
@@ -212,10 +216,11 @@ services:
             - '/root/zfile/db:/root/.zfile-v4/db'
             - '/root/zfile/logs:/root/.zfile-v4/logs'
             - '/root/zfile/file:/data/file'
-            - '/root/application.properties:/root/application.properties'
+            - '/root/zfile/application.properties:/root/application.properties'
         image: zhaojun1998/zfile:latest
 ```
     </TabItem>
+
     <TabItem value="swr-bj" label="北京镜像">
 ```yml showLineNumbers {12}
 version: '3.3'
@@ -229,10 +234,11 @@ services:
             - '/root/zfile/db:/root/.zfile-v4/db'
             - '/root/zfile/logs:/root/.zfile-v4/logs'
             - '/root/zfile/file:/data/file'
-            - '/root/application.properties:/root/application.properties'
+            - '/root/zfile/application.properties:/root/application.properties'
         image: swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
 ```
     </TabItem>
+
     <TabItem value="swr-hk" label="香港镜像">
 ```yml showLineNumbers {12}
 version: '3.3'
@@ -246,15 +252,15 @@ services:
             - '/root/zfile/db:/root/.zfile-v4/db'
             - '/root/zfile/logs:/root/.zfile-v4/logs'
             - '/root/zfile/file:/data/file'
-            - '/root/application.properties:/root/application.properties'
+            - '/root/zfile/application.properties:/root/application.properties'
         image: swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile:latest
 ```
     </TabItem>
 </Tabs>
 
 
-
 -----
+
 
 ## 更新版本
 

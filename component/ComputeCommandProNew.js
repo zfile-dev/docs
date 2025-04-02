@@ -17,7 +17,7 @@ function ComputeCommand() {
             path = value.substring(0, value.length - 13);
         }
         path = path || '/www/wwwroot/demo.zfile.vip'; // 如果输入框为空，则使用默认值
-        const command = `${path}/zfile/zfile --spring.config.location=${path}/application.properties`; // 根据路径计算命令
+        const command = `${path}/zfile/zfile-pro --spring.config.location=${path}/application.properties`; // 根据路径计算命令
         setResult(command); // 将计算出的命令设置为计算结果
     };
 

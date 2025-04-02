@@ -71,10 +71,10 @@ docker run -d --name=zfile-pro --restart=always \
 ### 配置文件映射 {#config}
 
 **如需映射配置文件**则需要先在宿主机下载配置文件，然后映射到容器内:
-下载 [`application.properties`](https://c.jun6.net/ZFILE-PRO/application.properties) 文件到 `/root` 目录下, 此目录可自行更改, 命令如:
+下载 [`application.properties`](https://c.jun6.net/ZFILE-PRO/application.properties) 文件到 `/root/zfile-pro/` 目录下, 此目录可自行更改, 命令如:
 
 ```bash showLineNumbers
-curl -k -o /root/application.properties https://c.jun6.net/ZFILE-PRO/application.properties
+curl -k -o /root/zfile-pro/application.properties https://c.jun6.net/ZFILE-PRO/application.properties
 ```
 
 **然后增加一个 `-v` 参数(见下面倒数第二行)，将此源文件映射到容器内（如修改宿主机的 `application.properties` 为其他路径, 则下面命令也要一起修改）, 如:**
@@ -89,7 +89,7 @@ docker run -d --name=zfile-pro --restart=always \
     -v /root/zfile-pro/db:/root/.zfile-v4/db \
     -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
     -v /root/zfile-pro/file:/data/file \
-    -v /root/application.properties:/root/application.properties \
+    -v /root/zfile-pro/application.properties:/root/application.properties \
     zhaojun1998/zfile-pro:latest
 ```
     </TabItem>
@@ -101,7 +101,7 @@ docker run -d --name=zfile-pro --restart=always \
     -v /root/zfile-pro/db:/root/.zfile-v4/db \
     -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
     -v /root/zfile-pro/file:/data/file \
-    -v /root/application.properties:/root/application.properties \
+    - /root/zfile-pro/application.properties:/root/application.properties \
     swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>
@@ -113,7 +113,7 @@ docker run -d --name=zfile-pro --restart=always \
     -v /root/zfile-pro/db:/root/.zfile-v4/db \
     -v /root/zfile-pro/logs:/root/.zfile-v4/logs \
     -v /root/zfile-pro/file:/data/file \
-    -v /root/application.properties:/root/application.properties \
+    - /root/zfile-pro/application.properties:/root/application.properties \
     swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>
@@ -192,10 +192,10 @@ services:
 ### 配置文件映射 {#config2}
 
 **如需映射配置文件**则需要先在宿主机下载配置文件，然后映射到容器内:
-下载 [`application.properties`](https://c.jun6.net/ZFILE-PRO/application.properties) 文件到 `/root` 目录下, 此目录可自行更改, 命令如:
+下载 [`application.properties`](https://c.jun6.net/ZFILE-PRO/application.properties) 文件到 `/root/zfile-pro/` 目录下, 此目录可自行更改, 命令如:
 
 ```bash showLineNumbers
-curl -k -o /root/application.properties https://c.jun6.net/ZFILE-PRO/application.properties
+curl -k -o /root/zfile-pro/proapplication.properties https://c.jun6.net/ZFILE-PRO/application.properties
 ```
 
 **然后增加一个 `-v` 参数(见下面倒数第二行)，将此源文件映射到容器内（如修改宿主机的 `application.properties` 为其他路径, 则下面命令也要一起修改）, 如:**
@@ -216,7 +216,7 @@ services:
             - '/root/zfile-pro/db:/root/.zfile-v4/db'
             - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
             - '/root/zfile-pro/file:/data/file'
-            - '/root/application.properties:/root/application.properties'
+            - '/root/zfile-pro/application.properties:/root/application.properties'
         image: zhaojun1998/zfile-pro:latest
 ```
     </TabItem>
@@ -234,7 +234,7 @@ services:
             - '/root/zfile-pro/db:/root/.zfile-v4/db'
             - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
             - '/root/zfile-pro/file:/data/file'
-            - '/root/application.properties:/root/application.properties'
+            - '/root/zfile-pro/application.properties:/root/application.properties'
         image: swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>
@@ -252,7 +252,7 @@ services:
             - '/root/zfile-pro/db:/root/.zfile-v4/db'
             - '/root/zfile-pro/logs:/root/.zfile-v4/logs'
             - '/root/zfile-pro/file:/data/file'
-            - '/root/application.properties:/root/application.properties'
+            - '/root/zfile-pro/application.properties:/root/application.properties'
         image: swr.ap-southeast-1.myhuaweicloud.com/zfile-dev/zfile-pro:latest
 ```
     </TabItem>

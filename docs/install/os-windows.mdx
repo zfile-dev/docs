@@ -1,78 +1,32 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 # Windows
 
-## 安装 JDK
+## 前言
 
-:::tip 提示
+**4.2.0** 开始开源版**部署方式有所变化**，如果你是从 4.1.5 及以前版本升级过来的，请**停止并删除**之前的程序后，参考下文的安装方法重新安装。(数据文件在用户目录下，不会丢失.)
 
-如已安装 Java 环境（Java 1.8）可跳过此步骤，且注意，只支持 Java 1.8，更高版本无法兼容，请保证你环境变量中是 1.8 版本的。
+## 安装
 
-:::
+点击[下载 ZFile 软件包](https://c.jun6.net/ZFILE/zfile-release_windows_amd64.zip)
 
+## 启动
 
-安装 Java 1.8, 步骤如下:
+解压后双击 `双击我启动.bat` 即可，启动后访问 [http://localhost:8080](http://localhost:8080) 可看到效果。
 
-先下载 JDK 1.8，这里使用 [IBM semeru8 版本地址1](https://github.com/ibmruntimes/semeru8-binaries/releases/download/jdk8u372-b07_openj9-0.38.0/ibm-semeru-open-jdk_x64_windows_8u372b07_openj9-0.38.0.msi) 或 [IBM semeru8 版本地址2](https://ghproxy.com/https://github.com/ibmruntimes/semeru8-binaries/releases/download/jdk8u372-b07_openj9-0.38.0/ibm-semeru-open-jdk_x64_windows_8u372b07_openj9-0.38.0.msi)
+> 注意：如果你的 Windows 用户名为中文，可能会启动失败，可以用记事本打开 `双击我启动.bat`，在第二行最后加个 "-Dorg.sqlite.tmpdir=写一个非中文路径"，例如 `-Dorg.sqlite.tmpdir=C:\tmp` (注意需确保这个目录存在)，保存后再双击启动。
 
-<div className={ 'w-1/2' }>
+<img className={'sm:w-7/12'} src="/img/2024/11/13/os-windows-1.png"></img>
 
-![win-install-jdk-1](./img/win-install-jdk-1.png)
-![win-install-jdk-2](./img/win-install-jdk-2.png)
-![win-install-jdk-3](./img/win-install-jdk-3.png)
-![win-install-jdk-4](./img/win-install-jdk-4.png)
-![win-install-jdk-5](./img/win-install-jdk-5.png)
-![win-install-jdk-6](./img/win-install-jdk-6.png)
+## 配置 {#config}
 
-</div>
+解压后包含一个 `application.properties` 文件，修改后重启即可生效。
 
-## 下载项目
+## 控制台输出中文乱码
 
-下载文件 https://c.jun6.net/ZFILE/zfile-release.jar
+这个是因为 Windows 控制台默认不支持 UTF-8 编码，无需理会，不影响使用，可以在日志文件中查看正常的输出。
 
-## 启动项目
+## 更新
 
-在 cmd 或 powershell 执行命令, 下面的示例为下载 `zfile` 程序到了 `D:/Downloads/zfile-release.jar` 时的启动方式。
-如你下载到了其他路径就需自行更改最后你实际下载的目录：
-
-
-
-<Tabs>
-<TabItem value="cmd" label="CMD">
-
-```bash showLineNumbers
-# 不可关闭命令行，关闭即停止程序，或使用 ctrl + c 命令停止程序
-java -Dfile.encoding=utf-8 -jar -Dserver.port=8080 D:/Downloads/zfile-release.jar
-```
-
-</TabItem>
-<TabItem value="powershell" label="PowerShell">
-
-```bash showLineNumbers
-# 不可关闭命令行，关闭即停止程序，或使用 ctrl + c 命令停止程序
-java '-Dfile.encoding=utf-8' -jar '-Dserver.port=8080' D:/Downloads/zfile-release.jar
-```
-
-</TabItem>
-</Tabs>
-
-
-:::info 提示
-
-启动过程中看到的日志信息，中文部分可能是乱码，这是因为 Windows 的 cmd 和 powershell 默认命令行编码不是 utf-8，命令行乱码不影响正常使用，如向让命令行正常显示中文，先执行命令 `chcp 65001` 切换命令行为 utf-8 再执行启动命令即可。
-
-:::
-
-启动后访问 [http://localhost:8080](http://localhost:8080) 即可看到效果。
-
-## 配置文件 {#config}
-
-如需要修改配置文件, 下载配置文件 [`application.properties`](https://c.jun6.net/ZFILE/application.properties) , 放到 `jar` 文件同路径起名为 `application.properties` 即可.
-
-## 更新版本
-
-重新下载最新文件替换后重新启动即可： https://c.jun6.net/ZFILE/zfile-release.jar
+重新下载解压后启动就可以了
 
 ## 帮我安装🔍
 [技术支持](/support/)

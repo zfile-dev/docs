@@ -1,116 +1,141 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
 
 # Linux
 
-## 安装依赖 {#install-depend}
+<TOCInline toc={toc} />
 
-首次部署才需要安装依赖，更新部署见下方：[更新版本](#update)
+## 前言
 
-<Tabs>
-<TabItem value="centos" label="Centos">
+**4.2.0** 开始开源版**部署方式有所变化**，如果你是从 4.1.5 及以前版本升级过来的，请**停止并删除**之前的程序后，参考下文的安装方法重新安装。(数据文件在用户目录下，不会丢失.)
 
-```bash
-yum install -y java-1.8.0-openjdk unzip
+## 全新部署 {#install}
+
+**tips: 如果你不知道你的环境到底是 `amd64` 还是 `arm`，一般来说就是 `amd64`，一般 `arm` 架构的机器，购买时会特殊标注的。**
+
+<Tabs groupId="operating-arch">
+<TabItem value="amd64" label="amd64">
+
+```bash showLineNumbers
+# highlight blue next
+export ZFILE_INSTALL_PATH=~/zfile                                       # 声明安装到的路径
+mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 创建文件夹并进入
+wget --no-check-certificate https://c.jun6.net/ZFILE/zfile-release_linux_amd64.tar.gz  # 下载 zfile 最新版
+tar -zxvf zfile-release_linux_amd64.tar.gz                              # 解压
+rm -rf zfile-release_linux_amd64.tar.gz                                 # 删除压缩包
+chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本
 ```
 
 </TabItem>
-<TabItem value="ubuntu" label="Ubuntu">
+<TabItem value="arm64" label="arm64">
 
-```bash
-apt update
-apt install -y openjdk-8-jre-headless unzip
+```bash showLineNumbers
+# highlight blue next
+export ZFILE_INSTALL_PATH=~/zfile                                       # 声明安装到的路径
+mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 创建文件夹并进入
+wget --no-check-certificate https://c.jun6.net/ZFILE/zfile-release_linux_arm.tar.gz    # 下载 zfile 最新版
+tar -zxvf zfile-release_linux_arm.tar.gz                                # 解压
+rm -rf zfile-release_linux_arm.tar.gz                                   # 删除压缩包
+chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本
 ```
 
 </TabItem>
 </Tabs>
 
+<details>
+    <summary>安装目录详解</summary>
 
-## 下载并解压
+上面命令中第一行中的 `~/zfile`，其中 `~` 表示用户目录
+- 对于 `root` 用户, `~`  = `/root`,  `~/zfile` 表示在 `/root/zfile` 路径下。
+- 对于其他用户,  `~` = `/home/用户名` 表示在 `/home/用户名/` 路径下。如对于 `oracle` 用户,  `~/zfile` 则表示安装在 `/home/oracle/zfile` 下。
 
-:::info 安装说明
+如我想安装在 `/data/zfile` 路径下，可以把上面命令第一行修改为 `export ZFILE_INSTALL_PATH=/data/zfile`。
+</details>
 
-下面命令中第一行表示默认安装到用户目录下: `~/zfile` 下。
-
-对于 `root` 用户, `~`  = `/root`,  `~/zfile` 表示在 `/root/zfile` 路径下。
-
-对于其他用户,  `~` = `/home/用户名` 表示在 `/home/用户名/` 路径下。如对于 `oracle` 用户,  `~/zfile` 则表示安装在 `/home/oracle/zfile` 下。
-
-如需更改安装路径, 请自行修改，如 `export ZFILE_INSTALL_PATH=/data/zfile`，表示安装在 `/data/zfile` 路径下。
-
-:::
+### 启动项目
 
 ```bash showLineNumbers
-# highlight blue next
-export ZFILE_INSTALL_PATH=~/zfile                        # 声明安装到的路径
-mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH   # 创建文件夹并进入
-wget --no-check-certificate https://c.jun6.net/ZFILE/zfile-release.war          # 下载 zfile 最新版
-unzip zfile-release.war && rm -rf zfile-release.war      # 解压并删除压缩包
-chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                    # 授权启动停止脚本
+~/zfile/bin/start.sh                                                # 启动项目
 ```
 
-## 启动项目
-
-```bash showLineNumbers
-~/zfile/bin/start.sh       # 启动
-```
-
-启动后浏览器访问 **`http://ip:8080`** 即可，如启动后无法访问，请检查 **`端口是否冲突`** 或 **`防火墙/安全组是否开启`**。
+启动后浏览器访问 **`http://ip:8080`** 即可，如启动后无法访问，请检查 **`端口是否冲突`** 或 **`防火墙/安全组是否开启(云服务器厂商、宝塔等)`**。
 
 简单检查方式为在服务器执行 `curl http://127.0.0.1:8080`
 - 如返回 `curl: (7) Failed connect to 127.0.0.1:8080; Connection refused` 表示未启动成功。
 - 如返回 `<!DOCTYPE html> <html lang="zh-CN">……` 等字样表示启动成功，如启动成功但通过服务器 IP 无法访问，那一般就是防火墙/安全组未放行端口问题。
 
+### 其他命令 {#command}
 
-## 其他命令 {#command}
-
-以下为默认未修改安装路径下的情况，**如修改了安装路径请自行更改命令所在路径**。
-
-```bash showLineNumbers
-~/zfile/bin/start.sh       # 启动
-~/zfile/bin/stop.sh        # 停止
-```
-
-## 配置文件路径 {#config}
-
-如需修改配置文件，配置文件路径为：
+默认未修改安装路径的情况下，程序相关命令还包含：
 
 ```bash showLineNumbers
-~/zfile/WEB-INF/classes/application.properties
+~/zfile/bin/start.sh       # 启动项目
+~/zfile/bin/stop.sh        # 停止项目
 ```
+
+### 配置文件路径 {#config}
+
+默认未修改安装路径的情况下，程序配置文件路径为：
+
+```bash showLineNumbers
+~/zfile/application.properties
+```
+
+一般无需修改，如需修改请参考左侧导航栏中的 `配置文件` 部分。
 
 ## 更新版本 {#update}
 
-:::caution
+<font color="red">更新程序前务必停止程序</font>再进行操作，命令见下方<font color="#facc15">黄色高亮部分</font>（不必担心之前的配置被删除，不在这个目录存储）：
 
-更新程序前务必停止程序再进行操作，命令见下方黄色高亮部分。
+如没修改过安装路径，直接使用下面的命令。如果修改过安装路径，则需要修改下方命令中的 `~/zfile` 部分为你的安装路径，见下方<font color="60a5fa">蓝色高亮部分</font>：
 
-:::
-
-如果没修改过安装路径，则停止程序后，删除安装文件夹即可，默认命令为：
-
-如修改过安装路径，则替换下方命令中的 `~/zfile` 部分为你的安装路径即可，见下方蓝色高亮部分：
-
-
-
-
+<Tabs groupId="operating-arch">
+<TabItem value="amd64" label="amd64">
 
 ```bash showLineNumbers
+# highlight blue next
+export ZFILE_INSTALL_PATH=~/zfile                                       # 声明安装路径
+
 # highlight yellow next
-~/zfile/bin/stop.sh                                                 # 停止程序
+$ZFILE_INSTALL_PATH/bin/stop.sh                                         # 停止程序
 # highlight yellow next
-rm -rf ~/zfile                                                      # 删除安装文件夹
+rm -rf $ZFILE_INSTALL_PATH                                              # 删除安装文件夹
 
 # 重新下载安装最新版
-# highlight blue next
-export ZFILE_INSTALL_PATH=~/zfile                                   # 声明安装到的路径
-mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH              # 创建文件夹并进入
-wget --no-check-certificate https://c.jun6.net/ZFILE/zfile-release.war                     # 下载 zfile 最新版
-unzip zfile-release.war && rm -rf zfile-release.war                 # 解压并删除压缩包
-chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                               # 授权启动停止脚本
+mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 创建文件夹并进入
+wget --no-check-certificate https://c.jun6.net/ZFILE/zfile-release_linux_amd64.tar.gz  # 下载 zfile 最新版
+tar -zxvf zfile-release_linux_amd64.tar.gz                              # 解压
+rm -rf zfile-release_linux_amd64.tar.gz                                 # 删除压缩包
+chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本
 
-~/zfile/bin/start.sh                                                # 启动项目
+$ZFILE_INSTALL_PATH/bin/start.sh                                        # 启动项目
 ```
+
+</TabItem>
+<TabItem value="arm64" label="arm64">
+
+```bash showLineNumbers
+# highlight blue next
+export ZFILE_INSTALL_PATH=~/zfile                                       # 声明安装路径
+
+# highlight yellow next
+$ZFILE_INSTALL_PATH/bin/stop.sh                                         # 停止程序
+# highlight yellow next
+rm -rf $ZFILE_INSTALL_PATH                                              # 删除安装文件夹
+
+# 重新下载安装最新版
+mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 创建文件夹并进入
+wget --no-check-certificate https://c.jun6.net/ZFILE/zfile-release_linux_arm.tar.gz    # 下载 zfile 最新版
+tar -zxvf zfile-release_linux_arm.tar.gz                                # 解压
+rm -rf zfile-release_linux_arm.tar.gz                                   # 删除压缩包
+chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本
+
+$ZFILE_INSTALL_PATH/bin/start.sh                                        # 启动项目
+```
+
+</TabItem>
+</Tabs>
 
 ## 帮我安装🔍
 [技术支持](/support/)
