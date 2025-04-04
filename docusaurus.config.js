@@ -135,10 +135,6 @@ const config = {
                         "href": "/support/"
                     },
                     {
-                        "label": "付费",
-                        "href": "/support/"
-                    },
-                    {
                         href: 'https://github.com/zfile-dev/zfile',
                         position: 'right',
                         className: 'header-github-link'
