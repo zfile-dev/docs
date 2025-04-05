@@ -39,7 +39,7 @@ SCRIPT_NAME="ZFile 管理脚本"
 WEB_URL="https://www.zfile.vip"
 GITHUB_URL="https://github.com/zfile-dev/zfile"
 AUTHOR="Zhao Jun <873019219@qq.com>, QQ: 873019219"
-VERSION="1.0.0"
+VERSION="1.0.1"
 
 # --------------- 颜色定义及日志 -----------
 if [ -t 1 ]; then
@@ -1168,7 +1168,7 @@ update() {
 
 # 自更新函数
 self_update() {
-    local script_url="https://docs.zfile.vip"  # 新版本下载地址
+    local script_url="https://docs.zfile.vip/install.sh"  # 新版本下载地址
     local tmp_file=$(mktemp /tmp/script.XXXXXX)  # 创建临时文件
 
     echo "检查更新..."
