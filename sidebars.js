@@ -28,6 +28,12 @@ const sidebars = {
             type: 'category',
             label: '快速安装（必看）',
             // collapsed: false,
+            link: {
+                type: 'generated-index',
+                title: '快速安装',
+                description: '请选择安装方式',
+                slug: '/install'
+            },
             items: [
                 {
                     id: 'install/script-install',
@@ -36,7 +42,7 @@ const sidebars = {
                 },
                 {
                     type: 'category',
-                    label: '开源版',
+                    label: '手动安装-开源版',
                     collapsed: false,
                     link: {
                         type: 'generated-index',
@@ -74,7 +80,7 @@ const sidebars = {
                 },
                 {
                     type: 'category',
-                    label: '捐赠版',
+                    label: '手动安装-捐赠版',
                     collapsed: false,
                     link: {
                         type: 'generated-index',
