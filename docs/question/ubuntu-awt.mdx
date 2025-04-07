@@ -6,7 +6,7 @@
 sudo apt install -y fontconfig
 ```
 
-如果上面的方法没有解决，且你是自己本地的 jdk，那么在 /etc/java-8-openjdk/accessibility.properties 文件中，使用 vi/vim 注释掉最后一行即可。也可使用以下命令一键注释掉最后一行：
+如果你是 4.2.0 以前的社区版，上面的方法没有解决，且你是自己本地的 jdk，那么在 /etc/java-8-openjdk/accessibility.properties 文件中，使用 vi/vim 注释掉最后一行即可。也可使用以下命令一键注释掉最后一行：
 
 ```bash
 sudo sed -i 's/^assistive_technologies=org.GNOME.Accessibility.AtkWrapper/#&/g' /etc/java-8-openjdk/accessibility.properties
