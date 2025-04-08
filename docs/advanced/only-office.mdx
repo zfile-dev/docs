@@ -13,17 +13,16 @@ import TabItem from '@theme/TabItem';
 下方高亮部分，可自定义端口和数据目录：
 
 - 端口号：第 2 行**冒号**左侧的 `8081` 表示对外暴露的端口号，如其他程序占用，则请修改为其他端口号。
-- 数据目录：第 4-7 行表示数据文件映射到宿主机目录，如看不懂或不需要，可删除 4-7 行。
+- 数据目录：第 3-6 行表示数据文件映射到宿主机目录，如看不懂或不需要，可删除 3-6 行。
 
-```bash showLineNumbers {2,4-7}
+```bash showLineNumbers {2-6}
 docker run --restart=always --name onlyoffice \
     -p 8081:80 \
-    -e JWT_ENABLED=false \
     -v /app/onlyoffice/DocumentServer/logs:/var/log/onlyoffice \
     -v /app/onlyoffice/DocumentServer/data:/var/www/onlyoffice/Data \
     -v /app/onlyoffice/DocumentServer/lib:/var/lib/onlyoffice \
     -v /app/onlyoffice/DocumentServer/db:/var/lib/postgresql \
-    onlyoffice/documentserver:7.1.1
+    onlyoffice/documentserver:latest
 ```
 
 
@@ -33,19 +32,17 @@ docker run --restart=always --name onlyoffice \
 下方高亮部分，可自定义端口和数据目录：
 
 - 端口号：第 8 行**冒号**左侧的 `8081` 表示对外暴露的端口号，如其他程序占用，则请修改为其他端口号。
-- 数据目录：第 12-15 行表示数据文件映射到宿主机目录，如看不懂或不需要，可删除 4-7 行。
+- 数据目录：第 10-13 行表示数据文件映射到宿主机目录，如看不懂或不需要，可删除 10-13 行。
 
-```yaml showLineNumbers {8,12-15}
+```yaml showLineNumbers {8,10-13}
 version: '3'
 services:
   onlyoffice:
     container_name: onlyoffice
-    image: onlyoffice/documentserver:7.1.1
+    image: onlyoffice/documentserver:latest
     restart: always
     ports:
      - "8081:80"
-    environment:
-     - JWT_ENABLED=false
     volumes:
      - '$PWD/logs:/var/log/onlyoffice'
      - '$PWD/data:/var/www/onlyoffice/Data'
@@ -56,6 +53,13 @@ services:
 </TabItem>
 </Tabs>
 
+## 查看 JWT 密钥
+
+打开 OnlyOffice 页面，有提示执行指定命令来查看 JWT 密钥：
+
+<img className={'sm:w-3/4'} src='/img/2025/4/9/onlyoffice-jwt.png'/>
+
+> 如果你不是 Docker 安装的，请参考 OnlyOffice 官方文档来查看 JWT 密钥。
 
 ## 反向代理 - WebSocket 支持
 如使用 **Nginx** 或其他诸如**宝塔使用了 Nginx 的工具**进行了**反向代理**，则需要额外增加 Nginx 配置来支持 WebSocket:
