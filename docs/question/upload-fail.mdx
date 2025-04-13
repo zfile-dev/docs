@@ -14,3 +14,15 @@
 ### 1panel
 
 <img src="/img/2024/10/22/1panel.png"/>
+
+### Nginx Proxy Manager
+
+编辑你的网站，在下图位置填写：
+
+```
+client_max_body_size 0;
+```
+
+表示无上传大小限制，也可以配置为限制指定大小，如： `client_max_body_size 1024m;`
+
+<img src="/img/2025/4/13/nginx-proxy-manager-upload-size-config.png"/>
