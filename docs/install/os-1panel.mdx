@@ -1,0 +1,52 @@
+# 1Panel
+
+## 安装
+
+1. 应用商店搜索 `zfile`：
+
+<img className={'sm:w-6/12 '} src="/img/2025/5/11/1panel-1.png"></img>
+
+2. 点击安装，按提示信息填写：
+
+<img className={'sm:w-6/12 '} src="/img/2025/5/11/1panel-2.png"></img>
+
+3. 等待安装完成（首次安装可能比较慢，因为要拉取镜像），然后访问上一步填写的 `http://ip:端口` 即可（域名和 https 配置参考 1panel 官方教程）
+
+## 更新
+
+点击 `容器` -> `更多` -> `升级`：
+
+<img className={'sm:w-6/12 '} src="/img/2025/5/11/1panel-3.png"></img>
+<img className={'sm:w-6/12 '} src="/img/2025/5/11/1panel-4.png"></img>
+
+
+如果你从 4.1.5 升级过来的，升级后之前的数据丢失了，是因为 1panel 默认映射的目录变化了，按照以下操作：
+
+<img className={'sm:w-6/12 '} src="/img/2025/5/11/1panel-5.png"></img>
+
+双击 `docker-compose.yml` 文件，检查下面的 `volumes` 块，最新版应该是：
+
+```yaml
+        volumes:
+            - ./data/db:/root/.zfile-v4/db
+            - ./data/logs:/root/.zfile-v4/logs
+            - ./data/mnt:/data/file
+```
+
+4.1.5 版本是：
+
+```yaml
+        volumes:
+            - /opt/zfile/data/db:/root/.zfile-v4/db
+            - /opt/zfile/data/logs:/root/.zfile-v4/logs
+            - /opt/zfile/data/mnt:/root/.zfile-v4/mnt
+```
+
+
+方式1：将 /opt/zfile/data/ 目录下的文件迁移到 docker-compose.yml 文件所在目录下的 data/ 目录下，然后重建容器即可。
+<img className={'sm:w-6/12 '} src="/img/2025/5/11/1panel-6.png"></img>
+<img className={'sm:w-6/12 '} src="/img/2025/5/11/1panel-7.png"></img>
+
+方式2：可以将 `docker-compose.yml` 文件中的 `volumes` 块替换成上面的内容，保存后，重建容器即可。
+
+<img className={'sm:w-6/12 '} src="/img/2025/5/11/1panel-7.png"></img>

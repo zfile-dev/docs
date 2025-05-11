@@ -62,6 +62,11 @@ const sidebars = {
                             label: '宝塔传统方式'
                         },
                         {
+                            id: 'install/os-1panel',
+                            type: 'doc',
+                            label: '1Panel应用商店'
+                        },
+                        {
                             id: 'install/os-linux',
                             type: 'doc',
                             label: 'Linux'
