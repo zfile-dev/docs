@@ -230,14 +230,29 @@ const sidebars = {
             label: '常见问题',
             items: [
                 {
-                    id: 'question/run-multiple-instance',
+                    id: 'question/systemd-config',
                     type: 'doc',
-                    label: '如何运行多个 ZFile 实例？'
+                    label: '如何配置开机自启(systemd)？'
+                },
+                {
+                    id: 'question/bind-domain',
+                    type: 'doc',
+                    label: '如何用域名访问？'
+                },
+                {
+                    id: 'question/start-fail',
+                    type: 'doc',
+                    label: '启动失败/无法访问怎么办？'
                 },
                 {
                     id: 'question/update-config-file',
                     type: 'doc',
                     label: '如何修改配置文件？'
+                },
+                {
+                    id: 'question/run-multiple-instance',
+                    type: 'doc',
+                    label: '如何运行多个 ZFile 实例？'
                 },
                 {
                     id: 'question/only-office-download-fail',
@@ -253,16 +268,6 @@ const sidebars = {
                     id: 'question/reset-password',
                     type: 'doc',
                     label: '忘记管理员密码怎么办？'
-                },
-                {
-                    id: 'question/start-fail',
-                    type: 'doc',
-                    label: '启动失败/无法访问怎么办？'
-                },
-                {
-                    id: 'question/bind-domain',
-                    type: 'doc',
-                    label: '如何用域名访问？'
                 },
                 {
                     id: 'question/cat-current-version',

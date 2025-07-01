@@ -1,0 +1,88 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Linux 部署如何配置开机自启(systemd)
+
+注意：以下配置仅适用于 ZFile 4.2.0 及以上版本，且以下是默认配置，若你修改了 zfile 的安装目录，请自行修改以下 `WorkingDirectory` 和 `ExecStart` 中的路径。
+
+1. 添加以下内容到 `/etc/systemd/system/zfile.service` 文件中。
+<Tabs>
+<TabItem value="os" label="开源版">
+```bash
+[Unit]
+Description=ZFile Service
+Documentation=https://docs.zfile.vip
+After=network.target syslog.target
+
+[Service]
+
+# User=zfile
+# Group=zfile
+
+Type=simple
+PrivateTmp=true
+LimitNOFILE=65536
+StandardOutput=journal
+StandardError=journal
+
+WorkingDirectory=/root/zfile/
+ExecStart=/root/zfile/zfile/zfile --spring.config.location=/root/zfile/application.properties
+ExecReload=/bin/kill -HUP $MAINPID
+
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
+```
+</TabItem>
+<TabItem value="pro" label="捐赠版">
+```bash
+[Unit]
+Description=ZFile Service
+Documentation=https://docs.zfile.vip
+After=network.target syslog.target
+
+[Service]
+
+# User=zfile
+# Group=zfile
+
+Type=simple
+PrivateTmp=true
+LimitNOFILE=65536
+StandardOutput=journal
+StandardError=journal
+
+WorkingDirectory=/root/zfile-pro/
+ExecStart=/root/zfile-pro/zfile/zfile --spring.config.location=/root/zfile-pro/application.properties
+ExecReload=/bin/kill -HUP $MAINPID
+
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
+```
+</TabItem>
+</Tabs>
+
+2. 使 systemd 生效并设置开机自启：
+```bash
+systemctl daemon-reload
+systemctl enable zfile
+```
+
+3. 启动 ZFile 服务：
+```bash
+systemctl start zfile
+```
+
+其他命令
+```bash
+systemctl status zfile  # 查看服务状态
+systemctl stop zfile    # 停止服务
+systemctl restart zfile # 重启服务
+```
