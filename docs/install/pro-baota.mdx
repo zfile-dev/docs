@@ -96,9 +96,11 @@ import TOCInline from '@theme/TOCInline';
 </Tabs>
 
 
-> 注意：如果你使用 9.x 的宝塔，可能会遇到宝塔的一个 bug，导致直链/短链跳转到 127.0.0.1，解决方法是在**宝塔上** 修改这个站点配置文件(不是ZFile配置文件)，将 `proxy_set_header Host 127.0.0.1:$server_port;` 修改为 `proxy_set_header Host $host;`，保存即可。
+> 注意：如果你使用 9.x 的宝塔，可能会遇到宝塔的一个 bug，导致直链/短链跳转到 127.0.0.1，解决方法是在**宝塔上** 修改这个站点配置文件(不是ZFile配置文件)，将 `proxy_set_header Host 127.0.0.1:$server_port;` 修改为 `proxy_set_header Host $host:$server_port;`，保存即可。
 <img className={'sm:w-6/12 '} src="/img/2024/12/5/baota-fix1.png"></img>
 <img className={'sm:w-6/12 '} src="/img/2024/12/5/baota-fix2.png"></img>
+
+如果你的站点是 HTTPS 的，还建议你添加一行 `proxy_set_header X-Forwarded-Proto $scheme;` 到上面红框的下一行，不然可能直链会先跳转到 HTTP，再跳转到 HTTPS，会被浏览器提示不安全链接。
 
 ## 5.更新版本
 

@@ -78,7 +78,7 @@ proxy_set_header Connection "upgrade";
 如果使用了 HTTPS，则还需要增加配置：
 
 ```properties showLineNumbers
-proxy_set_header X-Forwarded-Proto https;
+proxy_set_header X-Forwarded-Proto $scheme;
 ```
 
 图略，参考上图宝塔设置。

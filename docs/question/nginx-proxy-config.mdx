@@ -1,0 +1,24 @@
+# Nginx 反向代理配置
+
+先说解决办法，检查反向代理服务器是否有配置：
+
+```bash
+proxy_set_header X-Forwarded-Host $host:$server_port;
+proxy_set_header X-Forwarded-Proto $scheme;
+```
+
+如果没有或和**上面不一致**，请修改反向代理服务器配置文件，添加或修改上述两行。
+
+原因如图所示：
+
+<img className={'sm:w-3/4'} src='/img/2025/7/13/http-proxy-header.png'/>
+
+## 修改示例
+
+### 宝塔 PHP 项目
+
+<img className={'sm:w-3/4'} src='/img/2025/7/13/baota-proxy-php.png'/>
+
+### 宝塔其他项目
+
+<img className={'sm:w-3/4'} src='/img/2025/7/13/baota-proxy-other.png'/>

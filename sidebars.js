@@ -255,6 +255,21 @@ const sidebars = {
                     label: '如何运行多个 ZFile 实例？'
                 },
                 {
+                    id: 'question/nginx-proxy-config',
+                    type: 'doc',
+                    label: '为什么我启用了 https，但直链下载会被重定向到 http?'
+                },
+                {
+                    id: 'question/nginx-proxy-config',
+                    type: 'doc',
+                    label: '为什么我通过域名访问的项目，但重定向到了项目内网地址？'
+                },
+                {
+                    id: 'question/nginx-proxy-config',
+                    type: 'doc',
+                    label: '为什么我启用了 https，但直链下载浏览器提示"此网站使用的不是安全链接，该文件可能已被篡改"'
+                },
+                {
                     id: 'question/only-office-download-fail',
                     type: 'doc',
                     label: 'OnlyOffice 预览失败怎么办？'
