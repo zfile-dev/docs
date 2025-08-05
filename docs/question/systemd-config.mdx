@@ -56,7 +56,7 @@ StandardOutput=journal
 StandardError=journal
 
 WorkingDirectory=/root/zfile-pro/
-ExecStart=/root/zfile-pro/zfile/zfile --spring.config.location=/root/zfile-pro/application.properties
+ExecStart=/root/zfile-pro/zfile/zfile-pro --spring.config.location=/root/zfile-pro/application.properties
 ExecReload=/bin/kill -HUP $MAINPID
 
 SuccessExitStatus=143
