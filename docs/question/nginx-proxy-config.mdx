@@ -3,7 +3,7 @@
 先说解决办法，检查反向代理服务器是否有配置：
 
 ```bash
-proxy_set_header X-Forwarded-Host $host:$server_port;
+proxy_set_header Host $host:$server_port;
 proxy_set_header X-Forwarded-Proto $scheme;
 ```
 
