@@ -1,0 +1,23 @@
+# 如何备份/迁移程序数据？
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+如果你没有主动修改配置文件为 MySQL 数据库或数据库路径，可参考下文：
+
+## Windows 部署
+
+文件管理器地址栏输入 `%USERPROFILE%/.zfile-v4/db` 回车后复制里面的文件备份，放到新的 Windows 上同样位置后启动即可。
+
+## Linux 部署
+
+默认路径为 `~/.zfile-v4/db` 备份里面的文件，放到新的 Linux 上同样位置后启动即可。
+
+## Docker 部署
+
+如果你按照文档安装，没改过映射文件目录，那么：
+
+- 捐赠版默认在 `/root/zfile-pro/db` 目录。
+- 开源版默认在 `/root/zfile/db` 目录。
+
+备份里面的文件，放到新服务器同样位置后启动即可。

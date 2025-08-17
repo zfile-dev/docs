@@ -130,4 +130,5 @@
 /* `代码块` 的文字颜色 */
 code {
   color: #c8254e;
+    user-select: all;
 }

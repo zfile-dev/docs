@@ -235,6 +235,11 @@ const sidebars = {
                     label: '如何配置开机自启(systemd)？'
                 },
                 {
+                    id: 'question/backup',
+                    type: 'doc',
+                    label: '如何备份/迁移程序数据？'
+                },
+                {
                     id: 'question/bind-domain',
                     type: 'doc',
                     label: '如何用域名访问？'
