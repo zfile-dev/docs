@@ -1,0 +1,7 @@
+# 使用 Nginx 反向代理后，下载 1G 以上文件失败?
+
+修改 Nginx 配置，新增或调整 `proxy_max_temp_file_size` 参数的值（默认 1G），如调整为 10G:
+
+```nginx
+proxy_max_temp_file_size 10g;
+```

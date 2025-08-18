@@ -260,6 +260,11 @@ const sidebars = {
                     label: '如何运行多个 ZFile 实例？'
                 },
                 {
+                    id: 'question/nginx-1g-download-fail',
+                    type: 'doc',
+                    label: '使用 Nginx 反向代理后，下载 1G 以上文件失败?'
+                },
+                {
                     id: 'question/nginx-proxy-config',
                     type: 'doc',
                     label: '为什么我启用了 https，但直链下载会被重定向到 http?'
