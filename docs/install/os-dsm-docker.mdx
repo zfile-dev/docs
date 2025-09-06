@@ -1,0 +1,54 @@
+# 群辉 Synology 通过 Docker 安装
+
+## 安装
+下文示例为 DSM 7.2 版本，其他版本也基本类似。
+
+1. 打开 `File Station`，准备一个文件夹用于存放数据，我在 `docker` 目录下新建了 `zfile` 文件夹，并在这个目录下创建 `db` 和 `logs` 两个子目录。
+
+<img className={'sm:w-2/3 '} src="/img/2025/9/6/dsm-install-1.png"></img>
+
+2. 打开「套件中心」，搜索并安装「Container Manager」。
+
+<img className={'sm:w-2/3 '} src="/img/2025/9/6/dsm-install-2.png"></img>
+
+3. 打开「Container Manager」，点击「项目」，点击「新增」：
+
+- 项目名称：随便起一个名字，比如 `zfile`
+- 路径：选择第一步创建的文件夹，比如 `/docker/zfile`（注意不是 `db` 或 `logs`，而是它们的上级目录）
+- 来源：创建 docker-compose.yml
+- 内容：复制下面的内容，替换 `YOUR_TIMEZONE` 为你的时区，比如 `Asia/Shanghai`。
+
+```yaml
+version: '3.3'
+services:
+    zfile:
+        container_name: zfile
+        restart: always
+        ports:
+            - '8080:8080'   # 左侧的端口可以自定义，表示实际访问的端口，右侧的不要动。如 9090:8080 表示通过 9090 端口访问 zfile
+        volumes:
+            - './db:/root/.zfile-v4/db'
+            - './logs:/root/.zfile-v4/logs'
+
+             # 因 Docker 具有隔离性，这里表示将群辉的哪个目录挂载到 zfile 中，可自行修改，见下图
+            - '/volume1:/volume1'
+        image: swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest
+```
+
+<img className={'sm:w-2/3 '} src="/img/2025/9/6/dsm-install-3.png"></img>
+<img className={'sm:w-2/3 '} src="/img/2025/9/6/dsm-install-4.png"></img>
+
+4. 然后一直点击「下一步」，会询问是否通过 Web Station 设置网页门户，不用设置，直接点「下一步」 -> 「完成」。
+
+<img className={'sm:w-2/3 '} src="/img/2025/9/6/dsm-install-5.png"></img>
+
+5. 然后通过 `http://你的群辉IP:8080` 访问（如果你在第 3 步中修改了端口号，则用你修改后的端口号），就可以看到 ZFile 的安装界面了，设置站点名称，管理员账号和密码即可。
+
+6. 然后进入 ZFile 后台，新增一个存储库，存储策略选择「本地存储」，「基路径」填写上面你在第 3 步中挂载的目录，比如 `/volume1/你的目录`，然后保存即可。
+
+## 更新
+
+1. 打开「Container Manager」，点击「项目」，右键 `zfile` 项目，点击「清除」（放心，这不会删除你的数据）。
+2. 然后点击左侧的「映像」，删除掉 `swr.cn-north-1.myhuaweicloud.com/zfile-dev/zfile:latest` 镜像。
+<img className={'sm:w-2/3 '} src="/img/2025/9/6/dsm-install-6.png"></img>
+3. 再回到「项目」，右键 `zfile` 项目，点击「构建」，它会自动重新拉取最新的镜像并启动。

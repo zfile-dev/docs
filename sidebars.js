@@ -52,6 +52,21 @@ const sidebars = {
                     },
                     items: [
                         {
+                            id: 'install/os-linux',
+                            type: 'doc',
+                            label: 'Linux'
+                        },
+                        {
+                            id: 'install/os-windows',
+                            type: 'doc',
+                            label: 'Windows'
+                        },
+                        {
+                            id: 'install/os-docker',
+                            type: 'doc',
+                            label: 'Docker'
+                        },
+                        {
                             id: 'install/os-baota-new',
                             type: 'doc',
                             label: '宝塔Docker应用商店'
@@ -67,19 +82,9 @@ const sidebars = {
                             label: '1Panel应用商店'
                         },
                         {
-                            id: 'install/os-linux',
+                            id: 'install/os-dsm-docker',
                             type: 'doc',
-                            label: 'Linux'
-                        },
-                        {
-                            id: 'install/os-windows',
-                            type: 'doc',
-                            label: 'Windows'
-                        },
-                        {
-                            id: 'install/os-docker',
-                            type: 'doc',
-                            label: 'Docker'
+                            label: '群辉 Synology'
                         }
                     ]
                 },
@@ -114,6 +119,11 @@ const sidebars = {
                             type: 'doc',
                             label: '宝塔'
                         },
+                        {
+                            id: 'install/pro-dsm-docker',
+                            type: 'doc',
+                            label: '群辉 Synology'
+                        }
                     ]
                 }, {
                     type: 'doc',
