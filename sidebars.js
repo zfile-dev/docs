@@ -305,6 +305,11 @@ const sidebars = {
                     label: '忘记管理员密码怎么办？'
                 },
                 {
+                    id: 'question/forget-secure-login-entry',
+                    type: 'doc',
+                    label: '忘记登录安全入口怎么办？'
+                },
+                {
                     id: 'question/cat-current-version',
                     type: 'doc',
                     label: '查看 ZFile 版本'
