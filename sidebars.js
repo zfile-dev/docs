@@ -36,96 +36,11 @@ const sidebars = {
             },
             items: [
                 {
-                    id: 'install/script-install',
+                    id: 'install/guide',
                     type: 'doc',
-                    label: '一键安装脚本'
+                    label: '安装向导（推荐）'
                 },
                 {
-                    type: 'category',
-                    label: '手动安装-开源版',
-                    collapsed: false,
-                    link: {
-                        type: 'generated-index',
-                        title: '开源版部署教程',
-                        description: '点击查看不同环境下的部署教程',
-                        slug: '/install-os'
-                    },
-                    items: [
-                        {
-                            id: 'install/os-linux',
-                            type: 'doc',
-                            label: 'Linux'
-                        },
-                        {
-                            id: 'install/os-windows',
-                            type: 'doc',
-                            label: 'Windows'
-                        },
-                        {
-                            id: 'install/os-docker',
-                            type: 'doc',
-                            label: 'Docker'
-                        },
-                        {
-                            id: 'install/os-baota-new',
-                            type: 'doc',
-                            label: '宝塔Docker应用商店'
-                        },
-                        {
-                            id: 'install/os-baota',
-                            type: 'doc',
-                            label: '宝塔传统方式'
-                        },
-                        {
-                            id: 'install/os-1panel',
-                            type: 'doc',
-                            label: '1Panel应用商店'
-                        },
-                        {
-                            id: 'install/os-dsm-docker',
-                            type: 'doc',
-                            label: '群辉 Synology'
-                        }
-                    ]
-                },
-                {
-                    type: 'category',
-                    label: '手动安装-捐赠版',
-                    collapsed: false,
-                    link: {
-                        type: 'generated-index',
-                        title: '捐赠版部署教程',
-                        description: '点击查看不同环境下的部署教程',
-                        slug: '/install-pro'
-                    },
-                    items: [
-                        {
-                            id: 'install/pro-linux',
-                            type: 'doc',
-                            label: 'Linux'
-                        },
-                        {
-                            id: 'install/pro-windows',
-                            type: 'doc',
-                            label: 'Windows'
-                        },
-                        {
-                            id: 'install/pro-docker',
-                            type: 'doc',
-                            label: 'Docker'
-                        },
-                        {
-                            id: 'install/pro-baota',
-                            type: 'doc',
-                            label: '宝塔'
-                        },
-                        {
-                            id: 'install/pro-dsm-docker',
-                            type: 'doc',
-                            label: '群辉 Synology'
-                        }
-                    ]
-                }, {
                     type: 'doc',
                     label: '帮我安装',
                     id: 'support/support'

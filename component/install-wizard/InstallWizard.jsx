@@ -1,0 +1,323 @@
+import React, { useReducer, useEffect, useRef } from 'react';
+import CodeBlock from '@theme/CodeBlock';
+import {
+  EDITIONS, PLATFORMS, ARCHS, REGISTRIES, DOCKER_MODES, INSTALL_MODES,
+  EDITION_DATA, BAOTA_MODES, INITIAL_STATE, STORAGE_KEY, wizardReducer,
+} from './installConfig';
+import {
+  generateDockerRunCommand, generateDockerComposeYaml,
+  generateConfigDownloadCommand,
+  generateLinuxInstallCommand, generateLinuxStartCommand,
+  generateLinuxUpdateCommand,
+} from './commandGenerator';
+import DockerUpdate from './DockerUpdate';
+import { OptionCard, ArchHint } from './SharedWidgets';
+import BaotaDockerStoreTutorial from './BaotaDockerStoreTutorial';
+import BaotaTraditionalTutorial from './BaotaTraditionalTutorial';
+import DsmTutorial from './DsmTutorial';
+import OnePanelTutorial from './OnePanelTutorial';
+import { PLATFORM_ICONS } from './PlatformIcons';
+
+function SectionTitle({ children }) {
+  return (
+    <h3 style={{
+      marginBottom: '12px', marginTop: '24px', fontSize: '1.1em',
+      fontWeight: 600, borderLeft: '4px solid var(--ifm-color-primary)', paddingLeft: '12px',
+    }}>{children}</h3>
+  );
+}
+
+function DirInput({ label, value, onChange }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <span style={{ fontSize: '0.85em', whiteSpace: 'nowrap', minWidth: '80px' }}>{label}</span>
+      <input type="text" value={value} onChange={(e) => onChange(e.target.value)} style={{
+        flex: 1, padding: '6px 10px', borderRadius: '6px',
+        border: '1px solid var(--ifm-color-emphasis-300)',
+        background: 'var(--ifm-background-color)', color: 'inherit',
+        fontSize: '0.85em', fontFamily: 'monospace',
+      }} />
+    </div>
+  );
+}
+
+function saveState(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* noop */ }
+}
+
+export default function InstallWizard() {
+  const [state, dispatch] = useReducer(wizardReducer, INITIAL_STATE);
+  const ready = useRef(false);
+
+  // 客户端初始化：先从 localStorage 恢复，再用 URL hash 覆盖
+  useEffect(() => {
+    const restored = {};
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) Object.assign(restored, JSON.parse(saved));
+    } catch (e) { /* SSR safe */ }
+    try {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        const params = new URLSearchParams(hash);
+        if (params.has('edition')) restored.edition = params.get('edition');
+        if (params.has('platform')) restored.platform = params.get('platform');
+      }
+    } catch (e) { /* SSR safe */ }
+    if (Object.keys(restored).length > 0) {
+      dispatch({ type: 'INIT_FROM_HASH', payload: restored });
+    }
+    ready.current = true;
+  }, []);
+
+  // 状态变更时缓存到 localStorage（跳过初始化前的渲染）
+  useEffect(() => {
+    if (ready.current) saveState(state);
+  }, [state]);
+
+  const data = EDITION_DATA[state.edition];
+  const dir = `/root/${data.dir}`;
+
+  // 计算 Docker 目录的有效值（用于输入框显示）
+  const effectivePort = state.port || '8080';
+  const effectiveDbDir = state.dbDir || `${dir}/db`;
+  const effectiveLogDir = state.logDir || `${dir}/logs`;
+  const effectiveFileDir = state.fileDir || `${dir}/file`;
+  const effectiveConfigDir = state.configDir || `${dir}/application.properties`;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      {/* 版本选择 */}
+      <SectionTitle>选择版本</SectionTitle>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+        {EDITIONS.map((ed) => (
+          <OptionCard key={ed.id} label={ed.label} selected={state.edition === ed.id}
+            onClick={() => dispatch({ type: 'SET_EDITION', payload: ed.id })} />
+        ))}
+      </div>
+
+      {/* 安装模式 */}
+      <SectionTitle>安装模式</SectionTitle>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+        {INSTALL_MODES.map((m) => (
+          <OptionCard key={m.id} label={m.label} selected={state.installMode === m.id}
+            onClick={() => dispatch({ type: 'SET_INSTALL_MODE', payload: m.id })} />
+        ))}
+      </div>
+
+      {/* 平台选择 */}
+      <SectionTitle>安装环境</SectionTitle>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '10px' }}>
+        {PLATFORMS.map((p) => (
+          <OptionCard key={p.id} label={p.label} icon={PLATFORM_ICONS[p.id]} desc={p.desc}
+            selected={state.platform === p.id}
+            onClick={() => dispatch({ type: 'SET_PLATFORM', payload: p.id })} />
+        ))}
+      </div>
+
+      {/* Docker 子选项 */}
+      {state.platform === 'docker' && state.installMode === 'install' && (
+        <div>
+          <SectionTitle>Docker 配置</SectionTitle>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div>
+              <div style={{ marginBottom: '8px', fontSize: '0.9em', fontWeight: 500 }}>部署方式</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                {DOCKER_MODES.map((m) => (
+                  <OptionCard key={m.id} label={m.label} selected={state.dockerMode === m.id}
+                    onClick={() => dispatch({ type: 'SET_DOCKER_MODE', payload: m.id })} />
+                ))}
+              </div>
+            </div>
+            <div>
+              <div style={{ marginBottom: '8px', fontSize: '0.9em', fontWeight: 500 }}>镜像源</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '10px' }}>
+                {REGISTRIES.map((r) => (
+                  <OptionCard key={r.id} label={r.label} selected={state.registry === r.id}
+                    onClick={() => dispatch({ type: 'SET_REGISTRY', payload: r.id })} />
+                ))}
+              </div>
+            </div>
+            <div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                <input type="checkbox" checked={state.withConfig}
+                  onChange={() => dispatch({ type: 'TOGGLE_CONFIG' })} />
+                <span>映射配置文件到宿主机</span>
+              </label>
+              <div style={{ fontSize: '0.8em', opacity: 0.6, marginTop: '4px', marginLeft: '24px' }}>
+                如需修改数据库类型、Redis 或其他特殊设置时才需开启
+              </div>
+            </div>
+            <div>
+              <div style={{ marginBottom: '8px', fontSize: '0.9em', fontWeight: 500 }}>端口与目录</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <DirInput label="端口" value={effectivePort}
+                  onChange={(v) => dispatch({ type: 'SET_PORT', payload: v })} />
+                <DirInput label="数据库目录" value={effectiveDbDir}
+                  onChange={(v) => dispatch({ type: 'SET_DB_DIR', payload: v })} />
+                <DirInput label="日志目录" value={effectiveLogDir}
+                  onChange={(v) => dispatch({ type: 'SET_LOG_DIR', payload: v })} />
+                <DirInput label="文件目录" value={effectiveFileDir}
+                  onChange={(v) => dispatch({ type: 'SET_FILE_DIR', payload: v })} />
+                {state.withConfig && (
+                  <DirInput label="配置文件" value={effectiveConfigDir}
+                    onChange={(v) => dispatch({ type: 'SET_CONFIG_DIR', payload: v })} />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Linux 子选项 */}
+      {state.platform === 'linux' && (
+        <div>
+          <SectionTitle>Linux 配置</SectionTitle>
+          <div style={{ marginBottom: '8px', fontSize: '0.9em', fontWeight: 500 }}>CPU 架构</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+            {ARCHS.map((a) => (
+              <OptionCard key={a.id} label={a.label} desc={a.desc}
+                selected={state.arch === a.id}
+                onClick={() => dispatch({ type: 'SET_ARCH', payload: a.id })} />
+            ))}
+          </div>
+          <ArchHint />
+        </div>
+      )}
+
+      {/* 宝塔面板 */}
+      {state.platform === 'baota' && (
+        <div>
+          <SectionTitle>安装方式</SectionTitle>
+          {state.edition === 'pro' ? (
+            <div style={{ padding: '12px 16px', borderRadius: '8px', background: 'var(--ifm-color-emphasis-100)', fontSize: '0.9em', marginBottom: '16px' }}>
+              捐赠版仅支持传统方式安装。
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', marginBottom: '16px' }}>
+              {BAOTA_MODES.map((m) => (
+                <OptionCard key={m.id} label={m.label} desc={m.desc}
+                  selected={state.baotaMode === m.id}
+                  onClick={() => dispatch({ type: 'SET_BAOTA_MODE', payload: m.id })} />
+              ))}
+            </div>
+          )}
+          {(state.edition === 'pro' || state.baotaMode === 'traditional')
+            ? <BaotaTraditionalTutorial edition={state.edition} />
+            : <BaotaDockerStoreTutorial />}
+        </div>
+      )}
+
+      {/* 群晖 NAS */}
+      {state.platform === 'synology' && (
+        <div>
+          <SectionTitle>群晖 Docker 安装教程</SectionTitle>
+          <DsmTutorial edition={state.edition} />
+        </div>
+      )}
+
+      {/* 1Panel */}
+      {state.platform === 'onepanel' && (
+        <div>
+          <SectionTitle>1Panel 应用商店安装</SectionTitle>
+          {state.edition === 'pro' ? (
+            <div style={{ padding: '16px', borderRadius: '8px', border: '2px dashed var(--ifm-color-emphasis-300)', textAlign: 'center' }}>
+              <p>1Panel 应用商店目前仅支持开源版，捐赠版请选择其他安装方式。</p>
+            </div>
+          ) : (
+            <OnePanelTutorial />
+          )}
+        </div>
+      )}
+
+      {/* 命令输出区 */}
+      {['docker', 'linux', 'script', 'windows'].includes(state.platform) && (
+        <div>
+          <SectionTitle>{state.installMode === 'update' ? '更新命令' : '安装命令'}</SectionTitle>
+
+          {/* Docker 安装 */}
+          {state.platform === 'docker' && state.installMode === 'install' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {state.withConfig && (
+                <div>
+                  <div style={{ fontSize: '0.85em', opacity: 0.7, marginBottom: '4px' }}>先下载配置文件到宿主机：</div>
+                  <CodeBlock language="bash">{generateConfigDownloadCommand(state)}</CodeBlock>
+                </div>
+              )}
+              <div>
+                <div style={{ fontSize: '0.85em', opacity: 0.7, marginBottom: '4px' }}>
+                  {state.dockerMode === 'run' ? '启动容器：' : 'docker-compose.yml：'}
+                </div>
+                <CodeBlock language={state.dockerMode === 'run' ? 'bash' : 'yaml'}>
+                  {state.dockerMode === 'run' ? generateDockerRunCommand(state) : generateDockerComposeYaml(state)}
+                </CodeBlock>
+              </div>
+            </div>
+          )}
+
+          {/* Docker 更新 */}
+          {state.platform === 'docker' && state.installMode === 'update' && (
+            <DockerUpdate edition={state.edition} />
+          )}
+
+          {/* Linux 安装 */}
+          {state.platform === 'linux' && state.installMode === 'install' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <div style={{ fontSize: '0.85em', opacity: 0.7, marginBottom: '4px' }}>全新安装：</div>
+                <CodeBlock language="bash">{generateLinuxInstallCommand(state)}</CodeBlock>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.85em', opacity: 0.7, marginBottom: '4px' }}>启动项目：</div>
+                <CodeBlock language="bash">{generateLinuxStartCommand(state)}</CodeBlock>
+              </div>
+              <div style={{ padding: '12px 16px', borderRadius: '8px', background: 'var(--ifm-color-emphasis-100)', fontSize: '0.9em' }}>
+                启动后浏览器访问 <code>http://ip:8080</code> 即可。如无法访问，请检查端口是否冲突或防火墙/安全组是否放行。
+              </div>
+            </div>
+          )}
+
+          {/* Linux 更新 */}
+          {state.platform === 'linux' && state.installMode === 'update' && (
+            <CodeBlock language="bash">{generateLinuxUpdateCommand(state)}</CodeBlock>
+          )}
+
+          {/* 一键脚本 */}
+          {state.platform === 'script' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ padding: '12px 16px', borderRadius: '8px', background: 'var(--ifm-color-emphasis-100)', fontSize: '0.9em' }}>
+                仅支持 Linux 系统。脚本提供交互式安装，支持 Docker / 直装 / 更新 / 卸载等操作。
+              </div>
+              <div>
+                <div style={{ fontSize: '0.85em', opacity: 0.7, marginBottom: '4px' }}>下载并运行脚本：</div>
+                <CodeBlock language="bash">
+                  {`curl -sSL https://docs.zfile.vip/install.sh -o install.sh && chmod +x install.sh && ./install.sh`}
+                </CodeBlock>
+              </div>
+              <div style={{ fontSize: '0.85em', opacity: 0.6 }}>
+                再次使用时，在相同目录执行 <code>./install.sh</code> 即可。
+              </div>
+            </div>
+          )}
+
+          {/* Windows */}
+          {state.platform === 'windows' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ padding: '16px', borderRadius: '8px', border: '1px solid var(--ifm-color-emphasis-300)' }}>
+                <p><strong>1.</strong> <a href={data.winUrl}>点击下载 {data.name} 软件包</a></p>
+                <p><strong>2.</strong> 解压后双击 <code>双击我启动.bat</code> 即可</p>
+                <p><strong>3.</strong> 启动后访问 <a href="http://localhost:8080">http://localhost:8080</a></p>
+                <p style={{ marginBottom: 0 }}><strong>4.</strong> 配置文件：解压目录下的 <code>application.properties</code></p>
+              </div>
+              <div style={{ padding: '12px 16px', borderRadius: '8px', background: 'var(--ifm-color-emphasis-100)', fontSize: '0.9em' }}>
+                <strong>注意：</strong>如果你的 Windows 用户名为中文，可能会启动失败。
+                用记事本打开 <code>双击我启动.bat</code>，在第二行最后加个{' '}
+                <code>-Dorg.sqlite.tmpdir=C:\tmp</code>（确保目录存在），保存后再启动。
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
