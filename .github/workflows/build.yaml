@@ -3,9 +3,16 @@ name: Docker Build Image And Push Docker Registry
 on:
   push:
     paths-ignore:
-      - '**.md'
+      - '**/*.md'
       - 'LICENSE'
   workflow_dispatch:      # 手动触发
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docker-publish-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -20,17 +27,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node
-        # uses: actions/setup-node@v4
-        uses: useblacksmith/setup-node@v5
-        with:
-          node-version: '20'
-
-      - name: Install yarn
-        run: |
-          npm install -g yarn
-
-      - name: Setup Node Cache
-        # uses: actions/setup-node@v4
         uses: useblacksmith/setup-node@v5
         with:
           node-version: '20'
@@ -39,6 +35,7 @@ jobs:
 
       - name: Build front
         run: |
+          corepack enable
           yarn && yarn build
 
       - name: Set up QEMU               # 设置 QEMU 环境，用来模拟操作系统，用来编译 arm64 镜像和 amd64 镜像
@@ -49,10 +46,9 @@ jobs:
       - name: Set up Docker Buildx      # 设置 Docker Buildx 环境
         id: buildx
         uses: docker/setup-buildx-action@v3
-        with:
-          version: latest
 
       - name: Inspect builder           # 查看 builder 状态
+        if: github.event_name == 'workflow_dispatch'
         run: |
           echo "Name:      ${{ steps.buildx.outputs.name }}"
           echo "Endpoint:  ${{ steps.buildx.outputs.endpoint }}"
@@ -65,31 +61,44 @@ jobs:
         env:
           ALL_SECRETS: ${{ toJSON(secrets) }}
         run: |
+          set -euo pipefail
           repos=()
-          for key in $(echo $ALL_SECRETS | jq -r "keys[]"); do
+          for key in $(echo "$ALL_SECRETS" | jq -r "keys[]"); do
             if [[ $key == $SECRET_REPO_PREFIX* ]]; then
               repo_key=$key
-              char=$(echo $repo_key | sed "s/$SECRET_REPO_PREFIX//")
+              char=$(echo "$repo_key" | sed "s/$SECRET_REPO_PREFIX//")
               username_key="${SECRET_USERNAME_PREFIX}${char}"
               password_key="${SECRET_PASSWORD_PREFIX}${char}"
-          
-              repo=$(echo $ALL_SECRETS | jq -r ".${repo_key}")
-              username=$(echo $ALL_SECRETS | jq -r ".${username_key}")
-              password=$(echo $ALL_SECRETS | jq -r ".${password_key}")
 
-              repos+=($repo)
-          
-              # 如果 repo 只有一个 / ，则说明是 docker hub 的镜像，登录时后面不需要加 repo
-              if [[ $(echo $repo | grep -o '/' | wc -l) -eq 1 ]]; then
-                  echo $password | docker login -u $username --password-stdin
+              repo=$(echo "$ALL_SECRETS" | jq -r ".${repo_key}")
+              username=$(echo "$ALL_SECRETS" | jq -r ".${username_key}")
+              password=$(echo "$ALL_SECRETS" | jq -r ".${password_key}")
+
+              if [[ "$username" == "null" || "$password" == "null" ]]; then
+                echo "::error::Missing secret ${username_key} or ${password_key}"
+                exit 1
+              fi
+
+              repos+=("$repo")
+
+              # 如果 repo 不含域名（无 . 号），则说明是 docker hub 的镜像，登录时不需要指定 registry
+              if [[ "$repo" != *"."* ]]; then
+                  echo "$password" | docker login -u "$username" --password-stdin
               else
-                  echo $password | docker login -u $username --password-stdin $repo
+                  registry="${repo%%/*}"
+                  echo "$password" | docker login -u "$username" --password-stdin "$registry"
               fi
             fi
           done
-          
-          command="docker buildx build --provenance=false --platform linux/amd64,linux/arm64 --push . "
-          for repo in ${repos[@]}; do
-              command="$command -t $repo\:latest -t $repo\:$(TZ=Asia/Shanghai date +%Y-%m-%d_%H-%M-%S)_$(git rev-parse --short HEAD)"
+
+          if [[ ${#repos[@]} -eq 0 ]]; then
+            echo "::error::No REPO_* secrets configured, nothing to push"
+            exit 1
+          fi
+
+          tag_suffix="$(TZ=Asia/Shanghai date +%Y-%m-%d_%H-%M-%S)_$(git rev-parse --short HEAD)"
+          cmd=(docker buildx build --provenance=false --platform linux/amd64,linux/arm64 --cache-from type=gha --cache-to type=gha,mode=max --push .)
+          for repo in "${repos[@]}"; do
+              cmd+=(-t "${repo}:latest" -t "${repo}:${tag_suffix}")
           done
-          eval $command
+          "${cmd[@]}"
