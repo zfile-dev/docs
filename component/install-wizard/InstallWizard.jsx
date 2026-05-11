@@ -1,8 +1,9 @@
 import React, { useReducer, useEffect, useRef } from 'react';
 import CodeBlock from '@theme/CodeBlock';
 import {
-  EDITIONS, PLATFORMS, ARCHS, REGISTRIES, DOCKER_MODES, INSTALL_MODES,
+  EDITIONS, PLATFORMS, ARCHS, REGISTRIES, DOCKER_MODES, INSTALL_MODES, DB_TYPES,
   EDITION_DATA, BAOTA_MODES, INITIAL_STATE, STORAGE_KEY, wizardReducer,
+  generateRandomPassword,
 } from './installConfig';
 import {
   generateDockerRunCommand, generateDockerComposeYaml,
@@ -64,9 +65,11 @@ export default function InstallWizard() {
         if (params.has('platform')) restored.platform = params.get('platform');
       }
     } catch (e) { /* SSR safe */ }
-    if (Object.keys(restored).length > 0) {
-      dispatch({ type: 'INIT_FROM_HASH', payload: restored });
+    // 没有历史 MySQL 密码时，生成一个强随机密码作为默认值
+    if (!restored.mysqlPassword) {
+      restored.mysqlPassword = generateRandomPassword();
     }
+    dispatch({ type: 'INIT_FROM_HASH', payload: restored });
     ready.current = true;
   }, []);
 
@@ -84,6 +87,10 @@ export default function InstallWizard() {
   const effectiveLogDir = state.logDir || `${dir}/logs`;
   const effectiveFileDir = state.fileDir || `${dir}/file`;
   const effectiveConfigDir = state.configDir || `${dir}/application.properties`;
+  const effectiveMysqlDataDir = state.mysqlDataDir || `${dir}/mysql`;
+  const effectiveMysqlPassword = state.mysqlPassword;
+  const isComposeMode = state.dockerMode === 'compose';
+  const useMysql = isComposeMode && state.dbType === 'mysql';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -139,13 +146,60 @@ export default function InstallWizard() {
               </div>
             </div>
             <div>
+              <div style={{ marginBottom: '8px', fontSize: '0.9em', fontWeight: 500 }}>
+                数据库
+                {!isComposeMode && (
+                  <span style={{ fontSize: '0.8em', opacity: 0.6, fontWeight: 400, marginLeft: '8px' }}>
+                    （MySQL 仅在 docker compose 模式可用）
+                  </span>
+                )}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                {DB_TYPES.map((db) => {
+                  const disabled = db.id === 'mysql' && !isComposeMode;
+                  return (
+                    <div key={db.id} style={{ opacity: disabled ? 0.4 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
+                      <OptionCard label={db.label} desc={db.desc}
+                        selected={state.dbType === db.id}
+                        onClick={() => !disabled && dispatch({ type: 'SET_DB_TYPE', payload: db.id })} />
+                    </div>
+                  );
+                })}
+              </div>
+              {useMysql && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '0.85em', whiteSpace: 'nowrap', minWidth: '80px' }}>MySQL 密码</span>
+                    <input type="text" value={effectiveMysqlPassword}
+                      onChange={(e) => dispatch({ type: 'SET_MYSQL_PASSWORD', payload: e.target.value })}
+                      style={{
+                        flex: 1, padding: '6px 10px', borderRadius: '6px',
+                        border: '1px solid var(--ifm-color-emphasis-300)',
+                        background: 'var(--ifm-background-color)', color: 'inherit',
+                        fontSize: '0.85em', fontFamily: 'monospace',
+                      }} />
+                    <button type="button"
+                      onClick={() => dispatch({ type: 'SET_MYSQL_PASSWORD', payload: generateRandomPassword() })}
+                      style={{
+                        padding: '6px 12px', borderRadius: '6px', cursor: 'pointer',
+                        border: '1px solid var(--ifm-color-emphasis-300)',
+                        background: 'var(--ifm-background-color)', color: 'inherit',
+                        fontSize: '0.8em', whiteSpace: 'nowrap',
+                      }}>重新生成</button>
+                  </div>
+                  <DirInput label="MySQL 目录" value={effectiveMysqlDataDir}
+                    onChange={(v) => dispatch({ type: 'SET_MYSQL_DATA_DIR', payload: v })} />
+                </div>
+              )}
+            </div>
+            <div>
               <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                 <input type="checkbox" checked={state.withConfig}
                   onChange={() => dispatch({ type: 'TOGGLE_CONFIG' })} />
                 <span>映射配置文件到宿主机</span>
               </label>
               <div style={{ fontSize: '0.8em', opacity: 0.6, marginTop: '4px', marginLeft: '24px' }}>
-                如需修改数据库类型、Redis 或其他特殊设置时才需开启
+                如需修改 Redis 或其他特殊设置时才需开启
               </div>
             </div>
             <div>
@@ -252,6 +306,12 @@ export default function InstallWizard() {
                   {state.dockerMode === 'run' ? generateDockerRunCommand(state) : generateDockerComposeYaml(state)}
                 </CodeBlock>
               </div>
+              {useMysql && (
+                <div style={{ padding: '12px 16px', borderRadius: '8px', background: 'var(--ifm-color-emphasis-100)', fontSize: '0.9em', lineHeight: 1.7 }}>
+                  保存为 <code>docker-compose.yml</code> 后，在同目录执行 <code>docker compose up -d</code> 启动。
+                  首次启动 MySQL 初始化需 10–30 秒，请稍等再访问。
+                </div>
+              )}
             </div>
           )}
 

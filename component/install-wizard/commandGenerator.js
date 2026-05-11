@@ -37,13 +37,17 @@ export function generateDockerRunCommand({ edition, registry, port, withConfig, 
 /**
  * 生成 docker compose YAML
  */
-export function generateDockerComposeYaml({ edition, registry, port, withConfig, dbDir, logDir, fileDir, configDir }) {
+export function generateDockerComposeYaml({ edition, registry, port, withConfig, dbDir, logDir, fileDir, configDir, dbType, mysqlPassword, mysqlDataDir }) {
   const data = EDITION_DATA[edition];
   const image = getImage(edition, registry);
   const dir = `/root/${data.dir}`;
   const db = dbDir || `${dir}/db`;
   const logs = logDir || `${dir}/logs`;
   const file = fileDir || `${dir}/file`;
+  const useMysql = dbType === 'mysql';
+  const mysqlPwd = mysqlPassword || 'CHANGE_ME';
+  const mysqlDir = mysqlDataDir || `${dir}/mysql`;
+  const mysqlContainer = `${data.container}-mysql`;
 
   let volumes = `            - '${db}:/root/.zfile-v4/db'
             - '${logs}:/root/.zfile-v4/logs'
@@ -54,16 +58,46 @@ export function generateDockerComposeYaml({ edition, registry, port, withConfig,
     volumes += `\n            - '${conf}:/root/application.properties'`;
   }
 
-  return `version: '3.3'
+  let zfileExtras = '';
+  if (useMysql) {
+    zfileExtras = `        depends_on:
+            - mysql
+        environment:
+            - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+            - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/zfile?characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+            - SPRING_DATASOURCE_USERNAME=root
+            - SPRING_DATASOURCE_PASSWORD=${mysqlPwd}
+`;
+  }
+
+  let yaml = `version: '3.3'
 services:
     zfile:
         container_name: ${data.container}
         restart: always
-        ports:
+${zfileExtras}        ports:
             - '${port || '8080'}:8080'
         volumes:
 ${volumes}
         image: ${image}`;
+
+  if (useMysql) {
+    yaml += `
+
+    mysql:
+        container_name: ${mysqlContainer}
+        image: mysql:8.0
+        restart: always
+        command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+        environment:
+            - MYSQL_ROOT_PASSWORD=${mysqlPwd}
+            - MYSQL_DATABASE=zfile
+            - TZ=Asia/Shanghai
+        volumes:
+            - '${mysqlDir}:/var/lib/mysql'`;
+  }
+
+  return yaml;
 }
 
 /**
