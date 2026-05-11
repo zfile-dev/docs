@@ -145,53 +145,43 @@ export default function InstallWizard() {
                 ))}
               </div>
             </div>
-            <div>
-              <div style={{ marginBottom: '8px', fontSize: '0.9em', fontWeight: 500 }}>
-                数据库
-                {!isComposeMode && (
-                  <span style={{ fontSize: '0.8em', opacity: 0.6, fontWeight: 400, marginLeft: '8px' }}>
-                    （MySQL 仅在 docker compose 模式可用）
-                  </span>
+            {isComposeMode && (
+              <div>
+                <div style={{ marginBottom: '8px', fontSize: '0.9em', fontWeight: 500 }}>数据库</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                  {DB_TYPES.map((db) => (
+                    <OptionCard key={db.id} label={db.label} desc={db.desc}
+                      selected={state.dbType === db.id}
+                      onClick={() => dispatch({ type: 'SET_DB_TYPE', payload: db.id })} />
+                  ))}
+                </div>
+                {useMysql && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '0.85em', whiteSpace: 'nowrap', minWidth: '80px' }}>MySQL 密码</span>
+                      <input type="text" value={effectiveMysqlPassword}
+                        onChange={(e) => dispatch({ type: 'SET_MYSQL_PASSWORD', payload: e.target.value })}
+                        style={{
+                          flex: 1, padding: '6px 10px', borderRadius: '6px',
+                          border: '1px solid var(--ifm-color-emphasis-300)',
+                          background: 'var(--ifm-background-color)', color: 'inherit',
+                          fontSize: '0.85em', fontFamily: 'monospace',
+                        }} />
+                      <button type="button"
+                        onClick={() => dispatch({ type: 'SET_MYSQL_PASSWORD', payload: generateRandomPassword() })}
+                        style={{
+                          padding: '6px 12px', borderRadius: '6px', cursor: 'pointer',
+                          border: '1px solid var(--ifm-color-emphasis-300)',
+                          background: 'var(--ifm-background-color)', color: 'inherit',
+                          fontSize: '0.8em', whiteSpace: 'nowrap',
+                        }}>重新生成</button>
+                    </div>
+                    <DirInput label="MySQL 目录" value={effectiveMysqlDataDir}
+                      onChange={(v) => dispatch({ type: 'SET_MYSQL_DATA_DIR', payload: v })} />
+                  </div>
                 )}
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
-                {DB_TYPES.map((db) => {
-                  const disabled = db.id === 'mysql' && !isComposeMode;
-                  return (
-                    <div key={db.id} style={{ opacity: disabled ? 0.4 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
-                      <OptionCard label={db.label} desc={db.desc}
-                        selected={state.dbType === db.id}
-                        onClick={() => !disabled && dispatch({ type: 'SET_DB_TYPE', payload: db.id })} />
-                    </div>
-                  );
-                })}
-              </div>
-              {useMysql && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '0.85em', whiteSpace: 'nowrap', minWidth: '80px' }}>MySQL 密码</span>
-                    <input type="text" value={effectiveMysqlPassword}
-                      onChange={(e) => dispatch({ type: 'SET_MYSQL_PASSWORD', payload: e.target.value })}
-                      style={{
-                        flex: 1, padding: '6px 10px', borderRadius: '6px',
-                        border: '1px solid var(--ifm-color-emphasis-300)',
-                        background: 'var(--ifm-background-color)', color: 'inherit',
-                        fontSize: '0.85em', fontFamily: 'monospace',
-                      }} />
-                    <button type="button"
-                      onClick={() => dispatch({ type: 'SET_MYSQL_PASSWORD', payload: generateRandomPassword() })}
-                      style={{
-                        padding: '6px 12px', borderRadius: '6px', cursor: 'pointer',
-                        border: '1px solid var(--ifm-color-emphasis-300)',
-                        background: 'var(--ifm-background-color)', color: 'inherit',
-                        fontSize: '0.8em', whiteSpace: 'nowrap',
-                      }}>重新生成</button>
-                  </div>
-                  <DirInput label="MySQL 目录" value={effectiveMysqlDataDir}
-                    onChange={(v) => dispatch({ type: 'SET_MYSQL_DATA_DIR', payload: v })} />
-                </div>
-              )}
-            </div>
+            )}
             <div>
               <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                 <input type="checkbox" checked={state.withConfig}
