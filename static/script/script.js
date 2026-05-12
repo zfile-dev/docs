@@ -61,6 +61,17 @@ if (hashMap[hash]) {
         '/install/os-1panel/': '/install/guide#edition=os&platform=onepanel',
         '/install/script-install': '/install/guide#platform=script',
         '/install/script-install/': '/install/guide#platform=script',
+        // 更早期（pre-2022）安装页 → 安装向导
+        '/install/docker': '/install/guide#edition=os&platform=docker',
+        '/install/docker/': '/install/guide#edition=os&platform=docker',
+        '/install/linux': '/install/guide#edition=os&platform=linux',
+        '/install/linux/': '/install/guide#edition=os&platform=linux',
+        '/install/windows': '/install/guide#edition=os&platform=windows',
+        '/install/windows/': '/install/guide#edition=os&platform=windows',
+        '/install/help-install': '/support/',
+        '/install/help-install/': '/support/',
+        '/install/help-install-sub': '/support/',
+        '/install/help-install-sub/': '/support/',
     };
 
     // 精确匹配

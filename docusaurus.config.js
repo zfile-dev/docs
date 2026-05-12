@@ -20,7 +20,7 @@ const config = {
         locales: ["zh-Hans"],
     },
     scripts: [{
-        src: '/script/script.js', async: true,
+        src: '/script/script.js', defer: true,
     }, {
         src: 'https://cdn.wwads.cn/js/makemoney.js',
         async: true,
