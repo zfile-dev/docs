@@ -1,88 +1,54 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+# Linux 部署如何配置开机自启（systemd）？
 
-# Linux 部署如何配置开机自启(systemd)
+## 一键脚本安装
 
-注意：以下配置仅适用于 ZFile 4.2.0 及以上版本，且以下是默认配置，若你修改了 zfile 的安装目录，请自行修改以下 `WorkingDirectory` 和 `ExecStart` 中的路径。
+通过官方一键脚本直接安装时，推荐让脚本生成与当前安装目录一致的 service：
 
-1. 添加以下内容到 `/etc/systemd/system/zfile.service` 文件中。
-<Tabs>
-<TabItem value="os" label="开源版">
 ```bash
+./install.sh service install
+```
+
+常用管理命令：
+
+```bash
+./install.sh service status
+./install.sh service restart
+./install.sh service uninstall
+```
+
+该功能只适用于 Linux 直接安装。Docker 部署使用容器的 `--restart=always` 或 Compose 中的 `restart: always`，不需要再为 ZFile 创建 systemd 服务。
+
+## 手工安装
+
+手工解压安装包时，可以创建 `/etc/systemd/system/zfile.service`：
+
+```ini
 [Unit]
-Description=ZFile Service
-Documentation=https://docs.zfile.vip
-After=network.target syslog.target
+Description=ZFile File Manager
+After=network.target
 
 [Service]
-
-# User=zfile
-# Group=zfile
-
-Type=simple
-PrivateTmp=true
-LimitNOFILE=65536
-StandardOutput=journal
-StandardError=journal
-
-WorkingDirectory=/root/zfile/
-ExecStart=/root/zfile/zfile/zfile --spring.config.location=/root/zfile/application.properties
-ExecReload=/bin/kill -HUP $MAINPID
-
-SuccessExitStatus=143
+Type=forking
+User=root
+WorkingDirectory=/root/zfile
+ExecStart=/root/zfile/bin/start.sh
+ExecStop=/root/zfile/bin/stop.sh
 Restart=on-failure
-RestartSec=10s
+RestartSec=10
+LimitNOFILE=65536
 
 [Install]
 WantedBy=multi-user.target
 ```
-</TabItem>
-<TabItem value="pro" label="捐赠版">
-```bash
-[Unit]
-Description=ZFile Service
-Documentation=https://docs.zfile.vip
-After=network.target syslog.target
 
-[Service]
+捐赠版默认安装目录为 `/root/zfile-pro`，请同时把 `WorkingDirectory`、`ExecStart` 和 `ExecStop` 中的目录改为 `/root/zfile-pro`。如果使用非 root 用户安装，请把 `User` 和路径改成实际值。
 
-# User=zfile
-# Group=zfile
+使配置生效并启动：
 
-Type=simple
-PrivateTmp=true
-LimitNOFILE=65536
-StandardOutput=journal
-StandardError=journal
-
-WorkingDirectory=/root/zfile-pro/
-ExecStart=/root/zfile-pro/zfile/zfile-pro --spring.config.location=/root/zfile-pro/application.properties
-ExecReload=/bin/kill -HUP $MAINPID
-
-SuccessExitStatus=143
-Restart=on-failure
-RestartSec=10s
-
-[Install]
-WantedBy=multi-user.target
-```
-</TabItem>
-</Tabs>
-
-2. 使 systemd 生效并设置开机自启：
 ```bash
 systemctl daemon-reload
-systemctl enable zfile
+systemctl enable --now zfile
+systemctl status zfile
 ```
 
-3. 启动 ZFile 服务：
-```bash
-systemctl start zfile
-```
-
-其他命令
-```bash
-systemctl status zfile  # 查看服务状态
-systemctl stop zfile    # 停止服务
-systemctl restart zfile # 重启服务
-```
+修改 service 文件后需要再次执行 `systemctl daemon-reload`。

@@ -1,15 +1,12 @@
-# ubuntu/debian 操作系统使用时，登录页面验证码无法显示怎么办？
+# Ubuntu / Debian 登录页验证码无法显示怎么办？
 
-原因是系统没有字体库，导致验证码无法显示。安装字体库即可解决问题。
+当前版本使用 SVG 验证码，不依赖 Java AWT 或系统字体，也不需要安装 JDK 8 字体组件。
 
-```bash
-sudo apt install -y fontconfig
-```
+如果验证码区域无法显示，请依次检查：
 
-如果你是 4.2.0 以前的社区版，上面的方法没有解决，且你是自己本地的 jdk，那么在 /etc/java-8-openjdk/accessibility.properties 文件中，使用 vi/vim 注释掉最后一行即可。也可使用以下命令一键注释掉最后一行：
+1. 强制刷新浏览器页面，或清除站点缓存后重试。
+2. 打开浏览器开发者工具的 Network，确认验证码接口是否返回成功。
+3. 检查反向代理是否错误缓存或拦截 `/api/` 请求。
+4. 查看 ZFile 日志中的对应请求错误，参考[如何查看 / 下载日志](/question/download-log)。
 
-```bash
-sudo sed -i 's/^assistive_technologies=org.GNOME.Accessibility.AtkWrapper/#&/g' /etc/java-8-openjdk/accessibility.properties
-```
-
-如果还不行，请点击文档上方的技术支持。
+如果使用的是 4.x 旧版本，请优先升级；旧版本才可能需要安装 `fontconfig` 或处理 Java AWT 环境。

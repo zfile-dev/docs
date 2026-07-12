@@ -13,7 +13,7 @@ import TabItem from '@theme/TabItem';
 <TabItem value="os" label="开源版">
 
 - [Linux](/install/guide#edition=os&platform=linux) — `~/zfile/application.properties`
-- [Windows](/install/guide#edition=os&platform=windows) — 解压目录下的 `application.properties`
+- [Windows](/install/guide#edition=os&platform=windows) — 解压目录下的 `application.properties`；首次自定义时从 `application.properties.example` 复制
 - [Docker](/install/guide#edition=os&platform=docker) — 宿主机 `/root/zfile/application.properties`（需映射配置文件）
 - [宝塔（Docker 应用商店 / 传统方式）](/install/guide#edition=os&platform=baota) — 在安装向导中查看对应安装方式的配置文件路径
 
@@ -23,9 +23,15 @@ import TabItem from '@theme/TabItem';
 <TabItem value="pro" label="捐赠版">
 
 - [Linux](/install/guide#edition=pro&platform=linux) — `~/zfile-pro/application.properties`
-- [Windows](/install/guide#edition=pro&platform=windows) — 解压目录下的 `application.properties`
+- [Windows](/install/guide#edition=pro&platform=windows) — 解压目录下的 `application.properties`；首次自定义时从 `application.properties.example` 复制
 - [Docker](/install/guide#edition=pro&platform=docker) — 宿主机 `/root/zfile-pro/application.properties`（需映射配置文件）
 - [宝塔](/install/guide#edition=pro&platform=baota) — `解压路径/application.properties`
 
 </TabItem>
 </Tabs>
+
+:::info
+新版 Linux / Windows 压缩包使用 `application.properties.example` 提供配置模板，避免更新解压时覆盖已有配置。首次需要自定义时复制为 `application.properties`；以后更新只替换程序文件，保留现有 `application.properties`。
+:::
+
+Docker 只有显式映射 `/root/application.properties` 时才使用宿主机配置文件。未映射时使用镜像内置默认配置，数据库和日志目录仍应单独持久化。

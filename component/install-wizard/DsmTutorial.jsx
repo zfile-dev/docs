@@ -8,7 +8,8 @@ const stepCard = {
 const stepLabel = { fontWeight: 600, marginBottom: '4px' };
 
 export default function DsmTutorial({ edition = 'os' }) {
-  const image = edition === 'pro' ? 'zfile-pro' : 'zfile';
+  const isPro = edition === 'pro';
+  const image = isPro ? 'zfile-pro' : 'zfile';
 
   const composeYaml = `version: '3.3'
 services:
@@ -54,6 +55,10 @@ services:
           <li><strong>内容</strong>：复制下面的配置</li>
         </ul>
         <CodeBlock language="yaml">{composeYaml}</CodeBlock>
+        <p style={{ fontSize: '0.85em', color: 'var(--ifm-color-emphasis-700)', marginTop: '4px' }}>
+          如需在「系统监控」查看容器名称、镜像和宿主机挂载源，可在 <code>volumes</code> 中额外添加
+          <code> '/var/run/docker.sock:/var/run/docker.sock:ro'</code>。该挂载权限较高，不需要时不要添加。
+        </p>
         <img className="sm:w-2/3" src="/img/2025/9/6/dsm-install-3.png" />
         <img className="sm:w-2/3" src="/img/2025/9/6/dsm-install-4.png" />
       </div>

@@ -1,49 +1,66 @@
-# 启动失败/无法访问怎么办？
+# 启动失败 / 无法访问怎么办？
 
-如启动后浏览器访问 **`http://ip:8080`** 无法访问，一般有以下几种原因：请检查 **`端口是否冲突`** 或 **`防火墙/安全组是否开启`**。
+先在服务器本机执行：
 
-简单检查方式为在服务器执行 `curl http://127.0.0.1:8080`
-- 如返回 `curl: (7) Failed connect to 127.0.0.1:8080; Connection refused` 表示未启动成功。
-- 如返回 `<!DOCTYPE html> <html lang="zh-CN">……` 等字样表示启动成功，如启动成功但通过服务器 IP 无法访问，那一般就是防火墙/安全组未放行端口问题。
-
-
-## 端口被占用
-
-请自行检查 `zfile` 启动端口是否被占用，如您没修改过端口，则 ZFile 默认占用 8080 端口，所以检查 8080 端口是否被占用即可。
-
-## jdk 版本错误
-
-如您安装的是捐赠版，可跳过此步骤排查，因为捐赠版内置了 Java 环境，社区版/开源版的话需要检查 JDK 是否安装正确，`zfile` 仅支持运行在 `jdk 1.8` 版本下，请执行命令 `java -version` 命令，查看 `jdk` 版本，包含类似以下字样才是 `jdk` 安装正确.
-
-```bash showLineNumbers
-openjdk version "1.8.0_292"
-OpenJDK Runtime Environment (build 1.8.0_292-b10)
-OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+```bash
+curl -I http://127.0.0.1:8080
 ```
 
-## 防火墙未开启
+- 返回 HTTP 响应，说明 ZFile 已启动；外部仍无法访问通常是防火墙、安全组、端口映射或反向代理问题。
+- 返回 `Connection refused`，说明端口没有监听，需要检查服务状态和日志。
 
-可能是防火墙没开启，下面介绍如何防火墙开启端口，**对于阿里云、腾讯云、谷歌云等厂商, 可能还需要额外去后台开启防火墙/安全组**。
+如果修改过端口，请将 `8080` 换成实际端口。
 
-### CentOS 7.x
+## 使用一键脚本诊断
 
-```bash showLineNumbers
-firewall-cmd --zone=public --add-port=8080/tcp --permanent # 开放 8080 端口
-firewall-cmd --reload                                      # 重启firewall
+通过官方一键脚本安装时，在脚本所在目录执行：
+
+```bash
+./install.sh status
+./install.sh doctor
+./install.sh logs -n 200
 ```
 
-### Ubuntu 16.x / Debian 9.x
+Docker 手工部署可执行：
 
-```bash showLineNumbers
-iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
-iptables-save
-sudo apt-get install iptables-persistent
-sudo netfilter-persistent save
-sudo netfilter-persistent reload
+```bash
+docker ps -a --filter name=zfile
+docker logs --tail 200 zfile
 ```
 
-### 宝塔面板
+捐赠版默认容器名为 `zfile-pro`。
 
-宝塔面板可以去后台开放端口:
+Linux 压缩包部署可在安装目录执行 `./bin/status.sh` 和 `./bin/log.sh`。默认日志目录为 `~/.zfile-v4/logs`。
 
-![Snipaste_2020-01-30_18-54-42.png](/img/2020/01/30/18fa335b407ae.png)
+## 不需要单独安装 JDK
+
+当前官方 Linux / Windows 安装包和 Docker 镜像已经包含运行所需环境，不再要求安装 JDK 8。不要使用旧教程中的 `java -jar` 或 JDK 8 启动方式，直接使用安装包自带的启动脚本。
+
+## 端口冲突
+
+默认端口为 `8080`。Linux 启动脚本会在启动前检查端口占用，并提示修改 `application.properties` 中的 `server.port`。也可以手动检查：
+
+```bash
+ss -ltnp | grep ':8080'
+```
+
+Docker 部署需要确保宿主机端口没有被占用，并检查 `-p 宿主机端口:8080` 是否正确。
+
+## 数据目录权限
+
+确认运行 ZFile 的用户对数据库和日志目录有读写权限。Docker 部署重点检查映射到 `/root/.zfile-v4/db`、`/root/.zfile-v4/logs` 的宿主机目录。
+
+## 防火墙和安全组
+
+云服务器通常需要同时在操作系统防火墙和云厂商安全组放行端口。Docker 映射或本机 `curl` 正常但外网无法访问时，优先检查这两处。
+
+```bash title="firewalld"
+firewall-cmd --zone=public --add-port=8080/tcp --permanent
+firewall-cmd --reload
+```
+
+```bash title="ufw"
+ufw allow 8080/tcp
+```
+
+如果通过 Nginx、1Panel 或宝塔反向代理，请同时确认代理目标是 ZFile 的实际监听地址和端口。

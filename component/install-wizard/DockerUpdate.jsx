@@ -11,6 +11,9 @@ export default function DockerUpdate({ edition = 'os' }) {
 
   return (
     <div>
+      <div style={{ marginBottom: '12px', padding: '10px 14px', borderRadius: '8px', background: 'var(--ifm-color-warning-contrast-background)', fontSize: '0.85em' }}>
+        更新前请先备份数据库、配置文件和本地存储文件，并确认数据库、日志目录已持久化到宿主机。
+      </div>
       <div style={{ fontSize: '0.85em', opacity: 0.7, marginBottom: '4px' }}>
         手动更新（执行一次后自动退出）：
       </div>

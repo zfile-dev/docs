@@ -108,6 +108,8 @@ export const INITIAL_STATE = {
   registry: 'dockerhub',
   dockerMode: 'run',
   withConfig: false,
+  // 是否只读挂载宿主机 docker.sock（系统监控读取容器元数据用），默认不开启
+  withDockerSock: false,
   port: '8080',
   dataDir: '',
   installPath: '',
@@ -150,6 +152,8 @@ export function wizardReducer(state, action) {
       };
     case 'TOGGLE_CONFIG':
       return { ...state, withConfig: !state.withConfig };
+    case 'TOGGLE_DOCKER_SOCK':
+      return { ...state, withDockerSock: !state.withDockerSock };
     case 'SET_PORT':
       return { ...state, port: action.payload };
     case 'SET_DATA_DIR':

@@ -95,6 +95,11 @@ const sidebars = {
                     id: 'feature/log',
                     type: 'doc',
                     label: '系统日志'
+                },
+                {
+                    id: 'feature/system-monitor',
+                    type: 'doc',
+                    label: '系统监控'
                 }
             ]
         },

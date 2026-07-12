@@ -11,7 +11,7 @@ function getImage(edition, registry) {
 /**
  * 生成 docker run 命令
  */
-export function generateDockerRunCommand({ edition, registry, port, withConfig, dbDir, logDir, fileDir, configDir }) {
+export function generateDockerRunCommand({ edition, registry, port, withConfig, withDockerSock, dbDir, logDir, fileDir, configDir }) {
   const data = EDITION_DATA[edition];
   const image = getImage(edition, registry);
   const dir = `/root/${data.dir}`;
@@ -30,6 +30,11 @@ export function generateDockerRunCommand({ edition, registry, port, withConfig, 
     cmd += `\n    -v ${conf}:/root/application.properties \\`;
   }
 
+  // 系统监控读取容器元数据时，只读挂载宿主机 docker.sock
+  if (withDockerSock) {
+    cmd += `\n    -v /var/run/docker.sock:/var/run/docker.sock:ro \\`;
+  }
+
   cmd += `\n    ${image}`;
   return cmd;
 }
@@ -37,7 +42,7 @@ export function generateDockerRunCommand({ edition, registry, port, withConfig, 
 /**
  * 生成 docker compose YAML
  */
-export function generateDockerComposeYaml({ edition, registry, port, withConfig, dbDir, logDir, fileDir, configDir, dbType, mysqlPassword, mysqlDataDir }) {
+export function generateDockerComposeYaml({ edition, registry, port, withConfig, withDockerSock, dbDir, logDir, fileDir, configDir, dbType, mysqlPassword, mysqlDataDir }) {
   const data = EDITION_DATA[edition];
   const image = getImage(edition, registry);
   const dir = `/root/${data.dir}`;
@@ -56,6 +61,11 @@ export function generateDockerComposeYaml({ edition, registry, port, withConfig,
   if (withConfig) {
     const conf = configDir || `${dir}/application.properties`;
     volumes += `\n            - '${conf}:/root/application.properties'`;
+  }
+
+  // 系统监控读取容器元数据时，只读挂载宿主机 docker.sock
+  if (withDockerSock) {
+    volumes += `\n            - '/var/run/docker.sock:/var/run/docker.sock:ro'`;
   }
 
   let zfileExtras = '';
@@ -124,6 +134,7 @@ mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 创建
 wget --no-check-certificate ${url}  # 下载最新版
 tar -zxvf ${tar}                              # 解压
 rm -rf ${tar}                                 # 删除压缩包
+cp -n application.properties.example application.properties            # 首次安装复制示例配置
 chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本`;
 }
 
@@ -147,12 +158,10 @@ export function generateLinuxUpdateCommand({ edition, arch, installPath }) {
 
   return `export ZFILE_INSTALL_PATH=${path}                                       # 声明安装路径
 
-$ZFILE_INSTALL_PATH/bin/stop.sh                                         # 停止程序
-rm -rf $ZFILE_INSTALL_PATH                                              # 删除安装文件夹
-
-# 重新下载安装最新版
-mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 创建文件夹并进入
+mkdir -p $ZFILE_INSTALL_PATH && cd $ZFILE_INSTALL_PATH                  # 进入安装目录
 wget --no-check-certificate ${url}  # 下载最新版
+$ZFILE_INSTALL_PATH/bin/stop.sh                                         # 下载成功后停止程序
+rm -rf $ZFILE_INSTALL_PATH/bin $ZFILE_INSTALL_PATH/static $ZFILE_INSTALL_PATH/zfile   # 仅删除旧程序文件，保留配置
 tar -zxvf ${tar}                              # 解压
 rm -rf ${tar}                                 # 删除压缩包
 chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权启动停止脚本

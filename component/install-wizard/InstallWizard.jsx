@@ -192,6 +192,17 @@ export default function InstallWizard() {
                 如需修改 Redis 或其他特殊设置时才需开启
               </div>
             </div>
+            {/* 挂载 docker.sock：用于系统监控读取容器元数据 */}
+            <div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                <input type="checkbox" checked={state.withDockerSock}
+                  onChange={() => dispatch({ type: 'TOGGLE_DOCKER_SOCK' })} />
+                <span>挂载 docker.sock（系统监控容器信息）</span>
+              </label>
+              <div style={{ fontSize: '0.8em', opacity: 0.6, marginTop: '4px', marginLeft: '24px' }}>
+                系统监控读取容器名称、镜像、状态和挂载映射时需要只读挂载，不需要这些信息可不开启
+              </div>
+            </div>
             <div>
               <div style={{ marginBottom: '8px', fontSize: '0.9em', fontWeight: 500 }}>端口与目录</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -329,7 +340,12 @@ export default function InstallWizard() {
 
           {/* Linux 更新 */}
           {state.platform === 'linux' && state.installMode === 'update' && (
-            <CodeBlock language="bash">{generateLinuxUpdateCommand(state)}</CodeBlock>
+            <div>
+              <div style={{ marginBottom: '12px', padding: '10px 14px', borderRadius: '8px', background: 'var(--ifm-color-warning-contrast-background)', fontSize: '0.85em' }}>
+                更新前请先按备份文档备份数据库、配置文件和本地存储文件。下面的命令会保留安装目录中的 <code>application.properties</code>。
+              </div>
+              <CodeBlock language="bash">{generateLinuxUpdateCommand(state)}</CodeBlock>
+            </div>
           )}
 
           {/* 一键脚本 */}
@@ -345,7 +361,9 @@ export default function InstallWizard() {
                 </CodeBlock>
               </div>
               <div style={{ fontSize: '0.85em', opacity: 0.6 }}>
-                再次使用时，在相同目录执行 <code>./install.sh</code> 即可。
+                再次使用时，在相同目录执行 <code>./install.sh</code> 即可。脚本还支持 <code>status</code>、
+                <code>logs</code>、<code>doctor</code>、<code>reset-admin</code> 和 <code>service install</code> 等子命令，可执行
+                <code>./install.sh --help</code> 查看完整说明。
               </div>
             </div>
           )}
@@ -357,7 +375,7 @@ export default function InstallWizard() {
                 <p><strong>1.</strong> <a href={data.winUrl}>点击下载 {data.name} 软件包</a></p>
                 <p><strong>2.</strong> 解压后双击 <code>双击我启动.bat</code> 即可</p>
                 <p><strong>3.</strong> 启动后访问 <a href="http://localhost:8080">http://localhost:8080</a></p>
-                <p style={{ marginBottom: 0 }}><strong>4.</strong> 配置文件：解压目录下的 <code>application.properties</code></p>
+                <p style={{ marginBottom: 0 }}><strong>4.</strong> 如需自定义配置，将解压目录下的 <code>application.properties.example</code> 复制为 <code>application.properties</code></p>
               </div>
               <div style={{ padding: '12px 16px', borderRadius: '8px', background: 'var(--ifm-color-emphasis-100)', fontSize: '0.9em' }}>
                 <strong>注意：</strong>如果你的 Windows 用户名为中文，可能会启动失败。

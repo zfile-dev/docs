@@ -1,6 +1,10 @@
 # Debug 模式
 
-如忘记密码后，**可修改配置文件**开启 `debug` 模式，修改后重启然后在 `zfile` 首页点击重置密码按钮，或访问 `http(s)://ip:port/api/site/reset-password`，会将用户名强制重置为 `admin`，密码修改为 `123456`。
+:::warning 仅用于旧版本救援
+5.0.0 及以上版本请优先使用本机 [`reset-admin` 救援命令](/question/reset-password)。Debug 模式会开放网页重置入口，不适合长期启用。
+:::
+
+旧版本忘记密码后，可修改配置文件开启 `debug` 模式，重启后在 ZFile 首页点击重置密码按钮，或访问 `http(s)://ip:port/api/site/reset-password`，将用户名重置为 `admin`、密码重置为 `123456`。
 
 配置文件路径参考左侧的：**`参数配置 -> 配置文件路径（必看）`**，修改内容如下：
 

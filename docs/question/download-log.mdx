@@ -8,4 +8,13 @@
 
 ## 服务器磁盘
 
-日志文件在服务器磁盘中，如果不是 docker 部署的话日志文件在 `~/.zfile-v4/logs/` 目录下，如果是 docker 部署的话则按照 docker 容器创建时的日志文件映射目录查找日志。
+日志文件在服务器磁盘中。非 Docker 部署默认位于 `~/.zfile-v4/logs/`；Docker 部署按容器创建时映射到 `/root/.zfile-v4/logs` 的宿主机目录查找。
+
+通过一键脚本安装时，也可以在脚本目录执行：
+
+```bash
+./install.sh logs -n 200
+./install.sh logs -f
+```
+
+手工 Docker 部署可执行 `docker logs --tail 200 zfile` 查看容器输出；捐赠版默认容器名为 `zfile-pro`。
