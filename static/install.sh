@@ -444,7 +444,8 @@ get_install_type_and_version() {
             ZFILE_RUNNING_STATUS="未启动"
         fi
     fi
-    detect_running_version
+    # 未检测到已安装实例是正常状态，不能因 set -e 退出脚本
+    detect_running_version || true
 }
 
 # --------------- Header / Menu ---------------
