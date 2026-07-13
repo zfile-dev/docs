@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import ComputeCommandNew from '../ComputeCommandNew';
-import ComputeCommand from '../ComputeCommand';
 import { BaotaProxyFix, BaotaNginxLimit } from './BaotaCommon';
 import { ArchSelector } from './SharedWidgets';
 
@@ -52,73 +49,31 @@ function SiteSetupSteps({ screenshotSrc, commandComponent }) {
   );
 }
 
-function OldSiteSetupSteps() {
-  return (
-    <>
-      <img className="sm:w-2/3" src="/img/2022/07/25/G6K7ou.png" />
-      <img className="sm:w-7/12" src="/img/2023/03/11/img.png" />
-      <p>假如你 <code>解压路径</code> 为 <code>/www/wwwroot/demo.zfile.vip</code>，按下图填写各项：</p>
-      <div style={stepCard}>
-        <div style={stepLabel}>① 项目执行文件</div>
-        写 <code>解压路径/zfile-launch</code>，如 <code>/www/wwwroot/demo.zfile.vip/zfile-launch</code>
-      </div>
-      <div style={stepCard}>
-        <div style={stepLabel}>② 项目名称</div>随便写
-      </div>
-      <div style={stepCard}>
-        <div style={stepLabel}>③ 项目端口</div>
-        默认 <code>8080</code>。如修改了配置文件中的端口，则填修改后的端口。
-        <br/><span style={{fontSize:'0.85em',color:'var(--ifm-color-danger)'}}>千万不要写 80 或 443，宝塔已占用这些端口。</span>
-      </div>
-      <div style={stepCard}>
-        <div style={stepLabel}>④ 执行命令</div>
-        将解压路径粘贴到下方输入框，点击「生成执行命令」，再复制结果粘贴到宝塔中。
-        <ComputeCommand />
-      </div>
-      <div style={stepCard}>
-        <div style={stepLabel}>⑤ 运行用户</div>选 <code>root</code>
-      </div>
-      <div style={stepCard}>
-        <div style={stepLabel}>⑥ 开机自启</div>根据需要选择
-      </div>
-      <div style={stepCard}>
-        <div style={stepLabel}>⑦ 绑定域名</div>
-        使用域名 → 填域名（不写协议和端口）<br/>
-        使用 IP + 端口 → 留空即可
-      </div>
-    </>
-  );
-}
-
-export default function BaotaTraditionalTutorial({ edition = 'os' }) {
+export default function BaotaTraditionalTutorial() {
   const [arch, setArch] = useState('amd64');
 
   const downloadLinks = {
-    os:  { amd64: 'https://c.jun6.net/ZFILE/zfile-release_linux_amd64.tar.gz', arm64: 'https://c.jun6.net/ZFILE/zfile-release_linux_arm.tar.gz' },
-    pro: { amd64: 'https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_amd64.tar.gz', arm64: 'https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_arm.tar.gz' },
+    amd64: 'https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_amd64.tar.gz',
+    arm64: 'https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_arm.tar.gz',
   };
-  const screenshot1 = edition === 'pro' ? '/img/2024/11/09/pro-baota-1.png' : '/img/2024/11/09/os-baota-1.png';
-  const screenshot2 = edition === 'pro' ? '/img/2024/11/09/pro-baota-2.png' : '/img/2024/11/09/os-baota-2.png';
+  const screenshot1 = '/img/2024/11/09/pro-baota-1.png';
+  const screenshot2 = '/img/2024/11/09/pro-baota-2.png';
 
   return (
     <>
       {/* ===== 前言 ===== */}
       <h2>1.前言</h2>
-      {edition === 'os' ? (
-        <p><strong>4.2.0</strong> 开始开源版<strong>部署方式有所变化</strong>，如果你是从 4.1.5 及以前版本升级过来的，请<strong>停止并删除</strong>之前的程序后，参考下文的安装方法重新安装。(数据文件在用户目录下，不会丢失.)</p>
-      ) : (
-        <ul>
-          <li>购买捐赠版可以上 <a href="https://www.zfile.vip/pricing">https://www.zfile.vip/pricing</a> 查看功能介绍并购买.</li>
-          <li>ZFile Pro 支持从 4.x 兼容升级，不支持从 3.x 或更早的版本带数据升级.</li>
-        </ul>
-      )}
+      <ul>
+        <li>当前安装包未填写授权码时使用免费功能，填写有效授权码后启用捐赠版功能。</li>
+        <li>统一安装包支持从 4.x 版本兼容升级，不支持从 3.x 或更早版本带数据升级。</li>
+      </ul>
 
       {/* ===== 下载 ===== */}
       <h2 id="2下载">2.下载</h2>
       <p>选择系统架构，然后下载对应文件到服务器上。</p>
       <ArchSelector arch={arch} setArch={setArch} />
       <div style={{ marginTop: '12px' }}>
-        <a href={downloadLinks[edition][arch]}
+        <a href={downloadLinks[arch]}
            style={{ display: 'inline-block', padding: '8px 20px', borderRadius: '6px', background: 'var(--ifm-color-primary)', color: 'white', textDecoration: 'none', fontWeight: 500 }}>
           点击下载
         </a>
@@ -131,21 +86,7 @@ export default function BaotaTraditionalTutorial({ edition = 'os' }) {
 
       {/* ===== 新建网站 ===== */}
       <h2>4.新建网站</h2>
-      {edition === 'pro' ? (
-        <>
-          <p>注意：如果升级前是 4.1.6 或更早版本，需参考最新版的安装方法，重新下载项目并配置项目的各个参数。</p>
-          <Tabs>
-            <TabItem value="new" label="最新版">
-              <SiteSetupSteps screenshotSrc={screenshot2} commandComponent={<ComputeCommandNew edition="pro" />} />
-            </TabItem>
-            <TabItem value="4.1.6" label="4.1.6及以前版本">
-              <OldSiteSetupSteps />
-            </TabItem>
-          </Tabs>
-        </>
-      ) : (
-        <SiteSetupSteps screenshotSrc={screenshot2} commandComponent={<ComputeCommandNew edition="os" />} />
-      )}
+      <SiteSetupSteps screenshotSrc={screenshot2} commandComponent={<ComputeCommandNew />} />
 
       <BaotaProxyFix />
 

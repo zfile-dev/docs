@@ -1,8 +1,8 @@
 import React, { useReducer, useEffect, useRef } from 'react';
 import CodeBlock from '@theme/CodeBlock';
 import {
-  EDITIONS, PLATFORMS, ARCHS, REGISTRIES, DOCKER_MODES, INSTALL_MODES, DB_TYPES,
-  EDITION_DATA, BAOTA_MODES, INITIAL_STATE, STORAGE_KEY, wizardReducer,
+  PLATFORMS, ARCHS, REGISTRIES, DOCKER_MODES, INSTALL_MODES, DB_TYPES,
+  RELEASE_DATA, INITIAL_STATE, STORAGE_KEY, wizardReducer,
   generateRandomPassword,
 } from './installConfig';
 import {
@@ -13,10 +13,8 @@ import {
 } from './commandGenerator';
 import DockerUpdate from './DockerUpdate';
 import { OptionCard, ArchHint } from './SharedWidgets';
-import BaotaDockerStoreTutorial from './BaotaDockerStoreTutorial';
 import BaotaTraditionalTutorial from './BaotaTraditionalTutorial';
 import DsmTutorial from './DsmTutorial';
-import OnePanelTutorial from './OnePanelTutorial';
 import { PLATFORM_ICONS } from './PlatformIcons';
 
 function SectionTitle({ children }) {
@@ -50,7 +48,8 @@ export default function InstallWizard() {
   const [state, dispatch] = useReducer(wizardReducer, INITIAL_STATE);
   const ready = useRef(false);
 
-  // 客户端初始化：先从 localStorage 恢复，再用 URL hash 覆盖
+  // 客户端初始化：先从 localStorage 恢复，再用 URL 参数覆盖。
+  // edition 参数只用于兼容旧链接，统一发行后不再参与安装包选择。
   useEffect(() => {
     const restored = {};
     try {
@@ -58,13 +57,15 @@ export default function InstallWizard() {
       if (saved) Object.assign(restored, JSON.parse(saved));
     } catch (e) { /* SSR safe */ }
     try {
+      const searchParams = new URLSearchParams(window.location.search);
       const hash = window.location.hash.replace('#', '');
-      if (hash) {
-        const params = new URLSearchParams(hash);
-        if (params.has('edition')) restored.edition = params.get('edition');
-        if (params.has('platform')) restored.platform = params.get('platform');
-      }
+      const hashParams = new URLSearchParams(hash);
+      const platform = searchParams.get('platform') || hashParams.get('platform');
+      if (platform) restored.platform = platform;
     } catch (e) { /* SSR safe */ }
+    delete restored.edition;
+    delete restored.baotaMode;
+    delete restored.withDockerSock;
     // 没有历史 MySQL 密码时，生成一个强随机密码作为默认值
     if (!restored.mysqlPassword) {
       restored.mysqlPassword = generateRandomPassword();
@@ -78,7 +79,7 @@ export default function InstallWizard() {
     if (ready.current) saveState(state);
   }, [state]);
 
-  const data = EDITION_DATA[state.edition];
+  const data = RELEASE_DATA;
   const dir = `/root/${data.dir}`;
 
   // 计算 Docker 目录的有效值（用于输入框显示）
@@ -94,13 +95,8 @@ export default function InstallWizard() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-      {/* 版本选择 */}
-      <SectionTitle>选择版本</SectionTitle>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
-        {EDITIONS.map((ed) => (
-          <OptionCard key={ed.id} label={ed.label} selected={state.edition === ed.id}
-            onClick={() => dispatch({ type: 'SET_EDITION', payload: ed.id })} />
-        ))}
+      <div style={{ padding: '12px 16px', borderRadius: '8px', background: 'var(--ifm-color-emphasis-100)', fontSize: '0.9em', lineHeight: 1.7 }}>
+        ZFile 现已统一为一个版本：未填写授权码时使用免费功能，填写有效授权码后自动启用捐赠版功能。
       </div>
 
       {/* 安装模式 */}
@@ -192,17 +188,6 @@ export default function InstallWizard() {
                 如需修改 Redis 或其他特殊设置时才需开启
               </div>
             </div>
-            {/* 挂载 docker.sock：用于系统监控读取容器元数据 */}
-            <div>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                <input type="checkbox" checked={state.withDockerSock}
-                  onChange={() => dispatch({ type: 'TOGGLE_DOCKER_SOCK' })} />
-                <span>挂载 docker.sock（系统监控容器信息）</span>
-              </label>
-              <div style={{ fontSize: '0.8em', opacity: 0.6, marginTop: '4px', marginLeft: '24px' }}>
-                系统监控读取容器名称、镜像、状态和挂载映射时需要只读挂载，不需要这些信息可不开启
-              </div>
-            </div>
             <div>
               <div style={{ marginBottom: '8px', fontSize: '0.9em', fontWeight: 500 }}>端口与目录</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -243,23 +228,11 @@ export default function InstallWizard() {
       {/* 宝塔面板 */}
       {state.platform === 'baota' && (
         <div>
-          <SectionTitle>安装方式</SectionTitle>
-          {state.edition === 'pro' ? (
-            <div style={{ padding: '12px 16px', borderRadius: '8px', background: 'var(--ifm-color-emphasis-100)', fontSize: '0.9em', marginBottom: '16px' }}>
-              捐赠版仅支持传统方式安装。
-            </div>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', marginBottom: '16px' }}>
-              {BAOTA_MODES.map((m) => (
-                <OptionCard key={m.id} label={m.label} desc={m.desc}
-                  selected={state.baotaMode === m.id}
-                  onClick={() => dispatch({ type: 'SET_BAOTA_MODE', payload: m.id })} />
-              ))}
-            </div>
-          )}
-          {(state.edition === 'pro' || state.baotaMode === 'traditional')
-            ? <BaotaTraditionalTutorial edition={state.edition} />
-            : <BaotaDockerStoreTutorial />}
+          <SectionTitle>宝塔传统方式安装</SectionTitle>
+          <div style={{ padding: '12px 16px', borderRadius: '8px', background: 'var(--ifm-color-emphasis-100)', fontSize: '0.9em', marginBottom: '16px' }}>
+            宝塔 Docker 应用商店暂未提供统一安装包，请使用传统方式安装。
+          </div>
+          <BaotaTraditionalTutorial />
         </div>
       )}
 
@@ -267,7 +240,7 @@ export default function InstallWizard() {
       {state.platform === 'synology' && (
         <div>
           <SectionTitle>群晖 Docker 安装教程</SectionTitle>
-          <DsmTutorial edition={state.edition} />
+          <DsmTutorial />
         </div>
       )}
 
@@ -275,13 +248,9 @@ export default function InstallWizard() {
       {state.platform === 'onepanel' && (
         <div>
           <SectionTitle>1Panel 应用商店安装</SectionTitle>
-          {state.edition === 'pro' ? (
-            <div style={{ padding: '16px', borderRadius: '8px', border: '2px dashed var(--ifm-color-emphasis-300)', textAlign: 'center' }}>
-              <p>1Panel 应用商店目前仅支持开源版，捐赠版请选择其他安装方式。</p>
-            </div>
-          ) : (
-            <OnePanelTutorial />
-          )}
+          <div style={{ padding: '16px', borderRadius: '8px', border: '2px dashed var(--ifm-color-emphasis-300)', textAlign: 'center' }}>
+            <p>1Panel 应用商店暂未提供统一安装包，请选择 Docker、Linux 或一键脚本安装。</p>
+          </div>
         </div>
       )}
 
@@ -318,7 +287,7 @@ export default function InstallWizard() {
 
           {/* Docker 更新 */}
           {state.platform === 'docker' && state.installMode === 'update' && (
-            <DockerUpdate edition={state.edition} />
+            <DockerUpdate />
           )}
 
           {/* Linux 安装 */}

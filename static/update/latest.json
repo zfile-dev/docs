@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "latestVersion": "5.0.0",
+  "releaseDate": "2026-07-12",
+  "title": "ZFile 5.0.0",
+  "summary": "5.0 大版本更新，覆盖文件管理、账号安全、存储接入、系统监控、审计日志和 Native Image 发布能力。",
+  "changelogUrl": "https://docs.zfile.vip/changelog/",
+  "downloadUrl": "https://docs.zfile.vip/install/guide",
+  "sections": [
+    {
+      "title": "新功能",
+      "proItems": [
+        "双因素认证支持按访问 Host 区分发行方。",
+        "新增审计日志、文件上传 / 下载限速、规则管理增强、OnlyOffice 文档历史、下载统计和在线会话管理。",
+        "WebDAV 本地代理下载优先内部转发，提升访问速度。",
+        "支持 Linux amd64 / arm64 与 Windows amd64 的 GraalVM Native Image 原生程序。"
+      ],
+      "items": [
+        "支持新建常用文档、0 字节文件，以及上传同名文件覆盖、跳过或自动重命名。",
+        "新增文件收藏、列表分组、自定义操作排序、用户偏好持久化和预览器优先级配置。",
+        "新增 Passkey、用户级双因素认证、Cloudflare Turnstile、全局密码策略和 OAuth2 / OIDC 单点登录增强。",
+        "新增 tus 大文件断点续传，S3、又拍云支持断点续传，并支持配置上传分片大小。",
+        "新增百度网盘、网络出站代理池、自定义 DNS，以及存储源多步骤配置向导。",
+        "新增在线日志、全新仪表盘、系统监控、Docker 关键路径检测和 reset-admin 本地救援命令。"
+      ]
+    },
+    {
+      "title": "优化",
+      "proItems": [
+        "授权管理改为独立页面，多授权码按当前访问域名实时生效，无需重启。"
+      ],
+      "items": [
+        "全面优化前台设置、上传任务、图片 / 视频 / 音频预览及移动端弹窗交互。",
+        "重构 HTTP 客户端并减少依赖，优化存储源查询、下载日志、首页缓存和系统监控性能。",
+        "后台设置迁移为分域读写，管理接口统一到 /api/admin/**。"
+      ]
+    },
+    {
+      "title": "安全加固",
+      "items": [
+        "登录密码支持 RSA 加密传输，SSO 校验签名、发行方、受众与 nonce。",
+        "增强 OAuth2 回调、代理下载签名、路径穿越防护和日志敏感信息脱敏。"
+      ]
+    },
+    {
+      "title": "BUG 修复",
+      "proItems": [
+        "修复 WebDAV 中文用户名密码认证，并禁止跨存储源移动复制。"
+      ],
+      "items": [
+        "修复特殊文件名签名、115 路径拼接、云存储空格文件名和 FTP 下载流问题。",
+        "修复 OnlyOffice 保存路径、SQLite database is locked、多项 MySQL 兼容性及后台刷新跳转问题。"
+      ]
+    }
+  ]
+}

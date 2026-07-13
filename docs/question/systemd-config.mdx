@@ -30,9 +30,9 @@ After=network.target
 [Service]
 Type=forking
 User=root
-WorkingDirectory=/root/zfile
-ExecStart=/root/zfile/bin/start.sh
-ExecStop=/root/zfile/bin/stop.sh
+WorkingDirectory=/root/zfile-pro
+ExecStart=/root/zfile-pro/bin/start.sh
+ExecStop=/root/zfile-pro/bin/stop.sh
 Restart=on-failure
 RestartSec=10
 LimitNOFILE=65536
@@ -41,7 +41,7 @@ LimitNOFILE=65536
 WantedBy=multi-user.target
 ```
 
-捐赠版默认安装目录为 `/root/zfile-pro`，请同时把 `WorkingDirectory`、`ExecStart` 和 `ExecStop` 中的目录改为 `/root/zfile-pro`。如果使用非 root 用户安装，请把 `User` 和路径改成实际值。
+统一安装包默认安装目录为 `/root/zfile-pro`。如果使用非 root 用户安装，请把 `User` 和路径改成实际值。
 
 使配置生效并启动：
 

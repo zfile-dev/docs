@@ -10,7 +10,7 @@
 
 - Windows 默认目录：`%USERPROFILE%\.zfile-v4\db`
 - Linux 默认目录：`~/.zfile-v4/db`
-- Docker 安装向导默认目录：开源版 `/root/zfile/db`，捐赠版 `/root/zfile-pro/db`
+- Docker 安装向导默认目录：`/root/zfile-pro/db`
 - Linux 一键脚本：以安装时填写的“数据库及日志目录”为准，默认是执行脚本用户的 `~/.zfile-v4/db`
 
 Docker 路径指宿主机目录，以实际 `docker run -v` 或 Compose `volumes` 左侧路径为准。迁移时将整个目录复制到新服务器对应位置，确认权限正确后再启动 ZFile。

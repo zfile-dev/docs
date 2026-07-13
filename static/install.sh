@@ -57,7 +57,7 @@ SCRIPT_NAME="ZFile 管理脚本"
 WEB_URL="https://www.zfile.vip"
 GITHUB_URL="https://github.com/zfile-dev/zfile"
 AUTHOR="Zhao Jun <873019219@qq.com>, QQ: 873019219"
-VERSION="1.0.2"
+VERSION="1.1.0"
 
 # --------------- 日志 ---------------
 STEP_NAME=""
@@ -117,8 +117,8 @@ print_kv_cn() {
 
 # --------------- 全局变量 ---------------
 INSTALL_VERSION_MAP=(
-    [1]="开源版"
-    [2]="捐赠版"
+    [1]="旧开源版"
+    [2]="统一版"
 )
 
 INSTALL_TYPE_MAP=(
@@ -318,11 +318,8 @@ read_choice() {
 }
 
 read_install_version() {
-    if is_non_interactive && [ -n "$ZFILE_VERSION" ]; then
-        INPUT_INSTALL_VERSION="$ZFILE_VERSION"
-        return
-    fi
-    read_choice "请选择安装版本" INPUT_INSTALL_VERSION "开源版" "捐赠版"
+    # 5.0 起只发布统一安装包，内部继续使用 2 兼容原捐赠版产物与历史安装记录。
+    INPUT_INSTALL_VERSION="2"
 }
 
 read_install_type() {
@@ -527,7 +524,7 @@ install() {
         log_error "已安装 ZFile，无法重复安装，请先卸载"
         return 0
     fi
-    print_section "选择安装版本与方式"
+    print_section "选择安装方式"
     read_install_version
     read_install_type
 
@@ -604,7 +601,8 @@ install_docker_zfile() {
 
     install_command="docker run -d --name=$container_name --restart=always -p $INPUT_PORT:8080 \\
         -v $install_db_path/db/:/root/.zfile-v4/db/ \\
-        -v $install_db_path/logs/:/root/.zfile-v4/logs/"
+        -v $install_db_path/logs/:/root/.zfile-v4/logs/ \\
+        -v /var/run/docker.sock:/var/run/docker.sock:ro"
     if [ -n "$install_data_path" ]; then
         install_command="$install_command \\
         -v $install_data_path/:/data/file/"
@@ -683,7 +681,8 @@ services:
         - $INPUT_PORT:8080
         volumes:
         - $compose_path/db/:/root/.zfile-v4/db/
-        - $compose_path/logs/:/root/.zfile-v4/logs/"
+        - $compose_path/logs/:/root/.zfile-v4/logs/
+        - /var/run/docker.sock:/var/run/docker.sock:ro"
     if [ -n "$install_data_path" ]; then
         compose_content="$compose_content
         - $install_data_path/:/data/file/"
@@ -1463,7 +1462,6 @@ ${BOLD}systemd 集成（仅直接安装方式）:${RESET}
 
 ${BOLD}非交互安装环境变量:${RESET}
   ZFILE_NON_INTERACTIVE=1     启用非交互模式（必须）
-  ZFILE_VERSION=1|2           1=开源版, 2=捐赠版
   ZFILE_INSTALL_TYPE=1|2|3    1=直接, 2=docker, 3=docker-compose
   ZFILE_PORT=8080             端口号
   ZFILE_INSTALL_PATH=/path    程序安装目录（INSTALL_TYPE=1）
@@ -1480,7 +1478,7 @@ ${BOLD}示例:${RESET}
   $0 reset-admin
   $0 reset-admin --username admin --password '新密码'
   $0 service install
-  ZFILE_NON_INTERACTIVE=1 ZFILE_VERSION=1 ZFILE_INSTALL_TYPE=2 \\
+  ZFILE_NON_INTERACTIVE=1 ZFILE_INSTALL_TYPE=2 \\
     ZFILE_PORT=8080 ZFILE_DOCKER_MIRROR=2 ZFILE_AUTO_YES=y $0 install
 EOF
 }

@@ -1,19 +1,18 @@
-import { EDITION_DATA, REGISTRY_MAP } from './installConfig';
+import { RELEASE_DATA, REGISTRY_MAP } from './installConfig';
 
 /**
  * 获取 Docker 镜像全名
  */
-function getImage(edition, registry) {
-  const data = EDITION_DATA[edition];
-  return REGISTRY_MAP[registry](data.image);
+function getImage(registry) {
+  return REGISTRY_MAP[registry](RELEASE_DATA.image);
 }
 
 /**
  * 生成 docker run 命令
  */
-export function generateDockerRunCommand({ edition, registry, port, withConfig, withDockerSock, dbDir, logDir, fileDir, configDir }) {
-  const data = EDITION_DATA[edition];
-  const image = getImage(edition, registry);
+export function generateDockerRunCommand({ registry, port, withConfig, dbDir, logDir, fileDir, configDir }) {
+  const data = RELEASE_DATA;
+  const image = getImage(registry);
   const dir = `/root/${data.dir}`;
   const db = dbDir || `${dir}/db`;
   const logs = logDir || `${dir}/logs`;
@@ -23,16 +22,12 @@ export function generateDockerRunCommand({ edition, registry, port, withConfig, 
     -p ${port || '8080'}:8080 \\
     -v ${db}:/root/.zfile-v4/db \\
     -v ${logs}:/root/.zfile-v4/logs \\
-    -v ${file}:/data/file \\`;
+    -v ${file}:/data/file \\
+    -v /var/run/docker.sock:/var/run/docker.sock:ro \\`;
 
   if (withConfig) {
     const conf = configDir || `${dir}/application.properties`;
     cmd += `\n    -v ${conf}:/root/application.properties \\`;
-  }
-
-  // 系统监控读取容器元数据时，只读挂载宿主机 docker.sock
-  if (withDockerSock) {
-    cmd += `\n    -v /var/run/docker.sock:/var/run/docker.sock:ro \\`;
   }
 
   cmd += `\n    ${image}`;
@@ -42,9 +37,9 @@ export function generateDockerRunCommand({ edition, registry, port, withConfig, 
 /**
  * 生成 docker compose YAML
  */
-export function generateDockerComposeYaml({ edition, registry, port, withConfig, withDockerSock, dbDir, logDir, fileDir, configDir, dbType, mysqlPassword, mysqlDataDir }) {
-  const data = EDITION_DATA[edition];
-  const image = getImage(edition, registry);
+export function generateDockerComposeYaml({ registry, port, withConfig, dbDir, logDir, fileDir, configDir, dbType, mysqlPassword, mysqlDataDir }) {
+  const data = RELEASE_DATA;
+  const image = getImage(registry);
   const dir = `/root/${data.dir}`;
   const db = dbDir || `${dir}/db`;
   const logs = logDir || `${dir}/logs`;
@@ -56,16 +51,12 @@ export function generateDockerComposeYaml({ edition, registry, port, withConfig,
 
   let volumes = `            - '${db}:/root/.zfile-v4/db'
             - '${logs}:/root/.zfile-v4/logs'
-            - '${file}:/data/file'`;
+            - '${file}:/data/file'
+            - '/var/run/docker.sock:/var/run/docker.sock:ro'`;
 
   if (withConfig) {
     const conf = configDir || `${dir}/application.properties`;
     volumes += `\n            - '${conf}:/root/application.properties'`;
-  }
-
-  // 系统监控读取容器元数据时，只读挂载宿主机 docker.sock
-  if (withDockerSock) {
-    volumes += `\n            - '/var/run/docker.sock:/var/run/docker.sock:ro'`;
   }
 
   let zfileExtras = '';
@@ -113,8 +104,8 @@ ${volumes}
 /**
  * 生成配置文件下载命令（Docker 映射配置文件时使用）
  */
-export function generateConfigDownloadCommand({ edition, configDir }) {
-  const data = EDITION_DATA[edition];
+export function generateConfigDownloadCommand({ configDir }) {
+  const data = RELEASE_DATA;
   const dir = `/root/${data.dir}`;
   const conf = configDir || `${dir}/application.properties`;
   return `curl -k -o ${conf} ${data.configUrl}`;
@@ -123,8 +114,8 @@ export function generateConfigDownloadCommand({ edition, configDir }) {
 /**
  * 生成 Linux 全新安装命令
  */
-export function generateLinuxInstallCommand({ edition, arch, installPath }) {
-  const data = EDITION_DATA[edition];
+export function generateLinuxInstallCommand({ arch, installPath }) {
+  const data = RELEASE_DATA;
   const path = installPath || `~/${data.dir}`;
   const url = data.linuxUrl(arch);
   const tar = data.tarName(arch);
@@ -141,8 +132,8 @@ chmod +x $ZFILE_INSTALL_PATH/bin/*.sh                                   # 授权
 /**
  * 生成 Linux 启动命令
  */
-export function generateLinuxStartCommand({ edition, installPath }) {
-  const data = EDITION_DATA[edition];
+export function generateLinuxStartCommand({ installPath }) {
+  const data = RELEASE_DATA;
   const path = installPath || `~/${data.dir}`;
   return `${path}/bin/start.sh       # 启动项目`;
 }
@@ -150,8 +141,8 @@ export function generateLinuxStartCommand({ edition, installPath }) {
 /**
  * 生成 Linux 更新命令
  */
-export function generateLinuxUpdateCommand({ edition, arch, installPath }) {
-  const data = EDITION_DATA[edition];
+export function generateLinuxUpdateCommand({ arch, installPath }) {
+  const data = RELEASE_DATA;
   const path = installPath || `~/${data.dir}`;
   const url = data.linuxUrl(arch);
   const tar = data.tarName(arch);
@@ -172,8 +163,8 @@ $ZFILE_INSTALL_PATH/bin/start.sh                                        # 启动
 /**
  * 生成 WatchDucker 手动更新命令（执行一次后退出）
  */
-export function generateWatchduckerManual({ edition }) {
-  const data = EDITION_DATA[edition];
+export function generateWatchduckerManual() {
+  const data = RELEASE_DATA;
   return `docker run --rm \\
     -v /var/run/docker.sock:/var/run/docker.sock \\
     naomi233/watchducker:latest \\
@@ -183,8 +174,8 @@ export function generateWatchduckerManual({ edition }) {
 /**
  * 生成 WatchDucker 自动更新命令（每天凌晨 2 点检查）
  */
-export function generateWatchduckerAuto({ edition }) {
-  const data = EDITION_DATA[edition];
+export function generateWatchduckerAuto() {
+  const data = RELEASE_DATA;
   return `docker run -d \\
     --name watchducker \\
     --restart always \\
@@ -197,8 +188,8 @@ export function generateWatchduckerAuto({ edition }) {
 /**
  * 获取配置文件路径
  */
-export function getConfigFilePath({ edition, platform, installPath, configDir }) {
-  const data = EDITION_DATA[edition];
+export function getConfigFilePath({ platform, installPath, configDir }) {
+  const data = RELEASE_DATA;
   if (platform === 'docker') {
     const conf = configDir || `/root/${data.dir}/application.properties`;
     return `${conf}（宿主机）`;

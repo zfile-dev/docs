@@ -24,11 +24,11 @@ curl -I http://127.0.0.1:8080
 Docker 手工部署可执行：
 
 ```bash
-docker ps -a --filter name=zfile
-docker logs --tail 200 zfile
+docker ps -a --filter name=zfile-pro
+docker logs --tail 200 zfile-pro
 ```
 
-捐赠版默认容器名为 `zfile-pro`。
+5.0 统一安装包的默认容器名为 `zfile-pro`；从旧开源版升级且未重建容器时，容器名可能仍为 `zfile`。
 
 Linux 压缩包部署可在安装目录执行 `./bin/status.sh` 和 `./bin/log.sh`。默认日志目录为 `~/.zfile-v4/logs`。
 

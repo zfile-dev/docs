@@ -7,9 +7,8 @@ const stepCard = {
 };
 const stepLabel = { fontWeight: 600, marginBottom: '4px' };
 
-export default function DsmTutorial({ edition = 'os' }) {
-  const isPro = edition === 'pro';
-  const image = isPro ? 'zfile-pro' : 'zfile';
+export default function DsmTutorial() {
+  const image = 'zfile-pro';
 
   const composeYaml = `version: '3.3'
 services:
@@ -24,6 +23,7 @@ services:
 
              # 因 Docker 具有隔离性，这里表示将群辉的哪个目录挂载到 zfile 中，可自行修改，见下图
             - '/volume1:/volume1'
+            - '/var/run/docker.sock:/var/run/docker.sock:ro'
         image: swr.cn-north-1.myhuaweicloud.com/zfile-dev/${image}:latest`;
   const deleteImage = `swr.cn-north-1.myhuaweicloud.com/zfile-dev/${image}:latest`;
 
@@ -56,8 +56,7 @@ services:
         </ul>
         <CodeBlock language="yaml">{composeYaml}</CodeBlock>
         <p style={{ fontSize: '0.85em', color: 'var(--ifm-color-emphasis-700)', marginTop: '4px' }}>
-          如需在「系统监控」查看容器名称、镜像和宿主机挂载源，可在 <code>volumes</code> 中额外添加
-          <code> '/var/run/docker.sock:/var/run/docker.sock:ro'</code>。该挂载权限较高，不需要时不要添加。
+          配置已只读挂载 <code>docker.sock</code>，用于在「系统监控」中读取容器名称、镜像和宿主机挂载源。
         </p>
         <img className="sm:w-2/3" src="/img/2025/9/6/dsm-install-3.png" />
         <img className="sm:w-2/3" src="/img/2025/9/6/dsm-install-4.png" />

@@ -2,13 +2,8 @@ import React from 'react';
 import CodeBlock from '@theme/CodeBlock';
 import { generateWatchduckerManual, generateWatchduckerAuto } from './commandGenerator';
 
-/**
- * Docker 容器更新组件（基于 WatchDucker）
- * 可在任意页面独立使用：<DockerUpdate edition="os" />
- */
-export default function DockerUpdate({ edition = 'os' }) {
-  const state = { edition };
-
+/** Docker 容器更新组件（基于 WatchDucker） */
+export default function DockerUpdate() {
   return (
     <div>
       <div style={{ marginBottom: '12px', padding: '10px 14px', borderRadius: '8px', background: 'var(--ifm-color-warning-contrast-background)', fontSize: '0.85em' }}>
@@ -17,12 +12,12 @@ export default function DockerUpdate({ edition = 'os' }) {
       <div style={{ fontSize: '0.85em', opacity: 0.7, marginBottom: '4px' }}>
         手动更新（执行一次后自动退出）：
       </div>
-      <CodeBlock language="bash">{generateWatchduckerManual(state)}</CodeBlock>
+      <CodeBlock language="bash">{generateWatchduckerManual()}</CodeBlock>
 
       <div style={{ fontSize: '0.85em', opacity: 0.7, marginBottom: '4px', marginTop: '12px' }}>
         自动更新（每天凌晨 2 点检查）：
       </div>
-      <CodeBlock language="bash">{generateWatchduckerAuto(state)}</CodeBlock>
+      <CodeBlock language="bash">{generateWatchduckerAuto()}</CodeBlock>
 
       <div style={{
         marginTop: '8px',

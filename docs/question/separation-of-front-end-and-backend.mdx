@@ -1,29 +1,15 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 # 如何前后端分离部署？
 
-后端不用动(如果是宝塔部署，不要勾选宝塔自带的前后端分离)，前端 html 文件可以通过以下方式获得：
+后端不用调整（如果使用宝塔部署，不要勾选宝塔自带的前后端分离），前端静态文件可以通过以下方式获得：
 
-## 1. 下载静态资源文件夹
+## 1. 获取静态资源文件夹
 
-<Tabs>
-<TabItem value="os" label="开源版">
-
-去 https://c.jun6.net/ZFILE/  找到**你当前版本**的 `war` 后缀的文件，下载并解压，解压后的文件夹 `/WEB-INF/classes/static` 就是前端静态资源文件夹。
-
-</TabItem>
-<TabItem value="pro" label="捐赠版">
-
-去 https://c.jun6.net/ZFILE-PRO/ 找你当前版本的 xjar 文件下载（不用管操作系统和架构，里面静态文件都一样的），下载后改后缀为 zip 并解压，解压后的文件夹 `/BOOT-INF/classes/static` 就是前端静态资源文件夹。
-
-</TabItem>
-</Tabs>
+通过[安装向导](/install/guide?platform=linux)下载当前版本的 Linux 安装包并解压。安装包根目录中的 `static` 文件夹就是前端静态资源目录；不同 CPU 架构安装包内的前端文件相同。
 
 
 ## 2. 修改前端配置文件
 
-修改前端文件下的 `zfile.config.json` 文件，将 `baseUrl` 修改为你的后端地址，比如 `http://localhost:8080`
+修改 `static/zfile.config.json`，将 `baseUrl` 改为后端地址，例如 `http://localhost:8080`。
 
 :::caution 注意
 
@@ -55,9 +41,9 @@ location / {
 其他的 web 服务器也是类似的配置，这里无法给出所有配置，且不要来问我如何配置 xxx 服务（除非你付费咨询），请善用搜索引擎或 chatgpt。
 
 
-### 3.2 捐赠版额外配置
+### 3.2 调整 referrer 配置
 
-捐赠版还需要将 `index.html` 文件的这一行删除 (大约在第九行)：
+还需要将 `index.html` 文件中的这一行删除（大约在第九行）：
 
 ```html
 <meta name="referrer" content="same-origin" >

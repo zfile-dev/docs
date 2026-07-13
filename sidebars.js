@@ -382,7 +382,7 @@ const sidebars = {
             link: {
                 type: 'generated-index',
                 title: '自定义 JS 相关示例',
-                description: '点击下方查看不同版本的更新日志',
+                description: '点击下方查看自定义 JS 示例',
                 slug: '/custom-js'
             },
             items: [
@@ -399,26 +399,9 @@ const sidebars = {
             ]
         },
         {
-            type: 'category',
-            label: '更新日志',
-            link: {
-                type: 'generated-index',
-                title: '更新日志',
-                description: '点击下方查看不同版本的更新日志',
-                slug: '/changelog'
-            },
-            items: [
-                {
-                    id: 'changelog/os',
-                    type: 'doc',
-                    label: '开源版'
-                },
-                {
-                    id: 'changelog/pro',
-                    type: 'doc',
-                    label: '捐赠版'
-                }
-            ]
+            id: 'changelog/pro',
+            type: 'doc',
+            label: '更新日志'
         },
         {
             type: 'doc',

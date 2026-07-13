@@ -1,8 +1,3 @@
-export const EDITIONS = [
-  { id: 'os', label: '开源版' },
-  { id: 'pro', label: '捐赠版' },
-];
-
 export const PLATFORMS = [
   { id: 'docker', label: 'Docker' },
   { id: 'linux', label: 'Linux' },
@@ -34,39 +29,17 @@ export const DB_TYPES = [
   { id: 'mysql', label: 'MySQL', desc: '仅 docker compose 模式' },
 ];
 
-export const BAOTA_MODES = [
-  { id: 'docker-store', label: 'Docker 应用商店', desc: '推荐，仅开源版' },
-  { id: 'traditional', label: '传统方式', desc: '开源版/捐赠版均可' },
-];
-
-// 版本相关常量
-export const EDITION_DATA = {
-  os: {
-    name: 'ZFile',
-    dir: 'zfile',
-    container: 'zfile',
-    image: 'zfile',
-    urlPrefix: 'ZFILE',
-    filePrefix: 'zfile-release',
-    configUrl: 'https://c.jun6.net/ZFILE/application.properties',
-    linuxUrl: (arch) =>
-      `https://c.jun6.net/ZFILE/zfile-release_linux_${arch === 'arm64' ? 'arm' : 'amd64'}.tar.gz`,
-    winUrl: 'https://c.jun6.net/ZFILE/zfile-release_windows_amd64.zip',
-    tarName: (arch) => `zfile-release_linux_${arch === 'arm64' ? 'arm' : 'amd64'}.tar.gz`,
-  },
-  pro: {
-    name: 'ZFile Pro',
-    dir: 'zfile-pro',
-    container: 'zfile-pro',
-    image: 'zfile-pro',
-    urlPrefix: 'ZFILE-PRO',
-    filePrefix: 'zfile-pro-release',
-    configUrl: 'https://c.jun6.net/ZFILE-PRO/application.properties',
-    linuxUrl: (arch) =>
-      `https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_${arch === 'arm64' ? 'arm' : 'amd64'}.tar.gz`,
-    winUrl: 'https://c.jun6.net/ZFILE-PRO/zfile-pro-release_windows_amd64.zip',
-    tarName: (arch) => `zfile-pro-release_linux_${arch === 'arm64' ? 'arm' : 'amd64'}.tar.gz`,
-  },
+// 5.0 起只发布统一安装包，沿用原捐赠版产物地址以兼容已有部署。
+export const RELEASE_DATA = {
+  name: 'ZFile',
+  dir: 'zfile-pro',
+  container: 'zfile-pro',
+  image: 'zfile-pro',
+  configUrl: 'https://c.jun6.net/ZFILE-PRO/application.properties',
+  linuxUrl: (arch) =>
+    `https://c.jun6.net/ZFILE-PRO/zfile-pro-release_linux_${arch === 'arm64' ? 'arm' : 'amd64'}.tar.gz`,
+  winUrl: 'https://c.jun6.net/ZFILE-PRO/zfile-pro-release_windows_amd64.zip',
+  tarName: (arch) => `zfile-pro-release_linux_${arch === 'arm64' ? 'arm' : 'amd64'}.tar.gz`,
 };
 
 // 镜像仓库地址映射
@@ -101,15 +74,11 @@ export const INSTALL_MODES = [
 
 // 初始状态
 export const INITIAL_STATE = {
-  edition: 'os',
   platform: 'docker',
-  baotaMode: 'docker-store',
   arch: 'amd64',
   registry: 'dockerhub',
   dockerMode: 'run',
   withConfig: false,
-  // 是否只读挂载宿主机 docker.sock（系统监控读取容器元数据用），默认不开启
-  withDockerSock: false,
   port: '8080',
   dataDir: '',
   installPath: '',
@@ -126,19 +95,8 @@ export const INITIAL_STATE = {
 // Reducer
 export function wizardReducer(state, action) {
   switch (action.type) {
-    case 'SET_EDITION':
-      return {
-        ...state,
-        edition: action.payload,
-        dataDir: state.dataDir ? state.dataDir : '',
-        installPath: state.installPath ? state.installPath : '',
-        // 捐赠版时宝塔自动切换到传统方式
-        baotaMode: action.payload === 'pro' ? 'traditional' : state.baotaMode,
-      };
     case 'SET_PLATFORM':
       return { ...state, platform: action.payload };
-    case 'SET_BAOTA_MODE':
-      return { ...state, baotaMode: action.payload };
     case 'SET_ARCH':
       return { ...state, arch: action.payload };
     case 'SET_REGISTRY':
@@ -152,8 +110,6 @@ export function wizardReducer(state, action) {
       };
     case 'TOGGLE_CONFIG':
       return { ...state, withConfig: !state.withConfig };
-    case 'TOGGLE_DOCKER_SOCK':
-      return { ...state, withDockerSock: !state.withDockerSock };
     case 'SET_PORT':
       return { ...state, port: action.payload };
     case 'SET_DATA_DIR':

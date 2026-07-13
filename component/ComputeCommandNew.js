@@ -1,7 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 
-function ComputeCommand({ edition = 'os' }) {
-    const bin = edition === 'pro' ? 'zfile-pro' : 'zfile';
+function ComputeCommand() {
+    const bin = 'zfile-pro';
     const [value, setValue] = useState('/www/wwwroot/demo.zfile.vip');
     const [result, setResult] = useState('');
 
@@ -12,11 +12,7 @@ function ComputeCommand({ edition = 'os' }) {
     }, []);
 
     const handleCalculate = () => {
-        // 如果 value 尾缀包含 /zfile-launch 则去除
         let path = value.trim();
-        if (value.endsWith('/zfile-launch')) {
-            path = value.substring(0, value.length - 13);
-        }
         path = path || '/www/wwwroot/demo.zfile.vip'; // 如果输入框为空，则使用默认值
         const command = `${path}/zfile/${bin} --spring.config.location=${path}/application.properties`; // 根据路径计算命令
         setResult(command); // 将计算出的命令设置为计算结果
