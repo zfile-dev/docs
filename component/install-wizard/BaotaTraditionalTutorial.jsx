@@ -109,7 +109,7 @@ export default function BaotaTraditionalTutorial() {
       <BaotaNginxLimit />
 
       <h2>7.帮我安装</h2>
-      <p><a href="/support/">技术支持</a></p>
+      <p><a href="#help-install">查看代安装服务</a></p>
     </>
   );
 }

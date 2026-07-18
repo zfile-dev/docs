@@ -25,27 +25,9 @@ const sidebars = {
         },
         'intro',
         {
-            type: 'category',
-            label: '快速安装（必看）',
-            // collapsed: false,
-            link: {
-                type: 'generated-index',
-                title: '快速安装',
-                description: '请选择安装方式',
-                slug: '/install'
-            },
-            items: [
-                {
-                    id: 'install/guide',
-                    type: 'doc',
-                    label: '安装向导（推荐）'
-                },
-                {
-                    type: 'doc',
-                    label: '帮我安装',
-                    id: 'support/support'
-                }
-            ],
+            id: 'install/guide',
+            type: 'doc',
+            label: '安装向导（推荐）'
         },
         {
             type: 'category',
@@ -407,11 +389,6 @@ const sidebars = {
             type: 'doc',
             label: '服务器推荐✨',
             id: 'ad/ad'
-        },
-        {
-            type: 'doc',
-            label: '技术支持',
-            id: 'support/support'
         }
     ],
 

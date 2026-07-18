@@ -46,6 +46,8 @@ if (hashMap[hash]) {
         '/install-os/': '/install/guide',
         '/install-pro': '/install/guide',
         '/install-pro/': '/install/guide',
+        '/install': '/install/guide',
+        '/install/': '/install/guide',
         // 旧图文教程页 → 安装向导
         '/install/os-dsm-docker': '/install/guide?platform=synology',
         '/install/os-dsm-docker/': '/install/guide?platform=synology',
@@ -72,10 +74,15 @@ if (hashMap[hash]) {
         '/install/linux/': '/install/guide?platform=linux',
         '/install/windows': '/install/guide?platform=windows',
         '/install/windows/': '/install/guide?platform=windows',
-        '/install/help-install': '/support/',
-        '/install/help-install/': '/support/',
-        '/install/help-install-sub': '/support/',
-        '/install/help-install-sub/': '/support/',
+        // 原技术支持及“帮我安装”页面 → 安装向导内对应章节
+        '/support': '/install/guide#support',
+        '/support/': '/install/guide#support',
+        '/support/support': '/install/guide#support',
+        '/support/support/': '/install/guide#support',
+        '/install/help-install': '/install/guide#help-install',
+        '/install/help-install/': '/install/guide#help-install',
+        '/install/help-install-sub': '/install/guide#help-install',
+        '/install/help-install-sub/': '/install/guide#help-install',
     };
 
     // 精确匹配

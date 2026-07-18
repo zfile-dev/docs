@@ -132,7 +132,7 @@ const config = {
                     },
                     {
                         "label": "技术支持",
-                        "href": "/support/"
+                        "href": "/install/guide#support"
                     },
                     {
                         href: 'https://github.com/zfile-dev/zfile',
