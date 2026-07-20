@@ -45,7 +45,11 @@ jobs:
 
       - name: Set up Docker Buildx      # 设置 Docker Buildx 环境
         id: buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
+        with:
+          version: v0.35.0
+          driver-opts: |
+            image=moby/buildkit:v0.30.0
 
       - name: Inspect builder           # 查看 builder 状态
         if: github.event_name == 'workflow_dispatch'
@@ -60,6 +64,7 @@ jobs:
         shell: bash
         env:
           ALL_SECRETS: ${{ toJSON(secrets) }}
+          BUILDX_NO_DEFAULT_ATTESTATIONS: 1
         run: |
           set -euo pipefail
           repos=()
@@ -97,8 +102,18 @@ jobs:
           fi
 
           tag_suffix="$(TZ=Asia/Shanghai date +%Y-%m-%d_%H-%M-%S)_$(git rev-parse --short HEAD)"
-          cmd=(docker buildx build --provenance=false --platform linux/amd64,linux/arm64 --cache-from type=gha --cache-to type=gha,mode=max --push .)
+          # SWR 基础版无法解析 OCI manifest，必须关闭证明信息并强制使用 Docker media type。
+          cmd=(
+            docker buildx build
+            --provenance=false
+            --sbom=false
+            --platform linux/amd64,linux/arm64
+            --cache-from type=gha
+            --cache-to type=gha,mode=max
+            --output type=image,push=true,oci-mediatypes=false
+          )
           for repo in "${repos[@]}"; do
               cmd+=(-t "${repo}:latest" -t "${repo}:${tag_suffix}")
           done
+          cmd+=(.)
           "${cmd[@]}"
