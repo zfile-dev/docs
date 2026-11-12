@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "latestVersion": "5.1.1",
-  "releaseDate": "2026-11-08",
+  "releaseDate": "2026-11-12",
   "title": "ZFile 5.1.1",
   "summary": "新增缩略图、分享访问权限与匿名访问开关、访问规则生效时间，支持 SMB 与 FTPS 存储源，优化前后台页面、规则预览与下载性能，用户密码升级为更安全的存储方式，并修复上传续传、特殊字符路径和多种网盘的问题。",
   "changelogUrl": "https://docs.zfile.vip/changelog/",
